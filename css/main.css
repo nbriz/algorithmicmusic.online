@@ -1,0 +1,367 @@
+/* major-mono-display-regular - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Major Mono Display';
+  font-style: normal;
+  font-weight: 400;
+  src: url('fonts/major-mono-display-v12-latin-regular.eot'); /* IE9 Compat Modes */
+  src: url('fonts/major-mono-display-v12-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('fonts/major-mono-display-v12-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('fonts/major-mono-display-v12-latin-regular.woff') format('woff'), /* Modern Browsers */
+       url('fonts/major-mono-display-v12-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('fonts/major-mono-display-v12-latin-regular.svg#MajorMonoDisplay') format('svg'); /* Legacy iOS */
+}
+
+/* libre-baskerville-regular - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Libre Baskerville';
+  font-style: normal;
+  font-weight: 400;
+  src: url('fonts/libre-baskerville-v14-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+
+:root {
+    --background-color: white;
+    --text-color: black;
+    --accent-color1: #de09ab; /* aka --netizen-attribute */
+    --accent-color2: #0576e8; /* aka --netizen-tag */
+    --accent-color3: #8811d9; /* aka --netizen-variable */
+    --accent-color4: #269921; /* aka --netizen-property */
+    --accent-color5: #0b47ad; /* aka --netizen-string */
+    --accent-color6: #4c4c51; /* aka --netizen-operator */
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Major Mono Display', monospace;
+  font-weight: 100;
+  height: 100vh;
+  margin: 0;
+
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+body.dark-mode {
+  --background-color: black;
+  --text-color: white;
+  --accent-color1: #ff7de9; /* aka --netizen-attribute */
+  --accent-color2: #75bfff; /* aka --netizen-tag */
+  --accent-color3: #b98eff; /* aka --netizen-variable */
+  --accent-color4: #86de74; /* aka --netizen-property */
+  --accent-color5: #b98eff; /* aka --netizen-string */
+  --accent-color6: #cfcbc4; /* aka --netizen-operator */
+}
+
+svg {
+  /* font-family: 'Lato', sans-serif; */
+  /* font-size: 10px; */
+  user-select: none;
+}
+
+a, .link {
+  color: var(--accent-color1);
+  text-decoration: none;
+}
+
+a:hover, .link:hover {
+  color: var(--accent-color1);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.hidden-link {
+  color: var(--text-color);
+  user-select: none;
+}
+
+.hidden-link:hover {
+  color: var(--accent-color1);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+h1 {
+  font-size: 6vw;
+}
+
+h2 {
+  text-align: center;
+  font-size: 4em;
+  border-bottom: 1px solid var(--text-color);
+  padding-bottom: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+h3 {
+  text-align: center;
+  margin-bottom: 3em;
+  font-size: 1.6em;
+}
+
+h4 {
+  font-size: 1.3em;
+  text-align: center;
+  padding-bottom: 0.5em;
+  margin-bottom: 0.5em;
+  border-bottom: 1px solid var(--text-color);
+}
+
+@media (max-width: 800px) {
+  h2 {
+    font-size: 1.2em;
+  }
+}
+
+.ch {
+  width: 11em;
+  margin: 3em auto 0 auto;
+}
+
+.ch-title {
+  margin: 0 0 1em 0; border: none;
+}
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+p, li, cite {
+  max-width: 800px;
+  font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+  font-size: 1.1em;
+  line-height: 1.6em;
+}
+
+li {
+  margin-bottom: 1em;
+}
+
+hr {
+  max-width: 800px;
+  border: none;
+  border-top: 1px solid var(--text-color);
+}
+
+@media (max-width: 800px) {
+  p, ul, ol, hr {
+    padding: 5vw;
+  }
+}
+
+blockquote {
+  border-left: 0.2em solid var(--accent-color4);
+  padding-left: 2em;
+  margin-left: 2em;
+}
+
+blockquote p {
+  font-style: italic;
+  color: var(--accent-color4);
+}
+
+cite::before {
+  content: '—';
+}
+
+cite a {
+  color: var(--accent-color4);
+  text-decoration: underline;
+}
+
+strong {
+  font-weight: bold;
+  font-style: italic;
+  color: var(--accent-color2);
+}
+
+.table {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+@media (max-width: 720px) {
+  .table {
+    grid-template-columns: 1fr;
+    margin: 10vw;
+  }
+}
+
+
+.hotkey {
+  font-style: italic;
+}
+
+
+.attribution {
+  font-style: italic;
+  font-size: 0.8em;
+  margin-bottom: 5em;
+  margin-top: 10em;
+}
+
+.attribution p {
+  border-top: 1px solid var(--text-color);
+  padding-top: 1em;
+}
+
+.formatted-text {
+
+}
+
+.small-note {
+  font-size: 0.8em;
+  text-align: center;
+  margin: 0.5em auto;
+  font-style: italic;
+}
+
+.rwd {
+  width: 100%;
+}
+
+
+/* netitor frame ------------------------------------------------------------ */
+
+.code-example {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-height: 80vh;
+  margin-bottom: 1em;
+}
+
+.code-example > div {
+  width: 50%
+}
+
+.code-example > .render {
+  border-left: 1px solid var(--text-color);
+}
+
+@media (max-width: 720px) {
+  .code-example  {
+    flex-direction: column;
+    max-height: none;
+  }
+
+  .code-example > div {
+    width: 100%;
+    max-height: 80vh;
+  }
+
+  .code-example > .render {
+    border: 4px solid var(--text-color);
+  }
+}
+
+/* CONTROLS */
+
+.code-controls {
+  display: flex;
+  align-items: center;
+  margin-top: 6em;
+}
+
+.code-controls > img {
+  width: 4em;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.code-controls > img:hover {
+  opacity: 1;
+}
+
+
+.code-info nav {
+  text-align: center;
+}
+
+/* ---- UI ------------------------------------------------------------------ */
+
+input, select, button {
+  border: 1px solid var(--text-color);
+  background: var(--background-color);
+  color: var(--text-color);
+  padding: 8px 16px;
+  border-radius: 12px;
+}
+
+input:hover, select:hover, button:hover {
+  cursor: pointer;
+  background: var(--text-color);
+  color: var(--background-color)
+}
+
+input.acive, select.active, button.active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+
+/* color mode switch -------------------------------------------------------- */
+
+.color-mode-wrap {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid var(--text-color);
+  padding: 1em 2em 0 2em;
+  margin-top: 1em;
+}
+
+.color-mode-label {
+  display: inline-block;
+  margin-left: 1em;
+}
+
+/* The switch - the box around the slider */
+.color-mode-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.color-mode-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.color-mode-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--accent-color6);
+  border-radius: 34px;
+  transition: .4s;
+}
+
+.color-mode-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  border-radius: 50%;
+  transition: .4s;
+}
+
+input:checked + .color-mode-slider { background-color: var(--accent-color1); }
+input:focus + .color-mode-slider { box-shadow: 0 0 1px var(--accent-color1); }
+input:checked + .color-mode-slider:before { transform: translateX(26px); }

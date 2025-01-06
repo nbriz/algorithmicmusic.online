@@ -1,0 +1,30 @@
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+@media (max-width: 720px) {
+  main {
+    width: 80vw;
+    margin: 0 auto;
+  }
+}
+
+.title-screen {
+  font-size: 6.3vw;
+  line-height: 1.4em;
+  text-align: justify;
+}
+
+.title-screen > .formatted-text > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 80vw;
+}
+
+#title-sheet-music {
+  height: auto !important;
+}

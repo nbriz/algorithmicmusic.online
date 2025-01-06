@@ -1,0 +1,22 @@
+<body></body>
+<script src="http://unpkg.com/tone"></script>
+<!-- importing the "nn" library -->
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
+<script>
+/* global Tone, nn */
+const osc = new Tone.Oscillator()
+osc.frequency.value = 440
+osc.type = 'sine'
+osc.toDestination()
+
+function play () {
+  osc.start()
+  osc.stop('+0.5')
+}
+
+// we can create HTML elements with "nn"
+nn.create('button')     // what we want to make
+  .content('play tone') // what we want it to say
+  .addTo('body')       // where we want to put it
+  .on('click', play)   // what we want it to do
+</script>

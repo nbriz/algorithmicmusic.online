@@ -1,0 +1,25 @@
+<script>
+const ctx = new window.AudioContext()
+
+function playTone (freq) {
+  const ch = 2
+  const len = 1 * ctx.sampleRate
+  const rate =  ctx.sampleRate
+  const buffer = ctx.createBuffer(ch, len, rate)
+  const samples = buffer.getChannelData(0)
+  const scalar = (freq * 2 * Math.PI) / ctx.sampleRate
+  for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+    const samples = buffer.getChannelData(ch)
+    for (let s = 0; s < buffer.length; s++){
+      samples[s] = Math.sin(s * scalar)
+    }
+  }
+  const tone = ctx.createBufferSource()
+  tone.buffer = buffer
+  tone.connect(ctx.destination)
+  return tone
+}
+
+const note = playTone(440)
+note.start()
+</script>

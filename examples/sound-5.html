@@ -1,0 +1,21 @@
+<script>
+const ctx = new window.AudioContext()
+
+const ch = 1
+const len = 1 * ctx.sampleRate
+const rate =  ctx.sampleRate
+
+const buffer = ctx.createBuffer(ch, len, rate)
+
+const samples = buffer.getChannelData(0)
+
+for (let s = 0; s < buffer.length; s++){
+  samples[s] = Math.sin(s * 0.05) // "sin" instead of "random"
+}
+
+// this time i'll call it "tone"
+const tone = ctx.createBufferSource()
+tone.buffer = buffer
+tone.connect(ctx.destination)
+tone.start()
+</script>

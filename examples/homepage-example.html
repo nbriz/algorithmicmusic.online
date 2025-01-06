@@ -1,0 +1,23 @@
+<body></body>
+<!-- import libraries -->
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
+<script src="https://tonejs.github.io/build/Tone.js"></script>
+<!-- script tag for our JavaScript Code -->
+<script>
+/* global nn, Tone */
+
+// variable
+const synth = new Tone.Synth().toDestination()
+
+// function
+function play () {
+  const freq = nn.randomInt(440, 880)
+  synth.triggerAttackRelease(freq, '8n')
+}
+
+// events listener
+nn.create('button')
+  .content('play note')
+  .addTo('body')
+  .on('click', play)
+</script>

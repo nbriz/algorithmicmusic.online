@@ -1,0 +1,11 @@
+<script src="http://unpkg.com/tone"></script>
+<script>
+/* global Tone */
+const osc = new Tone.Oscillator()
+osc.frequency.value = 440
+osc.type = 'sine'
+osc.toDestination()
+
+osc.start()
+osc.stop('+0.5')
+</script>

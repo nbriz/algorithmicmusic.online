@@ -1,0 +1,24 @@
+<script>
+const ctx = new window.AudioContext()
+
+const ch = 1
+const len = 1 * ctx.sampleRate
+const rate =  ctx.sampleRate
+
+const buffer = ctx.createBuffer(ch, len, rate)
+
+const samples = buffer.getChannelData(0)
+
+for (let s = 0; s < buffer.length; s++){
+  samples[s] = Math.random() * 2 - 1
+}
+
+// create a sound "source"
+const noise = ctx.createBufferSource()
+// apply our custom buffer to the source
+noise.buffer = buffer
+// connect the sound source to our output
+noise.connect(ctx.destination)
+// immediately start playing the sound
+noise.start()
+</script>

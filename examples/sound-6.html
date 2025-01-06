@@ -1,0 +1,26 @@
+<script>
+const ctx = new window.AudioContext()
+
+const ch = 2 // let's do stereo now!
+const len = 1 * ctx.sampleRate
+const rate =  ctx.sampleRate
+
+const buffer = ctx.createBuffer(ch, len, rate)
+
+const samples = buffer.getChannelData(0)
+const freq = 440 // frequency or pitch in Hz
+const scalar = (freq * 2 * Math.PI) / ctx.sampleRate
+// loop inside a loop, loop through each channel
+// then for each channel, loop through every sample
+for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+  const samples = buffer.getChannelData(ch)
+  for (let s = 0; s < buffer.length; s++){
+    samples[s] = Math.sin(s * scalar)
+  }
+}
+
+const tone = ctx.createBufferSource()
+tone.buffer = buffer
+tone.connect(ctx.destination)
+tone.start()
+</script>

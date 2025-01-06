@@ -1,0 +1,1 @@
+We could write the same instructions a little differently. Rather than passing the "frequency" and wave "type" as <strong>arguments</strong> passed into the <code>Oscillator()</code>, we could set them by updating their corresponding <strong>properties</strong>

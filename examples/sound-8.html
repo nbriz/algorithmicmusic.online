@@ -1,0 +1,11 @@
+<script>
+const ctx = new window.AudioContext()
+
+const note = ctx.createOscillator()
+note.frequency.value = 440
+note.connect(ctx.destination)
+
+const t = ctx.currentTime
+note.start(t) // start immediately
+note.stop(t + 1) // stop 1 second later
+</script>

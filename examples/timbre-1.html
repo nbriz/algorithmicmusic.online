@@ -1,0 +1,12 @@
+<!-- importing the tone.js library -->
+<script src="http://unpkg.com/tone"></script>
+<script>
+/* global Tone */
+const osc = new Tone.Oscillator(440, 'sine').toDestination()
+
+// start playing as soon as we run our code
+osc.start()
+
+// stop playing half a second later
+osc.stop('+0.5')
+</script>
