@@ -105,7 +105,7 @@ const codeTemplates = [
 </script>`,
 `<body></body>
 <script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
-<script src="http://unpkg.com/tone"></script>
+<script src="https://unpkg.com/tone"></script>
 <script>
 /* global Tone, nn */
 {{code}}
