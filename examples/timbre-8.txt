@@ -1,0 +1,1 @@
+In this example we've returned to a simple sine wave, but we've added more UI elements. Now there's two buttons, one to start the oscillator and another to stop it. I've also added a new type of input called a "range". When we adjust the input of the range it runs a function which updates the oscillator's frequency to match the current value of the range.

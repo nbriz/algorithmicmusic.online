@@ -100,17 +100,42 @@ window.utils.formatText = function (element) {
 let codeTemplate = 0
 const codeTemplates = [
   '',
+// 1
 `<script>
 {{code}}
 </script>`,
+// 2
 `<body></body>
-<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
 <script src="https://unpkg.com/tone"></script>
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
 <script>
 /* global Tone, nn */
 {{code}}
+</script>`,
+// 3
+`<body></body>
+<script src="https://unpkg.com/tone"></script>
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://algorithmicmusic.online/js/create-spectrum.js"></script>
+<script src="https://algorithmicmusic.online/js/create-waveform.js"></script>
+<script>
+/* global Tone, nn, d3, createWaveform, createSpectrum */
+{{code}}
 </script>`
 ]
+
+// HACK: b/c of this issue: https://github.com/netizenorg/netitor/issues/27
+window.utils.updateLangauge = function (ne, v) {
+  ne._lang = v
+  ne._temp_code_str = ne.code
+  const curEditor = ne.cm.getWrapperElement()
+  if (curEditor instanceof window.HTMLElement) ne.ele.removeChild(curEditor)
+  ne.cm = null
+  ne._createEditor()
+  ne.code = ne._temp_code_str
+  delete ne._temp_code_str
+}
 
 window.utils.loadExample = async function ({ example, editor, template, info }) {
   codeTemplate = template || 0
@@ -120,7 +145,8 @@ window.utils.loadExample = async function ({ example, editor, template, info }) 
   editor.code = code
 
   if (template) {
-    editor.language = 'javascript'
+    // editor.language = 'javascript'
+    window.utils.updateLangauge(editor, 'javascript')
     editor.update(codeTemplates[codeTemplate])
   } else {
     editor.langauge = 'html'
@@ -187,13 +213,24 @@ window.utils.createCodeEditor = function (opts) {
   const ele = document.querySelector(opts.ele)
   const total = opts.total || 1
   const fileprefix = opts.fileprefix
-  const template = opts.template
 
   let index = opts.index
   if (total > 1) {
     index = index || 1
   } else {
     index = ''
+  }
+
+  // let template = opts.template
+  let template
+  if (typeof opts.template === 'number') {
+    template = opts.template
+  } else if (opts.template instanceof Array) {
+    if (typeof index === 'number') {
+      template = opts.template[index - 1]
+    } else if (!index || index === '') {
+      template = opts.template[0]
+    }
   }
 
   ele.innerHTML = `
@@ -214,7 +251,7 @@ window.utils.createCodeEditor = function (opts) {
   <section class="code-info">
     <nav>
       <span class="link prev">◀◀ prev</span> |
-      <span class="formatted-text">${opts.title}</span> |
+      <span class="code-title">${opts.title} ${index} / ${total}</span> |
       <span class="link next">next ▶▶</span>
     </nav>
     <p class="small-note">(click the "prev" and "next" links to cycle through code examples and their explinations below)</p>
@@ -227,13 +264,17 @@ window.utils.createCodeEditor = function (opts) {
   const ne = new Netitor({
     ele: ele.querySelector('.editor'),
     render: ele.querySelector('.render'),
-    autoUpdate: true,
+    autoUpdate: false,
     renderWithErrors: true,
     background: false,
     theme: 'moz-light',
     language: 'html',
     wrap: true
   })
+
+  const title = ele.querySelector('.code-title')
+  const nextBtn = ele.querySelector('.code-info .next')
+  const prevBtn = ele.querySelector('.code-info .prev')
 
   function update (val, nojump) {
     window.utils.loadExample({
@@ -242,16 +283,20 @@ window.utils.createCodeEditor = function (opts) {
       template: template,
       info: ele.querySelector('.content > p')
     })
+    title.innerHTML = `${opts.title} ${index} / ${total}`
     if (!nojump) window.location.hash = opts.ele
+    ne.update()
   }
 
   function next () {
     index++; if (index > total) index = 1
+    if (opts.template)template = opts.template[index - 1]
     update(index)
   }
 
   function prev () {
     index--; if (index < 1) index = total
+    if (opts.template) template = opts.template[index - 1]
     update(index)
   }
 
@@ -264,8 +309,8 @@ window.utils.createCodeEditor = function (opts) {
     ele.querySelector('.code-info nav').style.display = 'none'
     ele.querySelector('.code-info .small-note').style.display = 'none'
   } else {
-    ele.querySelector('.code-info .next').addEventListener('click', next)
-    ele.querySelector('.code-info .prev').addEventListener('click', prev)
+    nextBtn.addEventListener('click', next)
+    prevBtn.addEventListener('click', prev)
   }
 
   return { ne, update, next, prev }

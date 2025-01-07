@@ -139,6 +139,16 @@
 
     <section id="editor-2"></section>
 
+    <section>
+      <div class="content">
+        <p>
+
+        </p>
+      </div>
+    </section>
+
+    <section id="editor-3"></section>
+
     <br>
     <br>
     <br>
@@ -193,8 +203,15 @@
         ele: '#editor-2',
         title: 'shaping waveforms',
         fileprefix: 'timbre-',
-        index: 3,
+        template: [0, 0, 0, 0, 3, 3, 3, 3],
+        index: 7,
         total: 8
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-3',
+        fileprefix: 'theramin',
+        template: 3
       })
 
 
