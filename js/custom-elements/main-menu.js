@@ -94,6 +94,18 @@ class MainMenu extends window.HTMLElement {
           padding: 1em 2em 0 2em;
           margin-top: 1em;
         }
+
+        .inactive {
+          font-size: 2em;
+          opacity: 0.25;
+          cursor: default;
+          text-decoration: none;
+        }
+
+        .inactive:hover {
+          color: var(--text-color);
+          text-decoration: none;
+        }
       </style>
 
       <div class="menu-icon" id="menu">
@@ -108,6 +120,21 @@ class MainMenu extends window.HTMLElement {
         </span>
         <span>
           <a href="/sound">what is sound</a>
+        </span>
+        <span>
+          <a class="inactive">signals and synths</a>
+        </span>
+        <span>
+          <a class="inactive">audio sampling</a>
+        </span>
+        <span>
+          <a class="inactive">chords and scales</a>
+        </span>
+        <span>
+          <a class="inactive">rythm and melody</a>
+        </span>
+        <span>
+          <a class="inactive">algorithmic composition</a>
         </span>
 
         <div class="smaller">
