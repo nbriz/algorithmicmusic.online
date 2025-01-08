@@ -13,6 +13,7 @@ const wave = createWaveform({
   height: '200px',
   background: 'black',
   color: 'white',
+  manuallyCallAnimate: false,
   binSize: 1024,
   sensativity: 0.08 // higher, more sensative
   lineWidth: 2
@@ -91,6 +92,8 @@ function createWaveform (opts) {
     window.requestAnimationFrame(animate)
   }
 
+  if (!opts.manuallyCallAnimate) animate()
+
   // const audioCtx = Tone.context
   // const gainNode = audioCtx.createGain ? audioCtx.createGain() : audioCtx.createGainNode()
   // gainNode.gain.value = sensativity
@@ -98,7 +101,12 @@ function createWaveform (opts) {
   const gainNode = new Tone.Gain(sensativity * 2)
   gainNode.connect(waveNode)
 
-  return { node: gainNode, ele, svg, animate }
+  const node = gainNode
+  node.ele = ele
+  node.svg = svg
+  node.animate = animate
+
+  return node
 }
 
 window.createWaveform = createWaveform

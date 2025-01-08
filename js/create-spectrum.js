@@ -13,6 +13,7 @@ const spec = createSpectrum({
   height: '200px',
   background: 'black',
   color: 'white',
+  manuallyCallAnimate: false,
   binSize: 1024,
   range: []
   sensativity: 0.08, // higher, more sensative
@@ -160,15 +161,21 @@ function createSpectrum (opts) {
   function animate () {
     fftNode.getByteFrequencyData(frequencyData)
     path.attr('d', line(Array.from(frequencyData)))
-
     window.requestAnimationFrame(animate)
   }
+
+  if (!opts.manuallyCallAnimate) animate()
 
   const gainNode = audioCtx.createGain ? audioCtx.createGain() : audioCtx.createGainNode()
   gainNode.gain.value = sensativity
   gainNode.connect(fftNode)
 
-  return { node: gainNode, ele, svg, animate }
+  const node = gainNode
+  node.ele = ele
+  node.svg = svg
+  node.animate = animate
+
+  return node
 }
 
 window.createSpectrum = createSpectrum
