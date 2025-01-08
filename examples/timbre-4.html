@@ -9,19 +9,17 @@
 /* global Tone, nn, d3, createWaveform, createSpectrum */
 
 const wave = createWaveform() // create a new waveform
-wave.animate() // start running the animation
 
 const spec = createSpectrum({ // create a new spectrum
   range: [20, 7050] // set the frequency range
 })
-spec.animate() // start running the animation
 
 const osc = new Tone.Oscillator()
 osc.frequency.value = 440
 osc.type = 'sine'
 osc.toDestination()
-osc.connect(wave.node) // connect oscillator to the wave visual
-osc.connect(spec.node) // connect oscillator to the spectrum visual
+osc.connect(wave) // connect oscillator to the wave visual
+osc.connect(spec) // connect oscillator to the spectrum visual
 
 function play () {
   osc.start()

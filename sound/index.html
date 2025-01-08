@@ -35,7 +35,7 @@
   <body>
 
     <main-menu>
-      <div slot="menu-items">
+      <!-- <div slot="menu-items">
         <div class="color-mode-wrap">
           <label class="color-mode-switch">
             <input type="checkbox">
@@ -43,8 +43,14 @@
           </label>
           <span class="color-mode-label">light/dark mode</span>
         </div>
-      </div>
+      </div> -->
     </main-menu>
+
+    <div class="loader">
+      <svg id="loader-wave" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="" id="loader-wave-path"></path>
+      </svg>
+    </div>
 
     <section id="prologue">
       <div class="content">
@@ -119,7 +125,7 @@
         <div class="range-label">volume <span id="vol-val">5</span></div>
 
         <p>
-          However, pure sine waves don’t exist in the natural world, they can only ever be synthesized. Most real sounds with repetitive or predictable vibrations—what we hear as musical tones—are a mix of a <strong>fundamental</strong> frequency (the dominant tone, like 440 Hz for A4) and additional frequencies called <strong>overtones</strong> or <strong>harmonics</strong>. These overtones are multiples of the fundamental and give the sound its complexity.
+          However, pure sine waves don’t exist in the natural world, they can only ever be synthesized electronically (be it analog or digital). Most "natural" sounds with repetitive or predictable vibrations—what we hear as musical tones—are a mix of a <strong>fundamental</strong> frequency (the dominant tone, like 440 Hz for A4) and additional frequencies called <strong>overtones</strong> or <strong>harmonics</strong>. These overtones are multiples of the fundamental and give the sound its complexity.
         </p>
 
         <p>
@@ -139,19 +145,61 @@
 
     <section id="editor-2"></section>
 
+    <br>
+    <br>
+    <br>
+    <br>
+    <hr>
+    <br>
+    <br>
+    <br>
+
     <section>
       <div class="content">
+        <h3 class="formatted-text">online theremin</h3>
         <p>
-
+          We've now learned enough code to make an online <strong>theremin</strong>. Historically, the theremin was one of the first electronic instruments, invented in the 1920s by Léon Theremin. Instead of physical strings or keys, the theremin generates sound by translating the distance of your hands from two antennas into control signals for pitch and volume. It works by creating magnetic fields around its antennas, which are sensitive to the proximity of your hands. As your hand moves closer to the vertical pitch antenna, it alters the frequency of an analog oscillator, raising or lowering the pitch. Similarly, moving your other hand near the horizontal volume antenna changes another magnetic field, adjusting the amplitude (loudness) of the sound. In the example below I've created a digital theramin which uses the mouse instead of antennas. Holding the mouse button down produces the sound, then moving the mouse left/right changes the pitch while moving it up/down changes the volume.
         </p>
       </div>
     </section>
 
     <section id="editor-3"></section>
 
+    <section>
+      <div class="content">
+        <p>
+          There's some new code we haven't seen before. Towards the bottom you'll notice <code>nn.on()</code> event listeners, similar to the ones we've seen before except this time the <code>.on()</code> method is attached directly to the <code>nn</code> object. When we do this we're essentially saying we want to listen for events in the entire window (rather than on a specific UI element). We're also listening for some new events we haven't seen yet, 'mousedown' which will trigger the <code>start</code> function, 'mouseup' which will trigger the <code>stop</code> function and 'mousemove' which triggers the <code>update</code> function. The update function takes the event object and maps its <code>e.x</code> and <code>e.y</code> values (the horizontal and vertical mouse coordinates) to specific ranges using the <code>nn.map()</code> method. This method takes more arguments than we've seen any other method or function take so it's worth discussing a bit.
+        </p>
+
+        <p>
+          The <code>map</code> method is used to take value which falls within a given range and convert it to another value in the same position of a different range. For example, if our value is "6" representing the 6th hour in a range from 0-12 we could map that to another range for example 0-100. In this range the 6 would become 50, because 6 is directly in the center of it's range (1-12) and the center of the new range (0-100) would be 50.
+        </p>
+        <p>
+          In the case of our theremin, it takes the mouse's horizontal position <code>e.x</code> which will be a value between 0 and the width of our page. Every user will have a different sized page, so rather than hard-coding the value for the width of the page we can pull it dynamically using <code>nn.width</code>. Then we map this value to a new range between 220 (the lowest note I want to play, an "A3" on a piano) and 1760 (the highest note I want to play, an "A7"). Similarly the mouse's vertical position <code>e.y</code> gets mapped to a new range of 0 to -80, so that when our mouse is at the top of the page it's volume is unchanged, but when it's at the bottom of the page we lower it by -80 db.
+        </p>
+      </div>
+    </section>
+
+
     <br>
     <br>
     <br>
+    <br>
+    <hr>
+    <br>
+    <br>
+    <br>
+
+    <section>
+      <div class="content">
+        <h3 class="formatted-text">homework</h3>
+        <p>
+          For homework read "<a href="https://www.bbc.com/culture/article/20201111-the-theremin-the-strangest-instrument-ever-invented" target="_blank">The theremin: The strangest instrument ever invented?</a>" and then experiment with the example above to create your own variation. Consider using some of the other UI (user interface) elements covered in the previous examples. Consider the other adjustable paramters we've covered and how you might want to limit or enable control over them with the interface you present to the user. At its core, the theremin generates a simple sine wave—the purest form of sound with no harmonics (you can change that of course). Yet, through its motion-controlled pitch and volume, it transforms this basic tone into a uniquely expressive and dynamic musical instrument, allowing players to "sculpt" sound in real time. We might only be at the beginning of our algorithmic music journey, but we have already enough tools to make something interesting, what is required now is practice and lots of experimentation.
+        </p>
+      </div>
+    </section>
+
+    <section id="editor-3"></section>
 
     <section class="attribution">
       <div class="content">
@@ -192,27 +240,29 @@
 
       // code examples
       // --------------------------------------------
-      utils.createCodeEditor({
+      const ne1 = utils.createCodeEditor({
         ele: '#editor-1',
         title: 'raw audio data',
         fileprefix: 'sound-',
         total: 8
       })
 
-      utils.createCodeEditor({
+      const ne2 = utils.createCodeEditor({
         ele: '#editor-2',
         title: 'shaping waveforms',
         fileprefix: 'timbre-',
         template: [0, 0, 0, 0, 3, 3, 3, 3],
-        index: 7,
+        // index: 7,
         total: 8
       })
 
-      utils.createCodeEditor({
+      const ne3 = utils.createCodeEditor({
         ele: '#editor-3',
         fileprefix: 'theramin',
         template: 3
       })
+
+      window.editors = [ne1, ne2, ne3]
 
 
       // sine wave diagram
@@ -262,7 +312,7 @@
         background: 'var(--background-color)',
         color: 'var(--accent-color1)'
       })
-      wave.animate()
+
       const spec = createSpectrum({
         ele: '#timbre-spec',
         background: 'var(--background-color)',
@@ -270,11 +320,10 @@
         harmonics: true,
         range: [20, 7050]
       })
-      spec.animate()
 
       const osc = new Tone.Oscillator(440, "sine").toDestination()
-      osc.connect(wave.node)
-      osc.connect(spec.node)
+      osc.connect(wave)
+      osc.connect(spec)
 
       nn.create('button')
         .addTo('#timbre-ui')

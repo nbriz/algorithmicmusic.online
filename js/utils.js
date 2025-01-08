@@ -5,6 +5,8 @@ window.utils = {}
 // page initialization function
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 window.utils.init = function () {
+  if (document.querySelector('.loader')) window.utils.loader()
+
   // update any <span class="hotkey" data-key="C"></span> with platform hotkey
   nn.getAll('.hotkey').forEach(hk => {
     const key = nn.platformInfo().platform.includes('Mac') ? 'CMD' : 'CTRL'
@@ -14,6 +16,8 @@ window.utils.init = function () {
   // setup light/dark mode
   const colorMode = document.querySelector('.color-mode-switch')
   const currentTheme = window.localStorage.getItem('theme')
+
+  if (!colorMode) return // NOTE: for now, until i get color mode properly working
 
   const updateAllCustomElements = (theme) => {
     const amElements = document.querySelectorAll('am-button, am-switch, am-range')
@@ -25,16 +29,24 @@ window.utils.init = function () {
 
   const goDark = () => {
     document.body.classList.add('dark-mode')
-    if (typeof ne !== 'undefined') ne.theme = 'moz-dark'
-    if (typeof ne !== 'undefined') ne.background = false
+    if (window.editors instanceof Array) {
+      window.editors.forEach(e => {
+        e.ne.theme = 'moz-dark'
+        e.ne.background = false
+      })
+    }
     nn.get('main-menu').updateTheme('dark')
     updateAllCustomElements('dark')
   }
 
   const goLight = () => {
     document.body.classList.remove('dark-mode')
-    if (typeof ne !== 'undefined') ne.theme = 'moz-light'
-    if (typeof ne !== 'undefined') ne.background = false
+    if (window.editors instanceof Array) {
+      window.editors.forEach(e => {
+        e.ne.theme = 'moz-light'
+        e.ne.background = false
+      })
+    }
     nn.get('main-menu').updateTheme('light')
     updateAllCustomElements('light')
   }
@@ -60,6 +72,39 @@ window.utils.init = function () {
     } else {
       window.localStorage.setItem('theme', 'light')
     }
+  })
+}
+
+window.utils.loader = function () {
+  const svgWidth = 100 // SVG width in viewBox units
+  const svgHeight = 100 // SVG height in viewBox units
+  const amplitude = 20 // Wave amplitude
+  const frequency = 2 // Number of waves within the SVG width
+  const speed = 0.1 // Animation speed
+
+  const ele = document.querySelector('.loader')
+  const path = document.getElementById('loader-wave-path')
+  let offset = 0 // Offset for animation
+
+  function updateWave () {
+    let d = ''
+    for (let x = 0; x <= svgWidth; x++) {
+      const y = svgHeight / 2 + amplitude * Math.sin((x / svgWidth) * frequency * 2 * Math.PI + offset)
+      d += x === 0 ? `M ${x},${y}` : ` L ${x},${y}`
+    }
+    path.setAttribute('d', d) // Update the path
+    offset += speed // Increment the offset
+  }
+
+  const interval = setInterval(updateWave, 1000 / 60)
+
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      clearInterval(interval)
+      if (window.location.hash) window.location = window.location.hash
+      ele.style.opacity = 0
+      setTimeout(() => { ele.style.display = 'none' }, 1000)
+    }, 1000)
   })
 }
 
@@ -125,18 +170,6 @@ const codeTemplates = [
 </script>`
 ]
 
-// HACK: b/c of this issue: https://github.com/netizenorg/netitor/issues/27
-window.utils.updateLangauge = function (ne, v) {
-  ne._lang = v
-  ne._temp_code_str = ne.code
-  const curEditor = ne.cm.getWrapperElement()
-  if (curEditor instanceof window.HTMLElement) ne.ele.removeChild(curEditor)
-  ne.cm = null
-  ne._createEditor()
-  ne.code = ne._temp_code_str
-  delete ne._temp_code_str
-}
-
 window.utils.loadExample = async function ({ example, editor, template, info }) {
   codeTemplate = template || 0
   const ext = template ? 'js' : 'html'
@@ -145,8 +178,7 @@ window.utils.loadExample = async function ({ example, editor, template, info }) 
   editor.code = code
 
   if (template) {
-    // editor.language = 'javascript'
-    window.utils.updateLangauge(editor, 'javascript')
+    editor.language = 'javascript'
     editor.update(codeTemplates[codeTemplate])
   } else {
     editor.langauge = 'html'
@@ -285,7 +317,7 @@ window.utils.createCodeEditor = function (opts) {
     })
     title.innerHTML = `${opts.title} ${index} / ${total}`
     if (!nojump) window.location.hash = opts.ele
-    ne.update()
+    setTimeout(() => ne.update(), 200)
   }
 
   function next () {

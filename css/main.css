@@ -180,6 +180,10 @@ strong {
   color: var(--accent-color2);
 }
 
+code {
+  color: var(--accent-color3);
+}
+
 .table {
   display: grid;
   grid-template-columns: 1fr 3fr;
@@ -226,6 +230,35 @@ strong {
 .rwd {
   width: 100%;
 }
+
+/* page loader -------------------------------------------------------------- */
+
+
+.loader {
+  position: fixed;
+  z-index: 9999999;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--background-color);
+  transition: opacity 1s;
+}
+
+.loader svg {
+  width: 200px;
+  height: 200px;
+}
+
+.loader path {
+  fill: none;
+  stroke: var(--text-color);
+  stroke-width: 2;
+}
+
 
 
 /* netitor frame ------------------------------------------------------------ */
@@ -302,8 +335,8 @@ input:hover, select:hover, button:hover {
 }
 
 input.acive, select.active, button.active {
-  background: var(--accent-color);
-  border-color: var(--accent-color);
+  background: var(--accent-color1);
+  border-color: var(--accent-color1);
 }
 
 

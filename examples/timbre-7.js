@@ -1,25 +1,31 @@
 const wave = createWaveform()
-wave.animate()
 
 const spec = createSpectrum({
   range: [20, 7050]
 })
-spec.animate()
 
 const osc = new Tone.Oscillator()
 osc.frequency.value = 440
 osc.type = 'custom' // custom wave shape
 osc.partials = [1, 0.2, 0.01, 0.2, 1] // level for each harmonic
 osc.toDestination()
-osc.connect(wave.node)
-osc.connect(spec.node)
+osc.connect(wave)
+osc.connect(spec)
 
-function play () {
-  osc.start()
-  osc.stop('+0.5')
+// we've sapped the "play" function for a "toggle" function
+function toggle (e) {
+  const play = e.target.checked
+  if (play) osc.start()
+  else osc.stop()
 }
 
-nn.create('button')
-  .content('play tone')
+// we've also swapped the button for a checkbox
+nn.create('input')
   .addTo('body')
-  .on('click', play)
+  .set({ type: 'checkbox' })
+  .on('change', toggle)
+
+// and added a label for clarity
+nn.create('label')
+  .content(' toggle on/off')
+  .addTo('body')
