@@ -76,6 +76,7 @@ class MainMenu extends window.HTMLElement {
         #menu-options.active {
           visibility: visible;
           opacity: 1;
+          overflow: scroll;
         }
 
         #menu-options > * {

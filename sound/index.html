@@ -35,7 +35,7 @@
   <body>
 
     <main-menu>
-      <!-- <div slot="menu-items">
+      <div slot="menu-items">
         <div class="color-mode-wrap">
           <label class="color-mode-switch">
             <input type="checkbox">
@@ -43,7 +43,7 @@
           </label>
           <span class="color-mode-label">light/dark mode</span>
         </div>
-      </div> -->
+      </div>
     </main-menu>
 
     <div class="loader">
@@ -240,14 +240,14 @@
 
       // code examples
       // --------------------------------------------
-      const ne1 = utils.createCodeEditor({
+      utils.createCodeEditor({
         ele: '#editor-1',
         title: 'raw audio data',
         fileprefix: 'sound-',
         total: 8
       })
 
-      const ne2 = utils.createCodeEditor({
+      utils.createCodeEditor({
         ele: '#editor-2',
         title: 'shaping waveforms',
         fileprefix: 'timbre-',
@@ -256,13 +256,11 @@
         total: 8
       })
 
-      const ne3 = utils.createCodeEditor({
+      utils.createCodeEditor({
         ele: '#editor-3',
         fileprefix: 'theramin',
         template: 3
       })
-
-      window.editors = [ne1, ne2, ne3]
 
 
       // sine wave diagram

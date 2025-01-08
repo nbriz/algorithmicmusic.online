@@ -1,4 +1,4 @@
-/* global Netitor, Tone, ABCJS, nn, ne */
+/* global Netitor, Tone, ABCJS, nn */
 window.utils = {}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,9 +15,9 @@ window.utils.init = function () {
 
   // setup light/dark mode
   const colorMode = document.querySelector('.color-mode-switch')
-  const currentTheme = window.localStorage.getItem('theme')
+  const currentTheme = window.localStorage.getItem('theme') || 'light'
 
-  if (!colorMode) return // NOTE: for now, until i get color mode properly working
+  // if (!colorMode) return // NOTE: for now, until i get color mode properly working
 
   const updateAllCustomElements = (theme) => {
     const amElements = document.querySelectorAll('am-button, am-switch, am-range')
@@ -27,40 +27,24 @@ window.utils.init = function () {
     })
   }
 
+  const updateAllEditors = (theme) => {
+    if (window.editors instanceof Array) {
+      window.editors.forEach(e => window.utils.updateEditorTheme(e, theme))
+    }
+  }
+
   const goDark = () => {
     document.body.classList.add('dark-mode')
-    if (window.editors instanceof Array) {
-      window.editors.forEach(e => {
-        e.ne.theme = 'moz-dark'
-        e.ne.background = false
-      })
-    }
     nn.get('main-menu').updateTheme('dark')
+    updateAllEditors('dark')
     updateAllCustomElements('dark')
   }
 
   const goLight = () => {
     document.body.classList.remove('dark-mode')
-    if (window.editors instanceof Array) {
-      window.editors.forEach(e => {
-        e.ne.theme = 'moz-light'
-        e.ne.background = false
-      })
-    }
     nn.get('main-menu').updateTheme('light')
+    updateAllEditors('light')
     updateAllCustomElements('light')
-  }
-
-  if (!window.localStorage.getItem('theme')) {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    if (prefersDark) {
-      colorMode.querySelector('input').checked = true
-      window.localStorage.setItem('theme', 'dark')
-      goDark()
-    }
-  } else {
-    if (currentTheme === 'dark') goDark()
-    else goLight()
   }
 
   colorMode.querySelector('input').addEventListener('input', () => {
@@ -73,6 +57,20 @@ window.utils.init = function () {
       window.localStorage.setItem('theme', 'light')
     }
   })
+
+  if (!window.localStorage.getItem('theme')) {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    if (prefersDark) {
+      window.localStorage.setItem('theme', 'dark')
+      colorMode.querySelector('input').checked = true
+      goDark()
+    } else goLight()
+  } else {
+    if (currentTheme === 'dark') {
+      colorMode.querySelector('input').checked = true
+      goDark()
+    } else goLight()
+  }
 }
 
 window.utils.loader = function () {
@@ -101,7 +99,15 @@ window.utils.loader = function () {
   window.addEventListener('load', () => {
     setTimeout(() => {
       clearInterval(interval)
+      // scroll to correct spot based on URL
       if (window.location.hash) window.location = window.location.hash
+      else window.scrollTo(0, 0)
+      // update editors with theme after they've loaded
+      const theme = window.localStorage.getItem('theme') || 'light'
+      if (window.editors instanceof Array) {
+        window.editors.forEach(e => window.utils.updateEditorTheme(e, theme))
+      }
+      // fade loader out
       ele.style.opacity = 0
       setTimeout(() => { ele.style.display = 'none' }, 1000)
     }, 1000)
@@ -241,6 +247,22 @@ window.utils.setupCodeControls = function (c, ne) {
   })
 }
 
+window.utils.updateEditorTheme = function (e, theme) {
+  const src = {
+    'run code': '/images/run',
+    'copy code': '/images/copy',
+    'open code in netnet': '/images/open-out',
+    'download code': '/images/download'
+  }
+  e.ne.theme = theme === 'light' ? 'moz-light' : 'moz-dark'
+  e.ne.background = false
+  e.ele.querySelectorAll('.code-controls img').forEach(icon => {
+    let path = src[icon.getAttribute('alt')]
+    if (theme === 'dark') path += '-white'
+    icon.src = `${path}.svg`
+  })
+}
+
 window.utils.createCodeEditor = function (opts) {
   const ele = document.querySelector(opts.ele)
   const total = opts.total || 1
@@ -345,7 +367,11 @@ window.utils.createCodeEditor = function (opts) {
     prevBtn.addEventListener('click', prev)
   }
 
-  return { ne, update, next, prev }
+  const obj = { ne, ele, update, next, prev }
+  if (!window.editors) window.editors = []
+  window.editors.push(obj)
+
+  return obj
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
