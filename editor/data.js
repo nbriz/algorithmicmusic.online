@@ -52,6 +52,16 @@ window.data = {
         title: 'White Noise',
         path: 'web-audio/audio-buffers/ab1.js',
         template: 6
+      },
+      {
+        title: 'Brown Noise',
+        path: 'web-audio/audio-buffers/ab2.js',
+        template: 6
+      },
+      {
+        title: 'Sine Wave',
+        path: 'web-audio/audio-buffers/ab3.js',
+        template: 6
       }
     ]
   },
