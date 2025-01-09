@@ -31,7 +31,7 @@ const synth = new Tone.Synth({
   oscillator: { type: "square" }
 }).toDestination()
 
-synth.connect(spec.node)
+synth.connect(spec)
 
 nn.create('button')
   .content('play synth')

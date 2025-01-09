@@ -28,7 +28,7 @@ const synth = new Tone.Synth({
   oscillator: { type: "square" }
 }).toDestination()
 
-synth.connect(wave.node)
+synth.connect(wave)
 
 nn.create('button')
   .content('play synth')
@@ -107,7 +107,11 @@ function createWaveform (opts) {
   // const gainNode = audioCtx.createGain ? audioCtx.createGain() : audioCtx.createGainNode()
   // gainNode.gain.value = sensativity
   // gainNode.connect(waveNode)
-  const gainNode = new Tone.Gain(sensativity * 2)
+  // const gainNode = new Tone.Gain(sensativity * 2)
+  // gainNode.connect(fftNode)
+
+  const gainNode = audioCtx.createGain ? audioCtx.createGain() : audioCtx.createGainNode()
+  gainNode.gain.value = sensativity
   gainNode.connect(fftNode)
 
   const node = gainNode
