@@ -58,19 +58,24 @@ window.utils.init = function () {
     }
   })
 
-  if (!window.localStorage.getItem('theme')) {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    if (prefersDark) {
-      window.localStorage.setItem('theme', 'dark')
-      colorMode.querySelector('input').checked = true
-      goDark()
-    } else goLight()
-  } else {
-    if (currentTheme === 'dark') {
-      colorMode.querySelector('input').checked = true
-      goDark()
-    } else goLight()
-  }
+  // if (!window.localStorage.getItem('theme')) {
+  //   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+  //   if (prefersDark) {
+  //     window.localStorage.setItem('theme', 'dark')
+  //     colorMode.querySelector('input').checked = true
+  //     goDark()
+  //   } else goLight()
+  // } else {
+  //   if (currentTheme === 'dark') {
+  //     colorMode.querySelector('input').checked = true
+  //     goDark()
+  //   } else goLight()
+  // }
+
+  if (currentTheme === 'dark') {
+    colorMode.querySelector('input').checked = true
+    goDark()
+  } else goLight()
 }
 
 window.utils.loader = function () {

@@ -213,12 +213,31 @@
         titleSine.update({ width: nn.width * 0.45 })
       }
 
+      function setupIconColors () {
+        const src = {
+          'run code': '/images/run',
+          'copy code': '/images/copy',
+          'open code in netnet': '/images/open-out',
+          'download code': '/images/download'
+        }
+        let t = ''
+        if (window.localStorage.getItem('theme')  === 'dark') {
+          t = '-white'
+        }
+        console.log('T', t);
+        for (const alt in src) {
+          nn.get(`[alt="${alt}"]`).src = `${src[alt]}${t}.svg`
+        }
+      }
+
       nn.get('.randomize').on('click', moozak.randomize)
       nn.get('.play').on('click', moozak.toggle)
 
       nn.on('load', resize)
       nn.on('resize', resize)
 
+      nn.get('.color-mode-switch input').on('input', setupIconColors)
+      nn.on('load', setupIconColors)
 
     </script>
   </body>
