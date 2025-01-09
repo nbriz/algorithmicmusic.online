@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Algorithmic Music Online: Editor</title>
+    <meta name="author" content="Nick Briz">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- TODO: social media stuff -->
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+      #main {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      .code-controls {
+        margin-top: 0;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .code-example {
+        height: calc(100vh - 68px);
+        max-height: calc(100vh - 68px);
+      }
+
+      #demo-menu {
+        margin-right: 110px;
+      }
+      #demo-menu > * {
+        margin: 0 4px;
+      }
+
+      .CodeMirror .link {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+
+    <main-menu>
+      <div slot="menu-items">
+        <div class="color-mode-wrap">
+          <label class="color-mode-switch">
+            <input type="checkbox">
+            <span class="color-mode-slider"></span>
+          </label>
+          <span class="color-mode-label">light/dark mode</span>
+        </div>
+      </div>
+    </main-menu>
+
+    <div class="loader">
+      <svg id="loader-wave" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="" id="loader-wave-path"></path>
+      </svg>
+    </div>
+
+    <section id="main">
+      <nav>
+        <div class="code-controls">
+          <!-- SVG icons (slightly modified) by Meko https://thenounproject.com/creator/MekoDa/ -->
+          <img src="/images/run.svg" alt="run code">
+          <img src="/images/copy.svg" alt="copy code">
+          <img src="/images/open-out.svg" alt="open code in netnet">
+          <img src="/images/download.svg" alt="download code">
+          <label></label>
+        </div>
+        <div id="demo-menu"></div>
+      </nav>
+
+      <section class="code-example">
+        <div class="editor"></div>
+        <div class="render"></div>
+      </section>
+    </section>
+
+
+    <script src="/js/libs/nn.min.js"></script>
+    <script src="/js/libs/abcjs-basic-min.js"></script>
+    <script src="/js/libs/d3@7.js"></script>
+    <script src="/js/libs/Tone.js"></script>
+    <script src="/js/libs/netitor.min.js"></script>
+    <script src="/js/custom-elements/main-menu.js"></script>
+    <script src="/js/SVGSineWave.js"></script>
+    <script src="/js/utils.js"></script>
+    <script src="./data.js"></script>
+    <script>
+      utils.init()
+
+      const ele = document.querySelector('#main')
+      const ne = new Netitor({
+        ele: ele.querySelector('.editor'),
+        render: ele.querySelector('.render'),
+        autoUpdate: false,
+        renderWithErrors: true,
+        background: false,
+        theme: 'moz-light',
+        language: 'html',
+        wrap: true,
+        code: 'select an example from the menu'
+      })
+
+      // Function to find and mark Markdown links
+      function markMarkdownLinks(editor) {
+        // Get all lines in the editor
+        const doc = editor.getDoc();
+        const lineCount = doc.lineCount();
+
+        for (let i = 0; i < lineCount; i++) {
+          const line = doc.getLine(i); // Get line content
+          const regex = /\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g;
+          let match;
+
+          while ((match = regex.exec(line)) !== null) {
+            const start = match.index;
+            const end = start + match[0].length;
+            const linkText = match[1]; // Text inside []
+
+            // Mark the text inside `[]`
+            editor.getDoc().markText(
+              { line: i, ch: start },
+              { line: i, ch: end },
+              {
+                replacedWith: createLinkElement(linkText, match[2]),
+                clearOnEnter: true // Clear mark when editing the line
+              }
+            );
+          }
+        }
+      }
+
+      // Function to create a clickable link element
+      function createLinkElement(text, url) {
+        const link = document.createElement('a');
+        link.textContent = text;
+        link.href = url;
+        link.target = '_blank'; // Open in a new tab
+        // link.style.color = '#00f';
+        // link.style.textDecoration = 'underline';
+        return link;
+      }
+
+      async function loadExample ({ example, template }) {
+        codeTemplate = template || 0
+        const res = await window.fetch(example)
+        const code = await res.text()
+        ne.code = code
+        if (template) {
+          ne.language = 'javascript'
+          ne.update(codeTemplates[codeTemplate])
+        } else ne.langauge = 'html'
+      }
+
+      function loadSelection () {
+        const val1 = nn.get('#m1').value
+        const val2 = nn.get('#m2').value
+        const val3 = nn.get('#m3').value
+        const o = window.data[val1][val2].find(o => o.title === val3)
+        loadExample({
+          example: `/editor/demos/${o.path}`,
+          template: o.template
+        })
+        setTimeout(() => {
+          ne.update()
+          markMarkdownLinks(ne.cm)
+          window.location.hash = `#${val1}/${val2}/${val3}`
+        }, 200)
+      }
+
+      function createMenuOptions (sel, menuObj) {
+        if (menuObj instanceof Array) {
+          menuObj.forEach(item => {
+            const opt = nn.create('option').content(item.title).addTo(sel)
+          })
+        } else {
+          for (const item in menuObj) {
+            const opt = nn.create('option').content(item).addTo(sel)
+          }
+        }
+      }
+
+      function createMenu () {
+        const sel1 = nn.create('select').set('id', 'm1').addTo('#demo-menu')
+        for (const menu in window.data) {
+          const menuObj = window.data[menu]
+          nn.create('option').content(menu).addTo(sel1)
+        }
+        nn.create('span').content('/').addTo('#demo-menu')
+
+        const sel2 = nn.create('select').set('id', 'm2').addTo('#demo-menu')
+        const val1 = sel1.value
+        createMenuOptions(sel2, window.data[val1])
+        nn.create('span').content('/').addTo('#demo-menu')
+
+        const sel3 = nn.create('select').set('id', 'm3').addTo('#demo-menu')
+        const val2 = sel2.value
+        createMenuOptions(sel3, window.data[val1][val2])
+
+        sel1.on('input', (e) => {
+          const val1 = sel1.value
+          sel2.innerHTML = ''
+          createMenuOptions(sel2, window.data[val1])
+          const val2 = sel2.value
+          sel3.innerHTML = ''
+          createMenuOptions(sel3, window.data[val1][val2])
+          loadSelection()
+        })
+
+        sel2.on('input', (e) => {
+          const val2 = sel2.value
+          sel3.innerHTML = ''
+          createMenuOptions(sel3, window.data[val1][val2])
+          loadSelection()
+        })
+
+        sel3.on('input', (e) => {
+          loadSelection()
+        })
+      }
+
+      function loadFromUrl () {
+        if (!window.location.hash) return
+        const arr = window.location.hash.substr(1).replace(/%20/g, ' ').split('/')
+        if (arr.length !== 3) return
+        const o = window.data[arr[0]][arr[1]].find(o => o.title === arr[2])
+        loadExample({
+          example: `/editor/demos/${o.path}`,
+          template: o.template
+        })
+        setTimeout(() => {
+          ne.update()
+          markMarkdownLinks(ne.cm)
+        }, 200)
+      }
+
+      const ctrl = ele.querySelector('.code-controls')
+      window.utils.setupCodeControls(ctrl, ne)
+
+      const obj = { ne, ele }
+      if (!window.editors) window.editors = []
+      window.editors.push(obj)
+
+      nn.on('load', createMenu)
+      nn.on('load', loadFromUrl)
+
+    </script>
+  </body>
+</html>

@@ -13,12 +13,14 @@ const spec = createSpectrum({
   height: '200px',
   background: 'black',
   color: 'white',
-  manuallyCallAnimate: false,
-  binSize: 1024,
-  range: []
-  sensativity: 0.08, // higher, more sensative
+  range: [], // frequency range to display
   harmonics: true, // display harmonic overtone markers for 440 Hz
-  labels: true // display the "frequency" and "harmonics" labels
+  labels: true, // display the "frequency" and "harmonics" labels
+  audioCtx: ctx, // if u prefer to use a non Tone.js context
+  binSize: 1024, // fft bin size
+  sensativity: 0.08, // higher, more sensitive
+  manuallyCallAnimate: false
+
 })
 
 // use it like this
@@ -70,7 +72,7 @@ function createSpectrum (opts) {
   // kept mappting a 440 Hz tone as 880 Hz
   // after lots of debugging the only thing that seemed to work
   // was to replace it with the Web Audio API fft analyzers
-  const audioCtx = Tone.context
+  const audioCtx = opts.audioCtx || Tone.context
   const fftNode = audioCtx.createAnalyser()
   fftNode.fftSize = binSize
   fftNode.smoothingTimeConstant = 0.7

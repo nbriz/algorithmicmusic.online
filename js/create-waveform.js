@@ -13,10 +13,11 @@ const wave = createWaveform({
   height: '200px',
   background: 'black',
   color: 'white',
-  manuallyCallAnimate: false,
-  binSize: 1024,
-  sensativity: 0.08 // higher, more sensative
-  lineWidth: 2
+  lineWidth: 2,
+  audioCtx: ctx, // if u prefer to use a non Tone.js context
+  binSize: 1024, // fft bin size
+  sensativity: 0.08, // higher, more sensitive
+  manuallyCallAnimate: false
 })
 
 // use it like this
@@ -57,7 +58,14 @@ function createWaveform (opts) {
 
   const sensativity = opts.sensativity || 0.08
   const binSize = opts.binSize || 1024
-  const waveNode = new Tone.Waveform(binSize)
+
+  const audioCtx = opts.audioCtx || Tone.context
+  const fftNode = audioCtx.createAnalyser()
+  fftNode.fftSize = binSize
+  fftNode.smoothingTimeConstant = 0.7
+  // const frequencyData = new Uint8Array(fftNode.frequencyBinCount)
+  // const frequencyPerBin = audioCtx.sampleRate / binSize
+  let dataArray = new Float32Array(fftNode.fftSize)
 
   const svg = d3.select(ele)
   // const width = parseInt(svg.style('width'))
@@ -87,8 +95,9 @@ function createWaveform (opts) {
     .curve(d3.curveCatmullRom) // Smooth curve interpolation
 
   function animate () {
-    const vals = waveNode.getValue()
-    path.attr('d', line(vals))
+    // const vals = waveNode.getValue()
+    fftNode.getFloatTimeDomainData(dataArray)
+    path.attr('d', line(dataArray))
     window.requestAnimationFrame(animate)
   }
 
@@ -99,7 +108,7 @@ function createWaveform (opts) {
   // gainNode.gain.value = sensativity
   // gainNode.connect(waveNode)
   const gainNode = new Tone.Gain(sensativity * 2)
-  gainNode.connect(waveNode)
+  gainNode.connect(fftNode)
 
   const node = gainNode
   node.ele = ele

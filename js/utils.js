@@ -155,12 +155,13 @@ window.utils.formatText = function (element) {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 let codeTemplate = 0
 const codeTemplates = [
+// 0
   '',
-// 1
+// 1: vanilla
 `<script>
 {{code}}
 </script>`,
-// 2
+// 2: tone + nn
 `<body></body>
 <script src="https://unpkg.com/tone"></script>
 <script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
@@ -168,7 +169,7 @@ const codeTemplates = [
 /* global Tone, nn */
 {{code}}
 </script>`,
-// 3
+// 3: tone + nn + d3 + visual functions
 `<body></body>
 <script src="https://unpkg.com/tone"></script>
 <script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
@@ -177,6 +178,29 @@ const codeTemplates = [
 <script src="https://algorithmicmusic.online/js/create-waveform.js"></script>
 <script>
 /* global Tone, nn, d3, createWaveform, createSpectrum */
+{{code}}
+</script>`,
+// 4: tone
+`<body></body>
+<script src="https://unpkg.com/tone"></script>
+<script>
+/* global Tone */
+{{code}}
+</script>`,
+// 5: d3
+`<body></body>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script>
+/* global d3 */
+{{code}}
+</script>`,
+// 5: d3 + visual functions
+`<body></body>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://algorithmicmusic.online/js/create-spectrum.js"></script>
+<script src="https://algorithmicmusic.online/js/create-waveform.js"></script>
+<script>
+/* global d3, createWaveform, createSpectrum */
 {{code}}
 </script>`
 ]
