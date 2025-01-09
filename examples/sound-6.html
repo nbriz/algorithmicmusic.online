@@ -7,7 +7,6 @@ const rate =  ctx.sampleRate
 
 const buffer = ctx.createBuffer(ch, len, rate)
 
-const samples = buffer.getChannelData(0)
 const freq = 440 // frequency or pitch in Hz
 const scalar = (freq * 2 * Math.PI) / ctx.sampleRate
 // loop inside a loop, loop through each channel

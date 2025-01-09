@@ -198,7 +198,7 @@ const codeTemplates = [
 `<body></body>
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="https://algorithmicmusic.online/js/create-spectrum.js"></script>
-<script src="https://algorithmicmusic.online/js/create-waveform.js?updated=1"></script>
+<script src="https://algorithmicmusic.online/js/create-waveform.js?updated=3"></script>
 <script>
 /* global d3, createWaveform, createSpectrum */
 {{code}}

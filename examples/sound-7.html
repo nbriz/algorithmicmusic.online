@@ -6,7 +6,6 @@ function playTone (freq) {
   const len = 1 * ctx.sampleRate
   const rate =  ctx.sampleRate
   const buffer = ctx.createBuffer(ch, len, rate)
-  const samples = buffer.getChannelData(0)
   const scalar = (freq * 2 * Math.PI) / ctx.sampleRate
   for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
     const samples = buffer.getChannelData(ch)

@@ -94,6 +94,8 @@ class MainMenu extends window.HTMLElement {
           border-top: 1px solid var(--text-color);
           padding: 1em 2em 0 2em;
           margin-top: 1em;
+          flex-direction: column;
+          justify-content: space-between;
         }
 
         .inactive {
@@ -141,6 +143,9 @@ class MainMenu extends window.HTMLElement {
         <div class="smaller">
           <span>
             <a href="/assignments">assignments</a>
+          </span>
+          <span>
+            <a href="/editor">editor</a>
           </span>
         </div>
 

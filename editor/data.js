@@ -41,6 +41,18 @@ window.data = {
         path: 'web-audio/the-basics/wa7.js',
         template: 6
       }
+    ],
+    'Audio Buffers': [
+      {
+        title: 'Silence',
+        path: 'web-audio/audio-buffers/ab0.js',
+        template: 6
+      },
+      {
+        title: 'White Noise',
+        path: 'web-audio/audio-buffers/ab1.js',
+        template: 6
+      }
     ]
   },
   'Tone.js': {
