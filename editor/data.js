@@ -22,14 +22,24 @@ window.data = {
         template: 1
       },
       {
-        title: 'visualization (canvas)',
+        title: 'visualization: canvas',
         path: 'web-audio/the-basics/wa4.js',
         template: 1
       },
       {
-        title: 'visualization (svg with d3)',
+        title: 'visualization: svg with d3',
         path: 'web-audio/the-basics/wa5.js',
         template: 5
+      },
+      {
+        title: 'Audio Parameters',
+        path: 'web-audio/the-basics/wa6.js',
+        template: 6
+      },
+      {
+        title: 'ADSR',
+        path: 'web-audio/the-basics/wa7.js',
+        template: 6
       }
     ]
   },

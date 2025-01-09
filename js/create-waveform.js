@@ -56,7 +56,7 @@ function createWaveform (opts) {
   const stroke = opts.color || 'black'
   const lineWidth = opts.lineWidth || 2
 
-  const sensativity = opts.sensativity || 0.08
+  const sensativity = opts.sensativity || 0.5
   const binSize = opts.binSize || 1024
 
   const audioCtx = opts.audioCtx || Tone.context
