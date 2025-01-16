@@ -250,7 +250,39 @@ window.data = {
       {
         title: 'button',
         path: 'nn.min.js/ui/button.js',
-        template: 2
+        template: 3
+      },
+      {
+        title: 'input',
+        path: 'nn.min.js/ui/input.js',
+        template: 3
+      },
+      {
+        title: 'checkbox',
+        path: 'nn.min.js/ui/checkbox.js',
+        template: 3
+      },
+      {
+        title: 'range',
+        path: 'nn.min.js/ui/range.js',
+        template: 3
+      },
+      {
+        title: 'select',
+        path: 'nn.min.js/ui/select.js',
+        template: 3
+      }
+    ],
+    mouse: [
+      {
+        title: 'movement',
+        path: 'nn.min.js/mouse/movement.js',
+        template: 3
+      },
+      {
+        title: 'down up',
+        path: 'nn.min.js/mouse/down-up.js',
+        template: 3
       }
     ]
   }
