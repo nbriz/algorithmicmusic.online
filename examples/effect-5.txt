@@ -1,0 +1,1 @@
+The <code>.fan()</code> method is yet another way to connect nodes together. It's used to send the same audio signal to multiple destinations simultaneously, effectively "branching" the signal. It allows you to route a single signal to multiple nodes without having to manually connect each one.

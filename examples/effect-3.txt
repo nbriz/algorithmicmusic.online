@@ -1,0 +1,1 @@
+In addition to the "wet" property, effects have their own unique set of additional properties that will modify their behavior. The reverb only has one, <code>decay</code> which is the duration of the reverb effect. Other effects have even more properties eachof which modify some ascpect of the effect.

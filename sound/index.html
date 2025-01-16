@@ -140,6 +140,12 @@
         <p>
           In digital audio, we often describe four basic wave types, each with unique characteristics. Sine waves are pure tones, containing only the fundamental frequency with no harmonics, making them smooth and simple. Square waves are richer, combining the fundamental with only the odd-numbered harmonics (e.g., 3rd, 5th, 7th), giving them a buzzy, hollow sound. Saw waves are even more complex, containing the fundamental and all harmonics, which creates a bright, edgy sound often used in synth music. Triangle waves are similar to square waves but softer; they also include only odd harmonics, but the higher harmonics are much quieter, resulting in a more subdued, rounded tone. Each wave shape has a distinct frequency content, shaping its sound and timbre.
         </p>
+
+        <h4 class="formatted-text">a note on these visualizations</h4>
+
+        <p>
+          Visualizations like the waveform and spectrum analyzer above are created using an algorithm called <a href="https://en.wikipedia.org/wiki/Fast_Fourier_transform" target="_blank">the Fast Fourier Transform</a> or FFT for short. This algorithm has a very interesting history worth <a href="https://www.youtube.com/watch?v=nmgFG7PUHfo" target="_blank">learning more about</a>. I might also suggest you can check out Jack Schaedler's <a href="https://jackschaedler.github.io/circles-sines-signals/dft_introduction.html" target="_blank">interactive page on the Fourier Transform</a> for a more intuitive understanding of how adding/removing harmonics to a fundamental frequency changes the wave shape. The Web Audio API has a built-in implementation of the FFT algorithm in AnalyserNode which I <a href="/editor/#Web Audio API/the basics/Audio Analyser Node">explain here</a>, as well as how to use it to create rasterized visualizations <a href="/editor/#Web Audio API/the basics/visualization: canvas">with canvas</a> or vector based visualizations <a href="http://localhost/editor/#Web%20Audio%20API/the%20basics/visualization:%20svg%20with%20d3">with svg</a> using the d3 library. Tone.js also has it's higher level abstractions of this AnalyserNode including it's <a href="https://tonejs.github.io/docs/15.0.4/classes/FFT.html" target="_blank">FFT</a> class, it's <a href="https://tonejs.github.io/docs/15.0.4/classes/Waveform.html" target="_blank">Waveform</a> class and it's <a href="https://tonejs.github.io/docs/15.0.4/classes/Meter.html" target="_blank">Meter</a> class.
+        </p>
       </div>
     </section>
 

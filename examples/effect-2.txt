@@ -1,0 +1,1 @@
+All effects have a "wet" property, this is a value between 0-1 which dictates how much the effect should apply to the signal, 0 = none, 0.5 = equal parts original signal and effect, 1 = only the effect's output.

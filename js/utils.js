@@ -17,10 +17,8 @@ window.utils.init = function () {
   const colorMode = document.querySelector('.color-mode-switch')
   const currentTheme = window.localStorage.getItem('theme') || 'light'
 
-  // if (!colorMode) return // NOTE: for now, until i get color mode properly working
-
   const updateAllCustomElements = (theme) => {
-    const amElements = document.querySelectorAll('am-button, am-switch, am-range')
+    const amElements = document.querySelectorAll('am-button, am-switch, am-range, adsr-ui')
     amElements.forEach(ele => {
       if (ele && ele.updateTheme) ele.updateTheme(theme)
       else if (ele.setAttribute) ele.setAttribute('theme', theme)
@@ -172,7 +170,7 @@ const codeTemplates = [
 // 3: tone + nn + d3 + visual functions
 `<body></body>
 <script src="https://unpkg.com/tone"></script>
-<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js?v=1"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="https://algorithmicmusic.online/js/create-spectrum.js"></script>
 <script src="https://algorithmicmusic.online/js/create-waveform.js"></script>
@@ -373,7 +371,7 @@ window.utils.createCodeEditor = function (opts) {
 
   function next () {
     index++; if (index > total) index = 1
-    if (opts.template)template = opts.template[index - 1]
+    if (opts.template) template = opts.template[index - 1]
     update(index)
   }
 
@@ -529,6 +527,59 @@ window.utils.resizeABC = function (svg, newWidth) {
   // Update the width and height of the SVG
   svgElement.setAttribute('width', `${newWidth}px`)
   svgElement.setAttribute('height', `${newHeight}px`)
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// ~~~~ ADSR WIDGET + CODE EDITOR ~~~~~~~~
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+window.utils.creaeteADSRWidget = function (parent) {
+  const ele = nn.create('div')
+    .css({ display: 'flex' })
+    .set('class', 'adsr-widget-row')
+    .content(`<adsr-ui style="padding: 0"></adsr-ui>
+    <div class="editor" style="margin-top: 159px;"></div>`)
+    .addTo(parent)
+
+  function generateCode (a, d, s, r) {
+    return `const synth = new Tone.Synth({
+  oscillator: {
+    type: 'triangle'
+  },
+  envelope: {
+    attack: ${a},
+    decay: ${d},
+    sustain: ${s},
+    release: ${r}
+  }
+})`
+  }
+
+  const ne = new Netitor({
+    ele: ele.querySelector('.editor'),
+    autoUpdate: false,
+    background: false,
+    theme: 'moz-light',
+    language: 'javascript',
+    readOnly: true,
+    wrap: true,
+    code: generateCode(0.005, 0.1, 0.3, 1)
+  })
+
+  const obj = { ne, ele }
+  if (!window.editors) window.editors = []
+  window.editors.push(obj)
+
+  const adsr = ele.querySelector('adsr-ui')
+  adsr.onChange(v => {
+    const rnd = (n) => Math.round(n * 100) / 100
+    const a = rnd(v.attack)
+    const d = rnd(v.decay)
+    const s = rnd(v.sustain)
+    const r = rnd(v.release)
+    ne.code = generateCode(a, d, s, r)
+  })
+  return { ele, ne }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

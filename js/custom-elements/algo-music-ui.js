@@ -1,5 +1,5 @@
 // ...work in progress...
-
+// ...bairly in use...
 class AMCore extends window.HTMLElement {
   static get observedAttributes () {
     return ['theme']

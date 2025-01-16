@@ -74,6 +74,10 @@ a:hover, .link:hover {
   cursor: pointer;
 }
 
+a[href^="/editor/"] {
+  color: var(--accent-color4);
+}
+
 .hidden-link {
   color: var(--text-color);
   user-select: none;
@@ -155,14 +159,14 @@ hr {
 }
 
 blockquote {
-  border-left: 0.2em solid var(--accent-color4);
+  border-left: 0.2em solid var(--accent-color5);
   padding-left: 2em;
   margin-left: 2em;
 }
 
 blockquote p {
   font-style: italic;
-  color: var(--accent-color4);
+  color: var(--accent-color5);
 }
 
 cite::before {

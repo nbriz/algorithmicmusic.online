@@ -1,0 +1,1 @@
+Now instead of using our LFO to modulate the Oscillator's frequency (or pitch) we're using it to modulate the GainNode's gain value (or volume level) by connecting the LFO direclty to that instead. What we've done is essentially created a common "effect" known as a <a href="https://en.wikipedia.org/wiki/Tremolo" target="_blank">tremolo</a>.
