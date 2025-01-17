@@ -284,6 +284,28 @@ window.data = {
         path: 'nn.min.js/mouse/down-up.js',
         template: 3
       }
+    ],
+    keyboard: [
+      {
+        title: 'keydown event',
+        path: 'nn.min.js/keyboard/keydown.js',
+        template: 3
+      },
+      {
+        title: 'key event object',
+        path: 'nn.min.js/keyboard/event-obj.js',
+        template: 3
+      },
+      {
+        title: 'keyup event',
+        path: 'nn.min.js/keyboard/keyup.js',
+        template: 3
+      },
+      {
+        title: 'key map object',
+        path: 'nn.min.js/keyboard/key-map.js',
+        template: 3
+      }
     ]
   }
 }
