@@ -200,6 +200,16 @@ const codeTemplates = [
 <script>
 /* global d3, createWaveform, createSpectrum */
 {{code}}
+</script>`,
+// 7: nn + d3 + visual functions
+`<body></body>
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://algorithmicmusic.online/js/create-spectrum.js"></script>
+<script src="https://algorithmicmusic.online/js/create-waveform.js?updated=3"></script>
+<script>
+/* global nn, d3, createWaveform, createSpectrum */
+{{code}}
 </script>`
 ]
 

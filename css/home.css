@@ -28,3 +28,65 @@ main {
 #title-sheet-music {
   height: auto !important;
 }
+
+/* dot range/slider */
+
+:root {
+  --dot-size: 1.4vw;
+  --bar-height: 0.5vw;
+  --bar-width: 32vw;
+}
+
+input[type="range"] {
+  width: var(--bar-width);
+  appearance: none;
+  height: var(--bar-height);
+  /* background: var(--background-color); */
+  background: transparent;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  outline: none;
+  transition: border 0.3s ease;
+  padding: 0;
+}
+
+input[type="range"]:hover {
+  border: 1px solid var(--text-color);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: var(--dot-size);
+  height: var(--dot-size);
+  background: var(--text-color);
+  border-radius: 50%;
+  border: 1px solid var(--text-color);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: var(--dot-size);
+  height: var(--dot-size);
+  background: var(--text-color);
+  border-radius: 50%;
+  border: 1px solid var(--text-color);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover,
+input[type="range"]::-webkit-slider-thumb:active  {
+  background: var(--accent-color1);
+}
+
+
+input[type="range"]::-moz-range-track ,
+input[type="range"]::-ms-track {
+  /* background: var(--background-color); */
+  background: transparent;
+  height: var(--bar-height);
+  border: none;
+  color: transparent;
+}

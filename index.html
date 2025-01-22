@@ -41,7 +41,8 @@
         </div>
         <div>
           <div id="title-sheet-music" style="inline-block"></div>
-          <span>.online</span>
+          <span id="range-container"></span>
+          <span>&nbsp;online</span>
         </div>
       </div>
     </main>
@@ -191,6 +192,8 @@
 
       const moozak = window.utils.ranTitleMoozak()
 
+      const osc = new Tone.Oscillator().toDestination()
+
       const titleSine = new SVGSineWave({
         svg: '#phasor',
         circle: false,
@@ -211,6 +214,29 @@
       function resize () {
         window.utils.resizeABC('#title-sheet-music > svg', nn.width * 0.75)
         titleSine.update({ width: nn.width * 0.45 })
+      }
+
+      function setupSlider () {
+        nn.create('input')
+          .addTo('#range-container')
+          .set({ type: 'range', min: 1, max: 10, step: 0.1, value: 2 })
+          .css({ position: 'absolute', transform: 'translate(-1.9vw,1.9vw)' })
+          .on('mousedown', () => osc.start())
+          .on('mouseup', () => { osc.stop(); osc.volume.value = 0 })
+          .on('mousemove', (e) => {
+            const v = e.target.offsetTop - e.y
+            const b = nn.height - e.target.offsetTop
+            if (v >= 0) { osc.volume.value = 0 }
+            else {
+              osc.volume.value = nn.map(v, -b, 0, -100, 0)
+              titleSine.amplitude = nn.map(v, -b, 0, 0, 1)
+            }
+          })
+          .on('input', (e) => {
+            const v = Number(e.target.value)
+            titleSine.frequency = v
+            osc.frequency.value = nn.map(v, 1, 10, 220, 880)
+          })
       }
 
       function setupIconColors () {
@@ -234,6 +260,7 @@
       nn.get('.play').on('click', moozak.toggle)
 
       nn.on('load', resize)
+      nn.on('load', setupSlider)
       nn.on('resize', resize)
 
       nn.get('.color-mode-switch input').on('input', setupIconColors)
