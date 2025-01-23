@@ -254,6 +254,21 @@ window.data = {
         title: 'player (basic)',
         path: 'tone/sampling/player1.js',
         template: 3
+      },
+      {
+        title: 'player (timecodes)',
+        path: 'tone/sampling/player2.js',
+        template: 3
+      },
+      {
+        title: 'sampler (basic)',
+        path: 'tone/sampling/sampler1.js',
+        template: 3
+      },
+      {
+        title: 'sampler (pitch shifting)',
+        path: 'tone/sampling/sampler2.js',
+        template: 3
       }
     ]
   },

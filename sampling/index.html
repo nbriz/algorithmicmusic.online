@@ -397,7 +397,17 @@
             if (file) handleAudioFile(file)
           })
 
-        const canvas = nn.create('canvas').css({ 'margin-top': '10px' }).addTo(opts.ele)
+        const canvas = nn.create('canvas')
+          .addTo(opts.ele)
+          .on('mousedown', (e) => {
+            const x = `${e.x}px` // NOTE: assumes canvas screenLeft
+            const y  = `${canvas.offsetTop}px`
+            loopStart.css({ left: x, top: y })
+            let w = loopEnd.x - e.x
+            w = w >= 0 ? `${w}px` : '0px'
+            loopArea.css({ left: x, top: y, width: w })
+            loopEnd.dataset.down = 'true'
+          })
         canvas.width = nn.width
         canvas.height = nn.height / 4
         const ctx = canvas.getContext('2d')
@@ -424,7 +434,6 @@
           .set('class', 'loop-marker')
           .addTo(opts.ele)
           .on('mousedown', () => { loopStart.dataset.down = 'true' })
-          .on('mouseup', () => { loopStart.dataset.down = 'false' })
 
         const loopEnd = nn.create('div')
           .css({
@@ -436,7 +445,11 @@
           .set('class', 'loop-marker')
           .addTo(opts.ele)
           .on('mousedown', () => { loopEnd.dataset.down = 'true' })
-          .on('mouseup', () => { loopEnd.dataset.down = 'false' })
+
+        nn.on('mouseup', () => {
+          loopStart.dataset.down = 'false'
+          loopEnd.dataset.down = 'false'
+        })
 
         nn.on('mousemove', (e) => {
           if (loopStart.dataset.down !== 'true' && loopEnd.dataset.down !== 'true') return
@@ -458,7 +471,7 @@
           const duration = audioBuffer.duration
           loopInTime = (loopStart.x / canvas.width) * duration
           loopOutTime = (loopEnd.x / canvas.width) * duration
-          timecode.content(`start: ${loopInTime}, end: ${loopOutTime}, duration: ${loopOutTime - loopInTime}`)
+          timecode.content(`offset: ${loopInTime}, duration: ${loopOutTime - loopInTime}`)
           if (player) {
             player.loopStart = loopInTime
             player.loopEnd = loopOutTime
@@ -476,6 +489,7 @@
           }).addTo(opts.ele)
 
         const timecode = nn.create('code')
+          .css({ 'margin-top': '30px' })
           .addTo(opts.ele)
 
         nn.create('style').addTo('head').innerHTML = `
