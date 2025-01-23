@@ -77,6 +77,11 @@ window.data = {
         title: 'Custom Wave',
         path: 'web-audio/audio-buffers/ab5.js',
         template: 6
+      },
+      {
+        title: 'From File',
+        path: 'web-audio/audio-buffers/from-file.js',
+        template: 7
       }
     ]
   },
@@ -241,6 +246,13 @@ window.data = {
       {
         title: 'Tremolo (from scratch)',
         path: 'tone/effects/tremolo-from-scratch.js',
+        template: 3
+      }
+    ],
+    Sampling: [
+      {
+        title: 'player (basic)',
+        path: 'tone/sampling/player1.js',
         template: 3
       }
     ]

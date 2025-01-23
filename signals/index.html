@@ -50,7 +50,7 @@
         <h2 class="formatted-text ch-title">signals</h2>
 
         <p>
-          In the last lesson we discussed what sound is (vibrations in the air) and how to create sounds digitally by telling our speakers how to vibrate. At the lowest level, these instructions could be written as a list of values, one list per speaker or <strong>channel</strong>. These values indicate the position of a speaker at a given point in time, they  range from -1 (speaker pulled all the way back) to 1 (speaker pushed all the way front). The length of this list is determined by the length of the sound we want to generate (in seconds) multiplied by the <strong>sample rate</strong> or the number of individual values per second (typically 44,000 values or <strong>samples</strong> per second). We can generate these raw values by create a sound <strong>buffer</strong> from scratch. In the last lesson we did this using the Web Audio API (more example available here in the editor here), but seeing as we will likely be using the Tone.js library (which abstracts and extends the Web Audio API) in most our projects, you can find an example of how we'd do that with Tone.js in the editor: <a href="/editor/#Tone.js/Buffers/Raw%20Buffer" target="_blank">Tone.js &gt; Buffers &gt; Raw Buffer</a>
+          In the last lesson we discussed what sound is (vibrations in the air) and how to create sounds digitally by telling our speakers how to vibrate. At the lowest level, these instructions could be written as a list of values, one list per speaker or <strong>channel</strong>. These values indicate the position of a speaker at a given point in time, they  range from -1 (speaker pulled all the way back) to 1 (speaker pushed all the way front). The length of this list is determined by the length of the sound we want to generate (in seconds) multiplied by the <strong>sample rate</strong> or the number of individual values per second (typically 44,100 values or <strong>samples</strong> per second). We can generate these raw values by create a sound <strong>buffer</strong> from scratch. In the last lesson we did this using the Web Audio API (more example available here in the editor here), but seeing as we will likely be using the Tone.js library (which abstracts and extends the Web Audio API) in most our projects, you can find an example of how we'd do that with Tone.js in the editor: <a href="/editor/#Tone.js/Buffers/Raw%20Buffer" target="_blank">Tone.js &gt; Buffers &gt; Raw Buffer</a>
         </p>
         <p>
           With this low level access there is no audible sound we can't synthesize. However, while working at this low level allows for all sorts of algorithmic experimentation, if what we want to do is create a simple tone, a sound wave defined by predictable periodic vibrations (perceived as a consistent pitch to our ears) then it's much easier to use one of Tone.js's built in Oscillators than create it ourselves from scratch.
@@ -181,6 +181,7 @@
     <script src="/js/synth-presets.js"></script>
     <script src="/js/effect-presets.js"></script>
     <!-- <script src="/js/create-spectrum.js"></script> -->
+    <script src="/js/code-templates.js"></script>
     <script src="/js/utils.js"></script>
     <script>
       utils.init()
