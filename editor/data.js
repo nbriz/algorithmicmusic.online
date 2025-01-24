@@ -86,6 +86,18 @@ window.data = {
     ]
   },
   'Tone.js': {
+    Buffers: [
+      {
+        title: 'algorithmically generated',
+        path: 'tone/buffers/raw-buffer.js',
+        template: 3
+      },
+      {
+        title: 'loaded from file',
+        path: 'tone/buffers/file-buffer.js',
+        template: 3
+      }
+    ],
     Oscillators: [
       {
         title: 'Basic Oscillator',
@@ -160,10 +172,25 @@ window.data = {
         template: 3
       }
     ],
-    Buffers: [
+    Sampling: [
       {
-        title: 'Raw Buffer',
-        path: 'tone/buffers/raw-buffer.js',
+        title: 'player (basic)',
+        path: 'tone/sampling/player1.js',
+        template: 3
+      },
+      {
+        title: 'player (timecodes)',
+        path: 'tone/sampling/player2.js',
+        template: 3
+      },
+      {
+        title: 'sampler (basic)',
+        path: 'tone/sampling/sampler1.js',
+        template: 3
+      },
+      {
+        title: 'sampler (pitch shifting)',
+        path: 'tone/sampling/sampler2.js',
         template: 3
       }
     ],
@@ -248,32 +275,10 @@ window.data = {
         path: 'tone/effects/tremolo-from-scratch.js',
         template: 3
       }
-    ],
-    Sampling: [
-      {
-        title: 'player (basic)',
-        path: 'tone/sampling/player1.js',
-        template: 3
-      },
-      {
-        title: 'player (timecodes)',
-        path: 'tone/sampling/player2.js',
-        template: 3
-      },
-      {
-        title: 'sampler (basic)',
-        path: 'tone/sampling/sampler1.js',
-        template: 3
-      },
-      {
-        title: 'sampler (pitch shifting)',
-        path: 'tone/sampling/sampler2.js',
-        template: 3
-      }
     ]
   },
   'nn.min.js': {
-    'basic user interface (ui)': [
+    'GUI (graphical user interface)': [
       {
         title: 'button',
         path: 'nn.min.js/ui/button.js',
@@ -297,6 +302,11 @@ window.data = {
       {
         title: 'select',
         path: 'nn.min.js/ui/select.js',
+        template: 3
+      },
+      {
+        title: 'upload file',
+        path: 'tone/buffers/file-buffer.js',
         template: 3
       }
     ],

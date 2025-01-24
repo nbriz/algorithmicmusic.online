@@ -32,7 +32,7 @@
     <main class="title-screen">
       <div class="formatted-text">
         <div>
-          <span>https://</span>
+          <span><span id="the-h">h</span>ttp<span id="the-s">s</span>://</span>
           <svg id="phasor"></svg>
         </div>
         <div>
@@ -192,6 +192,8 @@
     <script>
 
       const moozak = window.utils.ranTitleMoozak()
+      let lockToScale = false
+      let autoReset = false
 
       const osc = new Tone.Oscillator().toDestination()
 
@@ -218,10 +220,11 @@
       }
 
       function setupSlider () {
-        nn.create('input')
+        const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5']
+        const slider = nn.create('input')
           .addTo('#range-container')
           .set({ type: 'range', min: 1, max: 10, step: 0.1, value: 2 })
-          .css({ position: 'absolute', transform: 'translate(-1.9vw,1.9vw)' })
+          .css({ position: 'absolute', transform: 'translate(-1.9vw, 2.3vw)' })
           .on('mousedown', () => osc.start())
           .on('mouseup', () => { osc.stop(); osc.volume.value = 0 })
           .on('mousemove', (e) => {
@@ -235,8 +238,16 @@
           })
           .on('input', (e) => {
             const v = Number(e.target.value)
-            titleSine.frequency = v
-            osc.frequency.value = nn.map(v, 1, 10, 220, 880)
+            if (lockToScale) {
+              slider.set({ min: 0, max: notes.length - 1, step: 1 })
+              titleSine.frequency = nn.map(v, 0, notes.length - 1, 1, 10)
+              osc.frequency.value = notes[v]
+              console.log(notes[v]);
+            } else {
+              slider.set({ min: 1, max: 10, step: 0.1 })
+              titleSine.frequency = v
+              osc.frequency.value = nn.map(v, 1, 10, 220, 880)
+            }
           })
       }
 
@@ -259,6 +270,17 @@
 
       nn.get('.randomize').on('click', moozak.randomize)
       nn.get('.play').on('click', moozak.toggle)
+      nn.on('keydown', (e) => {
+        if (e.key === 'h') {
+          // autoReset = !autoReset
+          // if (lockToScale) nn.get('#the-h').css({ color: 'var(--accent-color1)'})
+          // else nn.get('#the-h').css({ color: 'var(--text-color1)'})
+        } else if (e.key === 's') {
+          lockToScale = !lockToScale
+          if (lockToScale) nn.get('#the-s').css({ color: 'var(--accent-color1)'})
+          else nn.get('#the-s').css({ color: 'var(--text-color1)'})
+        }
+      })
 
       nn.on('load', resize)
       nn.on('load', setupSlider)
@@ -266,7 +288,6 @@
 
       nn.get('.color-mode-switch input').on('input', setupIconColors)
       nn.on('load', setupIconColors)
-
     </script>
   </body>
 </html>

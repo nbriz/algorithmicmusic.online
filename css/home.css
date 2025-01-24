@@ -33,7 +33,7 @@ main {
 
 :root {
   --dot-size: 1.4vw;
-  --bar-height: 0.5vw;
+  --bar-height: 1px;
   --bar-width: 32vw;
 }
 

@@ -536,7 +536,47 @@ window.utils.creaeteADSRWidget = function (parent) {
 // function for title screen music ~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 window.utils.ranTitleMoozak = function () {
-  const synth = new Tone.PolySynth().toDestination()
+  const bass = new Tone.AMSynth({
+    harmonicity: 2,
+    oscillator: {
+      type: 'amsine2',
+      modulationType: 'sine',
+      harmonicity: 1.01
+    },
+    envelope: {
+      attack: 0.006,
+      decay: 4,
+      sustain: 0.04,
+      release: 1.2
+    },
+    modulation: {
+      volume: 13,
+      type: 'amsine2',
+      modulationType: 'sine',
+      harmonicity: 12
+    },
+    modulationEnvelope: {
+      attack: 0.006,
+      decay: 0.2,
+      sustain: 0.2,
+      release: 0.4
+    }
+  }).toDestination()
+
+  const synth = new Tone.Synth({
+    oscillator: {
+      type: 'fatcustom',
+      partials: [0.2, 1, 0, 0.5, 0.1],
+      spread: 40,
+      count: 3
+    },
+    envelope: {
+      attack: 0.001,
+      decay: 1.6,
+      sustain: 0,
+      release: 1.6
+    }
+  }).toDestination()
   const state = {
     step: 0,
     bpm: 120,
@@ -555,7 +595,7 @@ window.utils.ranTitleMoozak = function () {
 
   function createSequence () {
     const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B', null]
-    const lens = ['2n', '4n', '8n', '16n', ]
+    const lens = ['2n', '4n', '8n', '16n']
     for (let i = 0; i < 8; i++) {
       const obj = {}
       obj.note = nn.random(notes)
@@ -570,6 +610,7 @@ window.utils.ranTitleMoozak = function () {
   }
 
   function randomize () {
+    reset()
     let momentPause = false
     state.sequence = [] // clear the last sequence
     if (Tone.Transport.state === 'started') {
@@ -582,27 +623,34 @@ window.utils.ranTitleMoozak = function () {
     Tone.Transport.bpm.value = nn.randomInt(120, 140)
   }
 
+  function reset () {
+    state.step = 0
+    // stop scheduler playback
+    Tone.Transport.stop()
+    // clear any highlighted notes
+    setTimeout(() => {
+      document.querySelectorAll('g[data-index]').forEach(g => {
+        if (g.getAttribute('fill') === clrs.selected) {
+          g.setAttribute('fill', clrs.main)
+        }
+      })
+    }, 600)
+  }
+
   function play (time) {
     const index = state.step % state.sequence.length
     const obj = state.sequence[index]
     if (obj.note !== null) {
       synth.triggerAttackRelease(obj.note, obj.len, time)
+      if (index === 0 || index === 4) {
+        const s = obj.note.split('')
+        const n = s[0] + (Number(s[s.length - 1]) - 1)
+        bass.triggerAttackRelease(n, '1n', time)
+      }
     }
     window.utils.highlightABCNote(state.sequence, index, clrs)
     state.step++
-    if (state.step >= state.sequence.length) {
-      state.step = 0
-      // stop scheduler playback
-      Tone.Transport.stop()
-      // clear any highlighted notes
-      setTimeout(() => {
-        document.querySelectorAll('g[data-index]').forEach(g => {
-          if (g.getAttribute('fill') === clrs.selected) {
-            g.setAttribute('fill', clrs.main)
-          }
-        })
-      }, 600)
-    }
+    if (state.step >= state.sequence.length) state.step = 0
   }
 
   Tone.Transport.bpm.value = state.bpm
@@ -611,5 +659,5 @@ window.utils.ranTitleMoozak = function () {
 
   createSequence()
 
-  return { toggle, play, state, randomize }
+  return { toggle, play, state, randomize, reset }
 }
