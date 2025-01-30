@@ -343,6 +343,30 @@ window.data = {
         path: 'nn.min.js/keyboard/key-map.js',
         template: 3
       }
+    ],
+    MIDI: [
+      {
+        title: 'MIDI data',
+        path: 'nn.min.js/midi/data.js',
+        template: 3
+      },
+      {
+        title: 'Controlling Effects',
+        path: 'nn.min.js/midi/effects.js',
+        template: 3
+      }
+    ],
+    camera: [
+      {
+        title: 'accessing stream',
+        path: 'nn.min.js/camera/basic.js',
+        template: 3
+      },
+      {
+        title: 'pose detection (AI)',
+        path: 'nn.min.js/camera/ai.js',
+        template: 8
+      }
     ]
   }
 }
