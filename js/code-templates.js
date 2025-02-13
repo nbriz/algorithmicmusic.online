@@ -76,7 +76,7 @@ window.codeTemplates = [
 `<body></body>
 <script src="https://unpkg.com/tone"></script>
 <script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js?v=1"></script>
-<script src="http://localhost/js/create-piano.js"></script>
+<script src="https://algorithmicmusic.online/js/create-piano.js"></script>
 <script>
 /* global Tone, nn, createPianoUI */
 {{code}}
@@ -88,7 +88,7 @@ window.codeTemplates = [
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="https://algorithmicmusic.online/js/create-spectrum.js"></script>
 <script src="https://algorithmicmusic.online/js/create-waveform.js"></script>
-<script src="http://localhost/js/create-piano.js"></script>
+<script src="https://algorithmicmusic.online/js/create-piano.js"></script>
 <script>
 /* global Tone, nn, d3, createWaveform, createSpectrum, createPianoUI */
 {{code}}
