@@ -1,0 +1,1 @@
+This example introduces a function called <code>deriveChords</code> which takes two arguments, first is a scale, an array of note values (written as strings, for example "C4") and the second argument is a chord shape, or the "degree" (ie index + 1) of the notes we want to pull from that scale.

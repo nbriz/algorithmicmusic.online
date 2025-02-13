@@ -5,6 +5,7 @@
     <meta name="author" content="Nick Briz">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
     <!-- TODO: social media stuff -->
     <link rel="stylesheet" href="/css/main.css">
     <style>
@@ -132,7 +133,7 @@
           This mix of frequencies creates a sound’s <strong>timbre</strong>, the unique quality or texture that makes a guitar and a piano playing the same note sound different. While they share the same fundamental frequency, their overtones are emphasized differently, giving each instrument its distinctive "color." Overtones are what make musical tones rich and varied, compared to the pure simplicity of a sine wave.
         </p>
 
-        <div id="timbre-ui" style="transform: translateY(3em);"></div>
+        <div id="timbre-ui" style="transform: translateY(3em); display: flex; align-items: center;"></div>
         <svg id="timbre-wave"></svg>
         <p class="small-note" style="margin-top: -4em; text-align: left;"><span style="font-weight:bold;">above</span>: waveform (shape of vibration) | <span style="font-weight:bold;">below</span>: spectrum analyzer (fundamental frequency and harmonics)</p>
         <svg id="timbre-spec"></svg>
@@ -323,6 +324,7 @@
         background: 'var(--background-color)',
         color: 'var(--accent-color1)',
         harmonics: true,
+        binSize: 1024 * 2,
         range: [20, 7050]
       })
 
@@ -369,6 +371,18 @@
           const part = vals !== '' && vals > 0 ? type + vals : type
           osc.type = part
           console.log(osc.type);
+        })
+
+      nn.create('span')
+        .content('&nbsp;&nbsp;&nbsp;volume: ')
+        .addTo('#timbre-ui')
+
+      nn.create('am-range')
+        .set({ value: 0, min: -100, max: 0, step: 1 })
+        // .css({ width: '6em' })
+        .addTo('#timbre-ui')
+        .on('input', (e) => {
+          osc.volume.value = Number(e.target.value)
         })
 
 

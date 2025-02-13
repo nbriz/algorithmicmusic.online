@@ -91,7 +91,7 @@ function createSpectrum (opts) {
 
   const xAxis = d3.axisBottom(xRange)
     .tickSize(3)
-    .tickValues([440, 440 * 4, 440 * 8, 440 * 16, 440 * 32])
+    .tickValues([440, 440 * 2, 440 * 4, 440 * 8, 440 * 16, 440 * 32])
     .tickFormat(d3.format(',.0f'))
 
   const yAxis = d3.axisLeft(yRange)

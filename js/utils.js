@@ -1,4 +1,4 @@
-/* global Netitor, Tone, ABCJS, nn */
+/* global Netitor, Tone, ABCJS, nn, codeTemplates */
 window.utils = {}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -151,21 +151,22 @@ window.utils.formatText = function (element) {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // code example / netitor utils
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-let codeTemplate = 0
+// let codeTemplate = 0
 
 window.utils.loadExample = async function ({ example, editor, template, info }) {
-  codeTemplate = template || 0
+  const ct = template || 0
   const ext = template ? 'js' : 'html'
-  const res = await window.fetch(`/examples/${example}.${ext}`)
-  const code = await res.text()
-  editor.code = code
 
   if (template) {
     editor.language = 'javascript'
-    editor.update(codeTemplates[codeTemplate])
+    editor.update(codeTemplates[ct])
   } else {
     editor.langauge = 'html'
   }
+
+  const res = await window.fetch(`/examples/${example}.${ext}`)
+  const code = await res.text()
+  editor.code = code
 
   if (info) {
     try {
@@ -191,8 +192,8 @@ window.utils.setupCodeControls = function (c, ne) {
 
   const getCode = () => {
     let code = ne.code
-    if (codeTemplate > 0) {
-      code = codeTemplates[codeTemplate]
+    if (ne.__codeTemplate > 0) {
+      code = codeTemplates[ne.__codeTemplate]
       code = code.replace('{{code}}', ne.code)
     }
     return code
@@ -303,6 +304,8 @@ window.utils.createCodeEditor = function (opts) {
     wrap: true
   })
 
+  ne.__codeTemplate = template
+
   const title = ele.querySelector('.code-title')
   const nextBtn = ele.querySelector('.code-info .next')
   const prevBtn = ele.querySelector('.code-info .prev')
@@ -321,13 +324,19 @@ window.utils.createCodeEditor = function (opts) {
 
   function next () {
     index++; if (index > total) index = 1
-    if (opts.template) template = opts.template[index - 1]
+    if (opts.template) {
+      template = opts.template[index - 1]
+      ne.__codeTemplate = template
+    }
     update(index)
   }
 
   function prev () {
     index--; if (index < 1) index = total
-    if (opts.template) template = opts.template[index - 1]
+    if (opts.template) {
+      template = opts.template[index - 1]
+      ne.__codeTemplate = template
+    }
     update(index)
   }
 

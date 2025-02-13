@@ -131,7 +131,7 @@ class MainMenu extends window.HTMLElement {
           <a href="/sampling">audio sampling</a>
         </span>
         <span>
-          <a class="inactive">chords and scales</a>
+          <a href="/scales">chords and scales</a>
         </span>
         <span>
           <a class="inactive">rythm and melody</a>
