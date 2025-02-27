@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Algorithmic Music Online: Coldplay</title>
+    <meta name="author" content="Nick Briz">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <!-- TODO: social media stuff -->
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+
+      am-range, am-button {
+        display: block;
+        width: 50%;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <main-menu>
+      <div slot="menu-items">
+        <div class="color-mode-wrap">
+          <label class="color-mode-switch">
+            <input type="checkbox">
+            <span class="color-mode-slider"></span>
+          </label>
+          <span class="color-mode-label">light/dark mode</span>
+        </div>
+      </div>
+    </main-menu>
+
+    <div class="loader">
+      <svg id="loader-wave" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="" id="loader-wave-path"></path>
+      </svg>
+    </div>
+
+    <section>
+      <div class="content">
+        <h4 class="ch">a case study</h4>
+        <h2 class="formatted-text ch-title" style="margin: 0">algorithmic composition</h2>
+        <h4 class="formatted-text ch-title" style="border-top: 1px solid var(--text-color); padding: 1em;">the coldplay song generator</h4>
+
+        <br><br>
+
+        <blockquote>
+          <p>[the Analytical Engine] might act upon other things besides number, were objects found whose mutual fundamental relations could be expressed by those of the abstract science of operations, and which should be also susceptible of adaptations to the action of the operating notation and mechanism of the engine . . . supposing, for instance, that the fundamental relations of pitched sounds in the science of harmony and of musical composition were susceptible of such expression and adaptations, the engine might compose elaborate and scientific pieces of music of any degree of complexity or extent.</p>
+          <cite><a href="https://en.wikipedia.org/wiki/Ada_Lovelace" target="_blank">Ada Lovelace</a> (sketch of the Analytical Engine) 1842</cite>
+        </blockquote>
+
+        <br><br>
+
+        <p>
+          A while back I got into an argument with my younger brother over the band coldplay. I was arguing that the band was very "formulaic", my brother disagreed. To prove him wrong, I decided to create an algorithm. I broke down what I felt were common patterns in coldplay tracks and created an app that could generate an infinite number of new tracks in the style of coldplay called the coldplay song generator. I originally wrote this in a programming environment called Max/MSP and later rewrote it using it's open source alternative, Puredata. Here I'll discuss how we might recreate this algorithm for the browser using the Web Audio API and Tone.js by making references to various concepts and techniques we've covered so far.
+        </p>
+
+        <p>
+         We'll start with this <a href="https://netnet.studio/?layout=dock-left#code/eJy9lMFu2zAMhu96CqIXO0VitdutSNpDkGEBtuzQ9AFkSbHVypIhyUm9oe8+Sk4zI9swIIcZhmzwJ6mPpK15aUV/P6fpQeaeO9UG8I4vruoQWn9HaWfal6rgtqHBGnmFzoPXX9y5MMWzF1KrvSuMDLSqKT7Ud2msq+Ir3jMfmBHMiZlWpWOup2WntKDGFI2K8Q/7xe0ftron9BoqbUumwZgpbJEIrikhlMKnp81yu/62eYTisosAxDxBIUIFci9N8JfkSjRPa1h9WX1dbbYX8hDCrfEByi5g35ePj7CAH4hYWieku4Pstn0Fb7USUGrGX7Ipii0TAuFR/XCD8kdckr1Eh8rZzgiUgmPGt8xhfUlsmKuUiRnf3XnnvI17tFaZIF1G3gjZdYYHZc2R6LPdSwe5nCSqMSuCyiJgUhlOSnJO9r6VsFgsIGts52W0ZxEwRRY+9FoWv2gxJEU+QDYUCWf856HcautGUYdaBZmihngsBKc8MOEamDIJDD887iQLMs+8TGVmE/QssJ9bm2fx9xgM3Ps8FgwglG816zH1TsuhbwDPnQ9q1y8xNeKhxmVq4KAyrSqzDrLx50prvYq7xmzqVYqj+aBEqNNkbvaHo62WqqrD0VjHDrxNCBkVMDTkiDuA5Bk2Rswi77iuUwdOpZ2+tmSxJh+NaTqe/Jnehd/lfzLhHIVt8GT4j0ynI+UnPKCAoA==" target="_blank">TEMPLATE</a>, the UI contains two buttons, one to toggle the playback and another to generate a new random coldplay track. The rest of the code will be our javascript logic. There have been many algorithms written that aim to identify patterns within a body of music and the identified patterns to create new music in that "style" (one of my favorites is EMI, <a href="https://www.radiolab.org/podcast/91515-musical-dna" target="_blank">Experiments in Musical Intelligence</a> by David Cope) that's not what we're going to do. We're going to deduce Coldplay's formula ourselves and create a custom algorithm based on the patterns we ourselves observe in Coldplay's style. This will inevitably produce a "less accurate" representation of the band's style, but failing to "copy" perfectly is one way to create something new. With that in mind, consider this case study a way of exploring other algorithmic musical routes you might take, interesting detours that might lead to your own novel algorithmic compositions.
+        </p>
+
+        <br><br><br>
+
+        <h4>instrument: our sound source</h4>
+
+        <p>
+           First, we need to choose our sound source. Coldplay often times centers their music around a piano, so let's borrow the sampler instance from the <a href="/editor/#Tone.js/Sampling/sampler%20(pitch%20shifting)" target="_blank">piano sampler example</a>. We don't need the keymap or the attack/release functions (those are for creating a piano/keyboard instrument) we just want the instance of the sampler to use as our sound source.
+        </p>
+
+        <div id="sampler"></div>
+
+        <p>
+          To test that your sampler is working try the adding the code below to your sketch. Note: it may take a few seconds for your player to load all those samples, you may need to wait a second or two before the pushing the "cold-play" (toggle) button will play the chord below.
+        </p>
+
+        <div id="simple-play"></div>
+
+        <p>
+          If you go back to listen to the original <a href="https://www.youtube.com/watch?v=g6zbo3YtAhg" target="_blank">Clocks</a> song, you may notice that there's a bit of reverb on the piano, using what we learned from the <a href="/signals" target="_blank">Signal Processing</a> notes, we can create a reverb processing node connected to our destination and then update our sampler so that rather than connecting it directly <code>toDestination()</code> we connect it to our new processing node <code>connect(reverb)</code>
+        </p>
+
+        <div id="reverb"></div>
+
+        <br><br><br>
+
+        <h4>rythm: transport controls</h4>
+
+        <p>
+           Assuming our piano is working, let's introduce the transport logic and replace the <code>play</code> function and event listener with something more like the ones from a <a href="/editor/#Tone.js/Transport/Loop%20(basic)" target="_blank">transport example</a>. Below I've added a <code>toggle</code> function similar to that example which is now triggered by the click event of the "cold-play" button.
+        </p>
+
+        <div id="toggle"></div>
+
+        <p>
+           Next we'll add a few new variables to the top of our file to keep track of our prgram's "state". First, is the <code>step</code> variable to keep track of the number of beats as well as a <code>notes</code> array to list out some notes we want to play. I've also created a new <code>play</code> function which excpects a <i>time</i> argument, which will be passed in by the <code>Tone.Loop</code> wich we've also defined. The Loop will call the play function every <code>'8n'</code> or 8th note. The play function is very similar to the ones we've seen in our other transport examples we've covered so far.
+        </p>
+
+        <div id="init-timing"></div>
+
+        <br><br><br>
+
+        <h4>clock's "dna"</h4>
+
+        <p>
+           Here is where we'll create an algorithm based on our interpretation of Coldplay's "formula". As I said earlier, if our goal was to create an accurate representation of the band's style we would be better served by gathering as much data as possible (the musical scores of their entire oeuvre) and running some statistical analysis on it, <i>but</i> our goal isn't really to make the perfect coldplay machine, but rather to use Coldplay as a starting point from which we might explore other hand-crafted musical algorithms, to that end we'll start by breaking down the core chord progression and arpeggio from their song <a href="https://www.youtube.com/watch?v=g6zbo3YtAhg" target="_blank">Clocks</a> (which in many ways is a solid example of their "style").
+        </p>
+
+        <div id="clocks-dna"></div>
+
+        <p>
+           A classic Coldplay song has a 4 chord progression. Meaning there are 4 'bars' or 'measures' in a verse or chorus which repeat. Rather than simply keeping track of our beat within a single measure with a counter, we'll add another state variable to keep track of each of the for measures called <code>bar</code>. The bar will track which of the 4 measures we're in and the step track which beat within that measure we're in. With a typical 4/4 rythm, a measure contains a total of 4 beats or 4 quarter notes, '4n'. Since our transport is triggering the play function on every 8th note (or '8n') our bar will contain a total of 8 steps (each an 8th note long), so I've added a <code>totalSteps</code> variable, as well as a <code>totalBars</code> variable.
+        </p>
+
+        <p>
+           I've also replaced the notes array from before with a few new arrays which represent the piano part in our reference song, Clocks. The piano plays a chord progression with the left hand and an accompanying arpeggio with the right hand. Rather than noting the specific notes for these chords and arpeggios, we'll abstract this out a bit more in such a way that will allow us to easily make algorithmic variations on it. We could approach this a number of different ways, but what i decided to do was first identify the key of the song, which seems to be 'F minor', which i've stored in two arrays. The first is called <code>rightHandScale</code> which starts the F minor scale on the 4th octave (or 'F4'), and the second is called <code>leftHandScale</code> which is also an f minor but starts the scale one octave lower on 'F3'. coldplay often accompanies the chord progression played on the left hand with arpeggios played one octave above on the right hand.
+        </p>
+
+        <div id="play-clocks"></div>
+
+        <br><br><br>
+
+        <h4>the coldplay "formula"</h4>
+
+        <div id="random-coldplay"></div>
+
+        <br><br><br>
+
+        <p>
+          Here's the <a href="https://netnet.studio/?layout=dock-left#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" target="_blank">complete piece</a>.
+        </p>
+
+    </section>
+
+    <!-- <section id="editor-1"></section> -->
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <section class="attribution">
+      <div class="content">
+        <p>
+          <span style="font-weight: bold;">Attribution</span>: Text and code written by <a href="https://nickbriz.com/" target="_blank">Nick Briz</a>. The code editor icons designed by <a href="https://thenounproject.com/creator/MekoDa/" target="_blank">Meko</a> and licensed under Creative Commons Attribution License (CC BY 3.0). All sounds generated using the Web Audio API and/or <a href="https://tonejs.github.io/" target="_blank">Tone.js</a> by Yotam Mann and <a href="https://github.com/Tonejs/Tone.js/graphs/contributors" target="_blank">other contributors</a>.
+        </p>
+      </div>
+    </section>
+
+
+    <script src="/js/libs/d3@7.js"></script>
+    <script src="/js/libs/Tone.js"></script>
+    <script src="/js/libs/netitor.min.js"></script>
+    <script src="/js/libs/nn.min.js"></script>
+    <script src="/js/custom-elements/main-menu.js"></script>
+    <script src="/js/custom-elements/algo-music-ui.js"></script>
+    <script src="/js/jack/sound_wave.js"></script>
+    <script src="/js/jack/sound-1.js"></script>
+    <script src="/js/SVGSineWave.js"></script>
+    <script src="/js/create-waveform.js"></script>
+    <script src="/js/create-spectrum.js"></script>
+    <script src="/js/code-templates.js"></script>
+    <script src="/js/utils.js"></script>
+    <script>
+      utils.init()
+      nn.getAll('h4, .formatted-text').forEach(e => utils.formatText(e))
+
+      async function loadCode (file) {
+        const res = await window.fetch(`/coldplay/${file}`)
+        const code = await res.text()
+        return code
+      }
+
+      async function newCodeExample (name) {
+        if (!window.editors) window.editors = []
+
+        const samplerEditor = new Netitor({
+          ele: nn.get(`#${name}`),
+          autoUpdate: false,
+          background: false,
+          theme: 'moz-light',
+          language: 'javascript',
+          code: await loadCode(`${name}.js`),
+          readOnly: true,
+          wrap: true
+        })
+
+        window.editors.push({
+          ne: samplerEditor,
+          ele: nn.get(`#${name}`)
+        })
+      }
+
+      async function setup () {
+        const examples = [
+          'sampler', 'simple-play', 'reverb', 'toggle', 'init-timing', 'clocks-dna', 'play-clocks', 'random-coldplay'
+        ]
+        examples.forEach(ex => newCodeExample(ex))
+      }
+
+      nn.on('load', setup)
+
+
+
+      // utils.createCodeEditor({
+      //   ele: '#editor-1',
+      //   title: 'tuning systems',
+      //   fileprefix: 'tuning-',
+      //   template: [3, 3, 3, 3],
+      //   total: 3 // or 4
+      // })
+
+    </script>
+  </body>
+</html>

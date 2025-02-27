@@ -137,7 +137,7 @@ class MainMenu extends window.HTMLElement {
           <a class="inactive">rythm and melody</a>
         </span>
         <span>
-          <a class="inactive">algorithmic composition</a>
+          <a href="/coldplay">algorithmic composition</a>
         </span>
 
         <div class="smaller">

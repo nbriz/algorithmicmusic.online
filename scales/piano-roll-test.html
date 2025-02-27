@@ -1,0 +1,274 @@
+<body>
+  <h1>welcome</h1>
+  <svg id="piano-roll-svg"></svg>
+</body>
+<script src="https://unpkg.com/tone"></script>
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
+<script>
+  function createPianoRollUI(options = {}) {
+    const defaults = {
+      ele: null,
+      width: 800,
+      height: 600,
+      accentColor: 'red',
+      labels: true,
+      octaves: [4, 6],
+      measures: 4,
+      units: '4n',
+      on: {}
+    };
+
+    const settings = { ...defaults, ...options };
+
+    const ele = typeof settings.ele === 'string'
+      ? document.querySelector(settings.ele)
+      : document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+    if (typeof settings.ele !== 'string') {
+      document.body.appendChild(ele);
+    } else if (!ele || ele.nodeName.toLowerCase() !== 'svg') {
+      console.error('createPianoRollUI: "ele" expecting reference to <svg> element');
+      return;
+    }
+
+    ele.innerHTML = '';
+
+    const totalColumns = settings.measures * Tone.Time('1m').toTicks() / Tone.Time(settings.units).toTicks();
+    const octaveRange = Array.isArray(settings.octaves) ? settings.octaves : [settings.octaves, settings.octaves + 1];
+    const totalKeys = (octaveRange[1] - octaveRange[0]) * 12;
+
+    const keyHeight = settings.height / totalKeys;
+    const keyWidth = 50;
+    const gridWidth = settings.width - keyWidth;
+    const columnWidth = gridWidth / totalColumns;
+
+    const keyMap = [
+      { note: 'C', isBlack: false }, { note: 'C#', isBlack: true },
+      { note: 'D', isBlack: false }, { note: 'D#', isBlack: true },
+      { note: 'E', isBlack: false }, { note: 'F', isBlack: false },
+      { note: 'F#', isBlack: true }, { note: 'G', isBlack: false },
+      { note: 'G#', isBlack: true }, { note: 'A', isBlack: false },
+      { note: 'A#', isBlack: true }, { note: 'B', isBlack: false }
+    ];
+
+    ele.setAttribute('width', settings.width);
+    ele.setAttribute('height', settings.height);
+    ele.setAttribute('viewBox', `0 0 ${settings.width} ${settings.height}`);
+
+    const keys = {};
+    const gridCells = {};
+    const notes = Array(totalColumns).fill(null).map(() => ({ note: null, len: settings.units }));
+    const activeCells = {}; // Store active note rectangles
+
+    let isDragging = false;
+    let dragStartCell = null;
+    let dragStartColumn = null;
+
+    let y = 0;
+    for (let octave = octaveRange[1] - 1; octave >= octaveRange[0]; octave--) {
+      keyMap.forEach(({ note, isBlack }) => {
+        const keyLabel = `${note}${octave}`;
+        const key = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        key.setAttribute('x', 0);
+        key.setAttribute('y', y);
+        key.setAttribute('width', keyWidth);
+        key.setAttribute('height', keyHeight);
+        key.setAttribute('fill', isBlack ? 'black' : 'white');
+        key.setAttribute('stroke', 'black');
+        key.setAttribute('data-key', keyLabel);
+
+        keys[keyLabel] = key;
+        ele.appendChild(key);
+
+        if (settings.labels) {
+          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          text.setAttribute('x', keyWidth / 2);
+          text.setAttribute('y', y + keyHeight / 2);
+          text.setAttribute('fill', isBlack ? 'white' : 'black');
+          text.setAttribute('font-size', '12');
+          text.setAttribute('font-family', 'Arial, sans-serif');
+          text.setAttribute('text-anchor', 'middle');
+          text.setAttribute('dominant-baseline', 'middle');
+          text.textContent = keyLabel;
+          ele.appendChild(text);
+        }
+
+        y += keyHeight;
+      });
+    }
+
+    for (let column = 0; column < totalColumns; column++) {
+      for (let keyIndex = 0; keyIndex < totalKeys; keyIndex++) {
+        const cellX = keyWidth + column * columnWidth;
+        const cellY = keyIndex * keyHeight;
+        const keyLabel = Object.keys(keys)[keyIndex];
+        const gridID = `${keyLabel}-${column}`;
+
+        const cell = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        cell.setAttribute('x', cellX);
+        cell.setAttribute('y', cellY);
+        cell.setAttribute('width', columnWidth);
+        cell.setAttribute('height', keyHeight);
+        cell.setAttribute('fill', 'transparent');
+        cell.setAttribute('stroke', column % (totalColumns / settings.measures) === 0 ? 'black' : 'gray');
+        cell.setAttribute('stroke-width', column % (totalColumns / settings.measures) === 0 ? 2 : 1);
+        cell.setAttribute('data-id', gridID);
+
+        gridCells[gridID] = cell;
+        ele.appendChild(cell);
+
+        cell.addEventListener('mousedown', (e) => startDrag(gridID));
+      }
+    }
+
+    function startDrag(gridID) {
+      isDragging = true;
+      dragStartCell = gridID;
+      dragStartColumn = parseInt(gridID.split('-')[1]);
+
+      window.addEventListener('mousemove', dragOver);
+      window.addEventListener('mouseup', endDrag);
+
+      toggleCell(gridID, 1);
+    }
+
+    function dragOver(e) {
+      if (!isDragging) return;
+
+      const cellUnderCursor = document.elementFromPoint(e.clientX, e.clientY);
+      if (!cellUnderCursor || !cellUnderCursor.getAttribute('data-id')) return;
+
+      const [note, column] = cellUnderCursor.getAttribute('data-id').split('-');
+      const currentColumn = parseInt(column);
+
+      if (dragStartColumn !== null) {
+        const length = Math.abs(currentColumn - dragStartColumn) + 1;
+        toggleCell(`${note}-${dragStartColumn}`, length);
+      }
+    }
+
+    function endDrag() {
+      isDragging = false;
+      dragStartCell = null;
+      dragStartColumn = null;
+
+      window.removeEventListener('mousemove', dragOver);
+      window.removeEventListener('mouseup', endDrag);
+    }
+
+    function toggleCell(gridID, length = 1) {
+      const [note, column] = gridID.split('-');
+      const startColumn = parseInt(column);
+      const endColumn = startColumn + length - 1;
+
+      if (activeCells[gridID]) {
+        // **Remove note if already active**
+        for (let i = startColumn; i <= endColumn; i++) {
+          if (activeCells[`${note}-${i}`]) {
+            ele.removeChild(activeCells[`${note}-${i}`]);
+            delete activeCells[`${note}-${i}`];
+          }
+          notes[i] = { note: null, len: settings.units };
+        }
+      } else {
+        let duration;
+
+        if (length === 1) {
+          // **Fix: Single-clicked notes should be `settings.units` (e.g., `4n`)**
+          duration = settings.units;
+        } else {
+          // **Fix: Correct duration calculation for dragged notes**
+          const totalTicks = Tone.Time(settings.units).toTicks() * length;
+          duration = Tone.Ticks(totalTicks).toNotation();
+        }
+
+        // **Check if there are existing notes in the column**
+        if (notes[startColumn]?.note) {
+          // **Ensure note and len are stored as arrays**
+          if (!Array.isArray(notes[startColumn].note)) {
+            notes[startColumn].note = [notes[startColumn].note];
+            notes[startColumn].len = [notes[startColumn].len];
+          }
+
+          // **Append the new note and duration**
+          notes[startColumn].note.push(note);
+          notes[startColumn].len.push(duration);
+        } else {
+          // **Store the first note in a new object**
+          notes[startColumn] = { note: [note], len: [duration] };
+        }
+
+        // **Make following columns "rests" (null notes)**
+        for (let i = startColumn + 1; i <= endColumn; i++) {
+          notes[i] = { note: null, len: settings.units };
+        }
+
+        // **Draw the note visually**
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', keyWidth + startColumn * columnWidth);
+        rect.setAttribute('y', Object.keys(keys).indexOf(note) * keyHeight);
+        rect.setAttribute('width', length * columnWidth);
+        rect.setAttribute('height', keyHeight);
+        rect.setAttribute('fill', settings.accentColor);
+        rect.setAttribute('stroke', 'black');
+
+        ele.appendChild(rect);
+        activeCells[gridID] = rect;
+      }
+    }
+
+
+
+    function getNotes() {
+      return notes;
+    }
+
+    return { getNotes };
+  }
+
+
+
+
+  const pianoRoll = createPianoRollUI({
+    ele: '#piano-roll-svg',
+    width: 1000,
+    height: 600,
+    accentColor: 'blue',
+    labels: true,
+    octaves: [4, 6],
+    measures: 4,
+    units: '4n'
+  })
+
+  const synth = new Tone.PolySynth().toDestination()
+
+  let state = {
+    step: 0,
+    sequence: pianoRoll.getNotes()
+  }
+
+  function play(time) {
+    console.log(state);
+    const index = state.step % state.sequence.length
+    const obj = state.sequence[index]
+    if (obj.play === true) {
+      synth.triggerAttackRelease(obj.note, obj.len, time)
+    }
+    state.step++
+  }
+
+  Tone.Transport.bpm.value = 90
+  Tone.Transport.scheduleRepeat(time => play(time), '16n')
+
+  // nn.on('click', () => {
+  //   if (Tone.Transport.state !== 'started') {
+  //     Tone.Transport.start()
+  //   }
+  // })
+
+  // TODO: add (multiple) play head
+  // TODO: add "remove" on click
+  // https://chatgpt.com/c/67abd4d5-97f8-800c-8706-94903ccd4df2
+
+
+</script>

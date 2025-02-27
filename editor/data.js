@@ -275,6 +275,33 @@ window.data = {
         path: 'tone/effects/tremolo-from-scratch.js',
         template: 3
       }
+    ],
+    Transport: [
+      {
+        title: 'Loop (basic)',
+        path: 'tone/transport/loop-basic.js',
+        template: 3
+      },
+      {
+        title: 'Loop (phasing)',
+        path: 'tone/transport/loop-phasing.js',
+        template: 3
+      },
+      {
+        title: 'Loop (kick drum)',
+        path: 'tone/transport/loop-kick.js',
+        template: 3
+      },
+      {
+        title: 'Loop (drum beat)',
+        path: 'tone/transport/loop-drum-beat.js',
+        template: 3
+      },
+      {
+        title: 'Loop (randomized drum beat)',
+        path: 'tone/transport/loop-random-beat.js',
+        template: 3
+      }
     ]
   },
   'nn.min.js': {

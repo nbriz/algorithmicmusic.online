@@ -1,0 +1,107 @@
+<body></body>
+<script src="https://unpkg.com/tone"></script>
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://algorithmicmusic.online/js/create-spectrum.js"></script>
+<script src="https://algorithmicmusic.online/js/create-waveform.js"></script>
+<script>
+/* global Tone, nn, d3, createWaveform, createSpectrum */
+const synth = new Tone.PolySynth().toDestination()
+synth.set({ oscillator: { type: 'sine', volume: -10 } })
+
+const drumset = new Tone.Players({
+  kick: 'https://tonejs.github.io/audio/drum-samples/Kit8/kick.mp3',
+  snare: 'https://tonejs.github.io/audio/drum-samples/Kit8/snare.mp3',
+  hihat: 'https://tonejs.github.io/audio/drum-samples/Kit8/hihat.mp3',
+  tom1: 'https://tonejs.github.io/audio/drum-samples/Kit8/tom1.mp3',
+  tom2: 'https://tonejs.github.io/audio/drum-samples/Kit8/tom2.mp3',
+  tom3: 'https://tonejs.github.io/audio/drum-samples/Kit8/tom3.mp3'
+}).toDestination()
+
+const wave = createWaveform()
+// synth.connect(wave)
+drumset.connect(wave)
+
+Tone.Transport.bpm.value = 120
+// const az = new Tone.Loop(a, 0.25).start()
+// const loop = new Tone.Loop(drums, 0.5).start()
+// const loop2 = new Tone.Loop(drums2, 0.501).start()
+// const loop3 = new Tone.Loop(drums3, 0.502).start()
+
+const beat = new Tone.Loop(drums, '16n').start()
+
+// const beat = new Tone.Loop(drums, '4n').start()
+// const beat2 = new Tone.Loop(drums2, '4n').start('8n')
+
+// function a (time) {
+//   // drumset.player('kick').start(time)
+//   synth.triggerAttackRelease('C3', 0.5, time)
+// }
+
+const state = {
+  step: 0,
+  // sequence: [ 'kick', null, 'snare', null ]
+  sequence: {
+    hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+    snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+    kick:  [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0]
+  }
+}
+
+// function drums (time) {
+//   const beat = state.step % state.sequence.length
+//   const kit = state.sequence[beat]
+//   if (kit) drumset.player(kit).start(time)
+//   state.step++
+// }
+
+function drums (time) {
+  const beat = state.step % state.sequence.kick.length
+  const kick = state.sequence.kick[beat]
+  const hihat = state.sequence.hihat[beat]
+  const snare = state.sequence.snare[beat]
+
+  if (kick) drumset.player('kick').start(time)
+  if (hihat) drumset.player('hihat').start(time)
+  if (snare) drumset.player('snare').start(time)
+
+  console.log(kick, hihat, snare);
+
+  state.step++
+}
+
+// function drums2 (time) {
+//   drumset.player('snare').start(time)
+//   // synth.triggerAttackRelease('C4', 0.1, time)
+// }
+
+// function drums2 (time) {
+//   // drumset.player('kick').start(time)
+//   synth.triggerAttackRelease('E4', 0.1, time)
+// }
+//
+// function drums3 (time) {
+//   // drumset.player('kick').start(time)
+//   synth.triggerAttackRelease('G4', 0.1, time)
+// }
+
+function playSong () {
+  Tone.Transport.start()
+}
+
+function stopSong () {
+  Tone.Transport.stop()
+}
+
+nn.create('button')
+  .content('play')
+  .addTo('body')
+  .on('click', playSong)
+
+nn.create('button')
+  .content('stop')
+  .addTo('body')
+  .on('click', stopSong)
+
+
+</script>
