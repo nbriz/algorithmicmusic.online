@@ -118,7 +118,19 @@
            I've also replaced the notes array from before with a few new arrays which represent the piano part in our reference song, Clocks. The piano plays a chord progression with the left hand and an accompanying arpeggio with the right hand. Rather than noting the specific notes for these chords and arpeggios, we'll abstract this out a bit more in such a way that will allow us to easily make algorithmic variations on it. We could approach this a number of different ways, but what i decided to do was first identify the key of the song, which seems to be 'F minor', which i've stored in two arrays. The first is called <code>rightHandScale</code> which starts the F minor scale on the 4th octave (or 'F4'), and the second is called <code>leftHandScale</code> which is also an f minor but starts the scale one octave lower on 'F3'. coldplay often accompanies the chord progression played on the left hand with arpeggios played one octave above on the right hand.
         </p>
 
+        <p>
+           Following each of the scales, I've added arrays containing other arrays (aka: multi-dimensional arrays) which represent the notes played as indexes (aka "degress") from the scale. Take a look at the <code>leftHandChrd</code> variable. This array contains an array for each of the 4 chords in the progression (one played at the start of each measure or bar). The first chord is represented by the indexes <code>[1, 3, 6]</code>. This corresponds to the notes <code>['G3', 'A#3', 'D#4']</code> which happens to be a 'G diminished' chord, the first chord in the song clocks. These 'left hand' notes will be played all at the same time, because it's a 'chord', where as the notes in the 'right hand' (stored in the <code>rightHandArp</code> arrays) will be played one after the other, which is what makes them an 'arpeggio'. Notice that the first 3 indexes in the first right hand array match the 3 indexes in the first left hand array, only reversed. You might also notice that the arpeggio simply repeats those same 3 notes again two (and two thirds) more times. If you compare the subsequent right and left hand arrays to each other you'll notice the same is true. By representing the notes for the song clocks this way, as indexes from the song's key (or the scale the song is written in) a pattern is revealed to us, the song's "DNA".
+        </p>
+
+        <p>
+           Next, we'll update our <code>play</code> function so that it works with our new state data.
+        </p>
+
         <div id="play-clocks"></div>
+
+        <p>
+          In the code above we use the modulus operator <code>%</code> to do some simple 'clock arithmetic' (no pun intended) to get the current bar or <code>b</code> a number between 0 and 3, as well as the current 8th note or step <code>s</code> within that bar/measure, a number between 0 and 7. Then on lines 6-11 we have the logic for the left hand, starting with a conditional statement that checks to see if we're on the first step of the bar (because we only want to play the chord once per measure), if so we grab the array of indexes for that bar's chord and then convert that from an array of numbers to an array of notes by using the javascript array's map method to map out the corresponding notes from the scale. Lastly we'll send that array of notes into our sampler's <code>triggerAttackRelease</code> and hold that chord for the whole measure or '1n'. 
+        </p>
 
         <br><br><br>
 
