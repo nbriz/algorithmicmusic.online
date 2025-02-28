@@ -129,14 +129,38 @@
         <div id="play-clocks"></div>
 
         <p>
-          In the code above we use the modulus operator <code>%</code> to do some simple 'clock arithmetic' (no pun intended) to get the current bar or <code>b</code> a number between 0 and 3, as well as the current 8th note or step <code>s</code> within that bar/measure, a number between 0 and 7. Then on lines 6-11 we have the logic for the left hand, starting with a conditional statement that checks to see if we're on the first step of the bar (because we only want to play the chord once per measure), if so we grab the array of indexes for that bar's chord and then convert that from an array of numbers to an array of notes by using the javascript array's map method to map out the corresponding notes from the scale. Lastly we'll send that array of notes into our sampler's <code>triggerAttackRelease</code> and hold that chord for the whole measure or '1n'. 
+          In the code above we use the modulus operator <code>%</code> to do some simple 'clock arithmetic' (no pun intended) to get the current bar or <code>b</code> a number between 0 and 3, as well as the current 8th note or step <code>s</code> within that bar/measure, a number between 0 and 7. Then on lines 6-11 we have the logic for the left hand, starting with a conditional statement that checks to see if we're on the first step of the bar (because we only want to play the chord once per measure), if so we grab the array of indexes for that bar's chord and then convert that from an array of numbers to an array of notes by using the javascript array's map method to map out the corresponding notes from the scale. Lastly we'll send that array of notes into our sampler's <code>triggerAttackRelease</code> and hold that chord for the whole measure or '1n'.
         </p>
 
         <br><br><br>
 
         <h4>the coldplay "formula"</h4>
 
+        <p>
+           If we play our algorithm now it should sound exactly like the song clocks. Our last step will be to create a function which randomizes our notes in a way that conforms to Coldplay's "formula". Part of their formula is already represented in our state variables, like the fact that we have a 4 chord progression (noted by <code>totalSteps</code> with the chord shapes stored as indexes corresponding to a musical scale stored in <code>leftHandChrd</code> and <code>leftHandScale</code> respectively) as well as the fact that each chord will be accompanied by an arpeggio (stored in the <code>rightHandArp</code> and <code>rightHandScale</code> arrays). We noticed before that the arpeggio in the song Clocks follows a particular pattern based on the inversion of the notes in their corresponding chord. If the chord is: a, b, c then the arpeggio would be c, b, a, c, b, a, c, b. so we'll need to create a function that recreates new versions of this pattern., but first, let's reintroduce a familiar helper function.
+        </p>
+
+        <div id="create-scale"></div>
+
+        <p>
+           We first discussed this <code>createScale</code> function during in the notes for <a href="/scales" target="_blank">Chords and Scales</a>. This function takes two arguments, a root note (ex: 'F4') and a "mode" array, a list of values representing the number of 'steps' between each note (starting from our root note) needed to create a particular scale (ex: the aeolian mode pattern is [2, 1, 2, 2, 1, 2, 2] which can be used to derive a 'minor' scale). The function then returns an array of note strings in that particular scale, for example: [ 'F4', 'G4', 'G#4', 'A#4', 'C5', 'C#5', 'D#5', 'F5' ].
+        </p>
+
         <div id="random-coldplay"></div>
+
+        <p>
+           We can use the <code>createScale</code> funtion within another function that recreates new versions of the pattern we identified earlier. Our <code>randomColdplay</code> function will first choose a new tempo and a new key for the song. Coldplay rarely plays slower then 90bpm (beats per minute) and faster than 140bpm, so we'll select a random integer from that range and assign that as our new transport bpm value. Then we'll choose a new scale, Coldplay often sticks to 'minor' keys (hence the melancholy tone of their music) so we'll define the minor scale shape in an array as well as all a keys array of root notes i've noticed coldplay tends to write their music in. We'll use our <code>createScale</code> function to create two new scales based on our minor pattern and a randomly chosen key and update our state's <code>rightHandScale</code> and <code>leftHandScale</code> ensuring that the latter is one octave under the former.
+        </p>
+
+        <p>
+           Once we have a new tempo and new scale we'll create our new array of index values for our chords and our arpeggios. We'll start by clearing the previous arrays and then in a four loop (which loops 4 times, one per bar) we'll select new index values for those a, b, c indexes using a little clock arithmetic to ensure they always stay within the length of the corresponding scale arrays before adding (or 'pushing') our new arrays.
+        </p>
+
+        <div id="add-random"></div>
+
+        <p>
+           Then we'll make sure to attach this function to the click event of our 'randomize' button. If we want to make sure we also start with a random composition, we could also add a call to this function on the window's load event.
+        </p>
 
         <br><br><br>
 
@@ -210,7 +234,7 @@
 
       async function setup () {
         const examples = [
-          'sampler', 'simple-play', 'reverb', 'toggle', 'init-timing', 'clocks-dna', 'play-clocks', 'random-coldplay'
+          'sampler', 'simple-play', 'reverb', 'toggle', 'init-timing', 'clocks-dna', 'play-clocks', 'create-scale', 'random-coldplay', 'add-random'
         ]
         examples.forEach(ex => newCodeExample(ex))
       }
