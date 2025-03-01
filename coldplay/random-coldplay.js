@@ -19,9 +19,3 @@ function randomColdplay () {
     rightHandArp.push([c, b, a, c, b, a, c, b])
   }
 }
-
-// don't forget to add this to the end of ur randomize UI button
-.on('click', randomColdplay)
-
-// as well as this, so we randomize once soon as the page loads
-nn.on('load', randomColdplay)
