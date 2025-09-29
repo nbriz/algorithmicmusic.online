@@ -1,7 +1,7 @@
 /*
   In this example we'll use the Web's [Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) to visualize a waveform using the fft data.
 */
-const ctx = new (window.AudioContext || window.webkitAudioContext)()
+const ctx = new window.AudioContext()
 
 const osc = ctx.createOscillator()
 osc.frequency.value = 440

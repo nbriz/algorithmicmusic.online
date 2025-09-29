@@ -192,8 +192,8 @@ window.utils.setupCodeControls = function (c, ne) {
 
   const getCode = () => {
     let code = ne.code
-    if (ne.__codeTemplate > 0) {
-      code = codeTemplates[ne.__codeTemplate]
+    if (ne.__codeTemplate) {
+      code = window.createCodeTemplate(ne.__codeTemplate)
       code = code.replace('{{code}}', ne.code)
     }
     return code

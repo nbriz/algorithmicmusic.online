@@ -1,7 +1,7 @@
 /*
   in order to hear stuff we need some kind of source [AudioNode](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode) these can be live [WebRTC streams](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioDestinationNode) (mic/webcam), HTML [<audio> or <video>](https://developer.mozilla.org/en-US/docs/Web/API/MediaElementAudioSourceNode) elements, raw audio data with [AudioBufferSourceNode](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode) (either generated or loaded from a file) or an [OscillatorNode](https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode), which is probably the simplest node.
 */
-const ctx = new (window.AudioContext || window.webkitAudioContext)()
+const ctx = new window.AudioContext()
 
 const osc = ctx.createOscillator()
 osc.type = 'sawtooth' // default is "sine"

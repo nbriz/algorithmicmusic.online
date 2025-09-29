@@ -1,4 +1,4 @@
-/* global d3, Tone */
+/* global Tone */
 /*
 
 // set it up like this
@@ -15,9 +15,10 @@ const wave = createWaveform({
   color: 'white',
   lineWidth: 2,
   audioCtx: ctx, // if u prefer to use a non Tone.js context
-  binSize: 1024, // fft bin size
+  binSize: 1024, // fft bin size (power of 2)
   sensativity: 0.08, // higher, more sensitive
-  manuallyCallAnimate: false
+  manuallyCallAnimate: false,
+  smooth: false // optional: curve smoothing (default true)
 })
 
 // use it like this
@@ -38,86 +39,119 @@ nn.create('button')
 */
 function createWaveform (opts) {
   opts = opts || {}
-  const ele = typeof opts.ele === 'string'
+
+  // svg element (use provided selector or create one)
+  const svg = (typeof opts.ele === 'string'
     ? document.querySelector(opts.ele)
-    : document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-  if (typeof opts.ele !== 'string') {
-    document.body.appendChild(ele)
-  } else if (!ele || ele.nodeName.toLowerCase() !== 'svg') {
-    console.log(ele, ele.nodeName)
+    : null) || document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+
+  if (!svg) {
+    console.error('createWaveform: "ele" selector did not match an element')
+    return
+  }
+  if (!svg.parentNode) document.body.appendChild(svg)
+  if (svg.nodeName.toLowerCase() !== 'svg') {
     console.error('createWaveform: "ele" expecting reference to <svg> element')
     return
   }
 
-  ele.style.display = 'block'
-  ele.style.width = opts.width || '700px'
-  ele.style.height = opts.height || '200px'
-  ele.style.background = opts.background || 'transparent'
+  // styling
+  svg.style.display = 'block'
+  svg.style.width = opts.width || '700px'
+  svg.style.height = opts.height || '200px'
+  svg.style.background = opts.background || 'transparent'
+
   const stroke = opts.color || 'black'
   const lineWidth = opts.lineWidth || 2
-
-  const sensativity = opts.sensativity || 0.5
+  const sensitivity = opts.sensativity || 0.5
   const binSize = opts.binSize || 1024
+  const smooth = opts.smooth !== false // allow opts.smooth=false to disable smoothing
 
+  // audio analyser
   const audioCtx = opts.audioCtx || Tone.context
-  const fftNode = audioCtx.createAnalyser()
-  fftNode.fftSize = binSize
-  fftNode.smoothingTimeConstant = 0.7
-  // const frequencyData = new Uint8Array(fftNode.frequencyBinCount)
-  // const frequencyPerBin = audioCtx.sampleRate / binSize
-  let dataArray = new Float32Array(fftNode.fftSize)
+  const analyser = audioCtx.createAnalyser()
+  analyser.fftSize = binSize
+  analyser.smoothingTimeConstant = 0.7
+  let dataArray = new Float32Array(analyser.fftSize)
 
-  const svg = d3.select(ele)
-  // const width = parseInt(svg.style('width'))
-  // const height = parseInt(svg.style('height'))
-  const width = ele.clientWidth || 700
-  const height = ele.clientHeight || 200
+  // svg path
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+  path.setAttribute('fill', 'none')
+  path.setAttribute('stroke', stroke)
+  path.setAttribute('stroke-width', lineWidth)
+  svg.appendChild(path)
 
-  // Set up scales for x and y
-  const xScale = d3.scaleLinear()
-    .domain([0, binSize - 1])
-    .range([0, width])
-
-  const yScale = d3.scaleLinear()
-    .domain([-1, 1])
-    .range([height, 0])
-
-  // Append a path element for the waveform
-  const path = svg.append('path')
-    .attr('fill', 'none')
-    .attr('stroke', stroke)
-    .attr('stroke-width', lineWidth)
-
-  // Create a D3 line generator
-  const line = d3.line()
-    .x((_, i) => xScale(i)) // Map index to x-position
-    .y(d => yScale(d)) // Map waveform value to y-position
-    .curve(d3.curveCatmullRom) // Smooth curve interpolation
-
-  function animate () {
-    // const vals = waveNode.getValue()
-    fftNode.getFloatTimeDomainData(dataArray)
-    path.attr('d', line(dataArray))
-    window.requestAnimationFrame(animate)
+  // helpers
+  const getSize = () => {
+    const w = svg.clientWidth || parseInt(svg.style.width, 10) || 700
+    const h = svg.clientHeight || parseInt(svg.style.height, 10) || 200
+    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h)
+    return { w, h }
   }
 
+  const mapX = (i, n, w) => n <= 1 ? 0 : (i / (n - 1)) * w
+  const mapY = (v, h) => (1 - (v + 1) / 2) * h // [-1,1] -> [h,0]
+
+  // Catmull-Rom (uniform) to cubic Bezier approximation; simple and fast
+  const buildPath = (arr, w, h, doSmooth) => {
+    const n = arr.length
+    if (!n) return ''
+    const pts = new Array(n)
+    for (let i = 0; i < n; i++) pts[i] = [mapX(i, n, w), mapY(arr[i], h)]
+
+    if (!doSmooth || n < 4) {
+      let d = 'M' + pts[0][0] + ' ' + pts[0][1]
+      for (let i = 1; i < n; i++) d += 'L' + pts[i][0] + ' ' + pts[i][1]
+      return d
+    }
+
+    let d = 'M' + pts[0][0] + ' ' + pts[0][1]
+    for (let i = 0; i < n - 1; i++) {
+      const p0 = pts[i - 1] || pts[i]
+      const p1 = pts[i]
+      const p2 = pts[i + 1]
+      const p3 = pts[i + 2] || p2
+      // Catmull-Rom (uniform) → Bezier control points
+      const c1x = p1[0] + (p2[0] - p0[0]) / 6
+      const c1y = p1[1] + (p2[1] - p0[1]) / 6
+      const c2x = p2[0] - (p3[0] - p1[0]) / 6
+      const c2y = p2[1] - (p3[1] - p1[1]) / 6
+      d += 'C' + c1x + ' ' + c1y + ',' + c2x + ' ' + c2y + ',' + p2[0] + ' ' + p2[1]
+    }
+    return d
+  }
+
+  const draw = () => {
+    const { w, h } = getSize()
+    if (dataArray.length !== analyser.fftSize) {
+      dataArray = new Float32Array(analyser.fftSize)
+    }
+    analyser.getFloatTimeDomainData(dataArray)
+    path.setAttribute('d', buildPath(dataArray, w, h, smooth))
+  }
+
+  function animate () {
+    draw()
+    window.requestAnimationFrame(animate)
+  }
   if (!opts.manuallyCallAnimate) animate()
 
-  // const audioCtx = Tone.context
-  // const gainNode = audioCtx.createGain ? audioCtx.createGain() : audioCtx.createGainNode()
-  // gainNode.gain.value = sensativity
-  // gainNode.connect(waveNode)
-  // const gainNode = new Tone.Gain(sensativity * 2)
-  // gainNode.connect(fftNode)
+  // input node you can connect audio into
+  const gain = audioCtx.createGain ? audioCtx.createGain() : audioCtx.createGainNode()
+  gain.gain.value = sensitivity
+  gain.connect(analyser)
 
-  const gainNode = audioCtx.createGain ? audioCtx.createGain() : audioCtx.createGainNode()
-  gainNode.gain.value = sensativity
-  gainNode.connect(fftNode)
-
-  const node = gainNode
-  node.ele = ele
-  node.svg = svg
+  // public surface (keeps previous API shape)
+  const node = gain
+  node.ele = svg
   node.animate = animate
+  node.draw = draw
+  node.destroy = () => {
+    try { gain.disconnect() } catch {}
+    try { analyser.disconnect() } catch {}
+    if (path.parentNode) path.parentNode.removeChild(path)
+    if (!opts.ele && svg.parentNode) svg.parentNode.removeChild(svg)
+  }
 
   return node
 }

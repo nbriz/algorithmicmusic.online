@@ -36,6 +36,35 @@
         max-height: calc(100vh - 68px);
       }
 
+      .lib-menu-toggle {
+        position: absolute;
+        top: -3px;
+        font-size: 0.8em;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .lib-menu {
+        font-size: 1em;
+        line-height: 1.5em;
+        font-family: 'FiraMono', inconsolata, monospace;
+        letter-spacing: 0.3px;
+        word-spacing: 1px;
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid var(--text-color);
+        border-bottom: 1px solid var(--text-color);
+        position: relative;
+        /* padding: 25px 5px 5px 5px; */
+        height: 0;
+        overflow: hidden;
+        padding: 18px 0px 0px 5px;
+      }
+
+      .lib-menu input[type="checkbox"] {
+        accent-color: var(--accent-color1);
+      }
+
       #demo-menu {
         margin-right: 110px;
       }
@@ -51,7 +80,7 @@
   </head>
   <body>
 
-    <main-menu>
+    <main-menu data-hide-extra="true">
       <div slot="menu-items">
         <div class="color-mode-wrap">
           <label class="color-mode-switch">
@@ -83,11 +112,13 @@
       </nav>
 
       <section class="code-example">
-        <div class="editor"></div>
+        <div>
+          <div class="lib-menu"><span class="lib-menu-toggle">JS Libs</span></div>
+          <div class="editor"></div>
+        </div>
         <div class="render"></div>
       </section>
     </section>
-
 
     <script src="/js/libs/nn.min.js"></script>
     <script src="/js/libs/abcjs-basic-min.js"></script>
@@ -110,10 +141,12 @@
         renderWithErrors: true,
         background: false,
         theme: 'moz-light',
-        language: 'html',
+        language: 'javascript',
         wrap: true,
-        code: 'select an example from the menu.\n⚠️ sound may play loudly.⚠️'
+        code: ''
       })
+
+      ne.update(createCodeTemplate(['body']))
 
       // Function to find and mark Markdown links
       function markMarkdownLinks(editor) {
@@ -156,16 +189,67 @@
       }
 
       async function loadExample ({ example, template }) {
-        codeTemplate = template || 0
         const res = await window.fetch(example)
         const code = await res.text()
         ne.code = code
         if (template) {
           ne.language = 'javascript'
-          ne.update(codeTemplates[codeTemplate])
+          // ne.update(codeTemplates[codeTemplate])
+          ne.update(createCodeTemplate(template))
         } else ne.langauge = 'html'
-        ne.__codeTemplate = codeTemplate
+        ne.__codeTemplate = template
+        updateLibMenu(template)
       }
+
+      // JS Libs menu
+
+      function createLibMenu () {
+        const lbl = window.codeTemplate.labels
+        nn.get('.lib-menu').data.hidden = true
+
+        Object.keys(lbl).forEach(lib => {
+          const d = nn.create('div').addTo('.lib-menu')
+          const check = nn.create('input')
+            .set('type', 'checkbox')
+            .set('name', lib)
+            .addTo(d)
+            .on('input', (e) => updateCodeTemplates())
+          nn.create('span')
+            .set('name', lib)
+            .set('title', lbl[lib])
+            .content(lib).addTo(d)
+        })
+
+        nn.get('.lib-menu-toggle').on('click', () => {
+          const m = nn.get('.lib-menu')
+          if (m.data.hidden) {
+            m.css({ padding: '25px 5px 5px 5px', height: 'auto' })
+          } else {
+            m.css({ padding: '18px 0px 0px 5px', height: '0' })
+          }
+          m.data.hidden = !m.data.hidden
+        })
+      }
+
+      function updateCodeTemplates () {
+        const list = []
+        nn.getAll('.lib-menu input').forEach(cb => {
+          if (cb.checked) list.push(cb.getAttribute('name'))
+        })
+        ne.update(createCodeTemplate(list))
+        ne.__codeTemplate = list
+      }
+
+      function updateLibMenu (list) {
+        list = list.filter(i => i !== 'body')
+        nn.getAll('.lib-menu input').forEach(cb => {
+          const name = cb.getAttribute('name')
+          if (list.includes(name)) { cb.checked = true }
+          else { cb.checked = null }
+        })
+      }
+
+      // examples drop down menu
 
       function loadSelection () {
         const val1 = nn.get('#m1').value
@@ -236,6 +320,8 @@
         })
       }
 
+      // load logic
+
       function loadFromUrl () {
         if (!window.location.hash) return
         const arr = window.location.hash.substr(1).replace(/%20/g, ' ').split('/')
@@ -267,6 +353,8 @@
       const obj = { ne, ele }
       if (!window.editors) window.editors = []
       window.editors.push(obj)
+
+      createLibMenu()
 
       nn.on('load', createMenu)
       nn.on('load', loadFromUrl)

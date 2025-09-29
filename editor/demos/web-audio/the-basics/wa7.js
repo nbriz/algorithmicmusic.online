@@ -8,7 +8,7 @@
   | /  |    |    | \  |
   | a  |d   |s   |r \ |
 */
-const ctx = new (window.AudioContext || window.webkitAudioContext)()
+const ctx = new window.AudioContext()
 
 const osc = ctx.createOscillator()
 const lvl = ctx.createGain()

@@ -3,7 +3,7 @@
   In this example we use the [D3](https://d3js.org/) library to create an <svg> visualization of our waveform from the fft data.
 
 */
-const ctx = new (window.AudioContext || window.webkitAudioContext)()
+const ctx = new window.AudioContext()
 
 const osc = ctx.createOscillator()
 osc.frequency.value = 440

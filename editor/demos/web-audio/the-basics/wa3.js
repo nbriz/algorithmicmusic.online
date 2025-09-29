@@ -3,7 +3,7 @@
 
   the AnalyserNode can be used to get 'time-domain' and 'frequency-domain' data from the audio connected to it, this can be used for all kinds of analysis (pitch detection for example) or visualization. Like frequency bar graphs, or (in the case below) wave forms
 */
-const ctx = new (window.AudioContext || window.webkitAudioContext)()
+const ctx = new window.AudioContext()
 
 const osc = ctx.createOscillator()
 osc.frequency.value = 440

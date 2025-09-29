@@ -1,7 +1,7 @@
 /*
     AudioNode's, be they source-nodes or processing-nodes, have parameters (ex: an OscillatorNode's frequency or a gain's GainNode's gain), these are all instances of [AudioParam](https://developer.mozilla.org/en-US/docs/Web/API/AudioParam), you can schedule a change to these values using the .setValueAtTime() method. These changes can also happen over time using the .linearRampToValueAtTime() and.exponentialRampToValueAtTime()
 */
-const ctx = new (window.AudioContext || window.webkitAudioContext)()
+const ctx = new window.AudioContext()
 
 const osc = ctx.createOscillator()
 const lvl = ctx.createGain()
