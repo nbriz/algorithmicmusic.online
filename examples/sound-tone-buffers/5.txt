@@ -1,0 +1,1 @@
+Now instead of creating a buffer with random noise, I've incorporated sine wave logic from earlier to create a buffer which generates a tone with a specific frequency <code>freq</code> and amplitude <code>amp</code>.

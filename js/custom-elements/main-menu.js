@@ -118,7 +118,39 @@ class MainMenu extends window.HTMLElement {
       </div>
 
       <nav id="menu-options">
+
         <span>
+          <a href="/#introduction">introduction</a>
+        </span>
+        <span>
+          <a  href='/sound'>sound</a>
+        </span>
+        <span>
+          <a class="inactive">sampling</a>
+        </span>
+        <span>
+          <a class="inactive">signals</a>
+        </span>
+        <span>
+          <a class="inactive">synths</a>
+        </span>
+        <span>
+          <a class="inactive">modes + scales</a>
+        </span>
+        <span>
+          <a class="inactive">rhythm + melody&nbsp;</a>
+        </span>
+        <span>
+          <a class="inactive">&nbsp;&nbsp;chords + arpeggios</a>
+        </span>
+        <span>
+          <a class="inactive">algorithmic composition</a>
+        </span>
+
+
+        <!-- v1 MENU -->
+
+        <!-- <span>
           <a href="/#introduction">introduction</a>
         </span>
         <span>
@@ -138,7 +170,7 @@ class MainMenu extends window.HTMLElement {
         </span>
         <span>
           <a href="/coldplay">algorithmic composition</a>
-        </span>
+        </span> -->
 
         <div class="smaller">
           <span>

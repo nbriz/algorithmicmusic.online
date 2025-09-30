@@ -13,10 +13,10 @@ window.codeTemplate.tags = {
   tone: '<script src="https://unpkg.com/tone"></script>',
   nn: '<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>',
   d3: '<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>',
-  // spec: '<script src="https://algorithmicmusic.online/js/create-spectrum.js"></script>',
-  // wave: '<script src="https://algorithmicmusic.online/js/create-waveform.js"></script>',
-  spec: '<script src="/js/create-spectrum.js"></script>',
-  wave: '<script src="/js/create-waveform.js"></script>',
+  spec: '<script src="https://algorithmicmusic.online/js/create-spectrum.js"></script>',
+  wave: '<script src="https://algorithmicmusic.online/js/create-waveform.js"></script>',
+  // spec: '<script src="/js/create-spectrum.js"></script>',
+  // wave: '<script src="/js/create-waveform.js"></script>',
   piano: '<script src="https://algorithmicmusic.online/js/create-piano.js"></script>',
   pose: `<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
@@ -38,7 +38,7 @@ window.createCodeTemplate = (arr = []) => {
   const tag = window.codeTemplate.tags
   const global = window.codeTemplate.globals
   // check for "body"
-  let str = arr.includes('body') ? '<body></body>\n' : ''
+  let str = arr.includes('body') ? '<body style="background: white"></body>\n' : ''
   arr = arr.filter(e => e !== 'body')
   // add any libs
   arr.forEach(key => { str += tag[key] + '\n' })

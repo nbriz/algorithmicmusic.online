@@ -1,0 +1,16 @@
+<script src="https://unpkg.com/tone"></script>
+<script>
+/* global Tone */
+
+// custom function to create Tone.js buffers from scratch
+function createCustomBuffer (seconds, channels) {
+  const sr = Tone.context.sampleRate
+  const bufferSize = seconds * sr
+  const buffer = Tone.context.createBuffer(channels, bufferSize, sr)
+  return buffer
+}
+
+const buffer = createCustomBuffer(1, 2)
+const noise = new Tone.BufferSource(buffer).toDestination()
+
+</script>

@@ -1,0 +1,9 @@
+<script>
+const ctx = new window.AudioContext()
+
+const ch = 1 // number of channels
+const len = 1 * ctx.sampleRate // length of buffer
+const rate =  ctx.sampleRate // audio sample rate
+
+const buffer = ctx.createBuffer(ch, len, rate)
+</script>

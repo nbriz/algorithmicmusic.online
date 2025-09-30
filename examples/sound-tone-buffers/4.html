@@ -1,0 +1,38 @@
+<body style="background: white"></body>
+<script src="https://unpkg.com/tone"></script>
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
+<script src="https://algorithmicmusic.online/js/create-waveform.js"></script>
+<script>
+/* global Tone, nn, createWaveform */
+
+function createCustomBuffer (seconds, channels) {
+  const sr = Tone.context.sampleRate
+  const bufferSize = seconds * sr
+  const buffer = Tone.context.createBuffer(channels, bufferSize, sr)
+  // loop through each channel and fill it with noise
+  for (let ch = 0; ch < channels; ch++) {
+    const samples = buffer.getChannelData(ch)
+    for (let s = 0; s < bufferSize; s++) {
+      samples[s] = nn.random(-0.25, 0.25)
+    }
+  }
+  return buffer
+}
+
+// function for creating and playing the noise buffer
+function playNoise () {
+  const buffer = createCustomBuffer(1, 2)
+  const noise = new Tone.BufferSource(buffer).toDestination()
+  noise.connect(wave)
+  noise.start()
+}
+
+// create GUI
+nn.create('button')
+  .content('play noise')
+  .addTo('body')
+  .on('click', playNoise)
+
+const wave = createWaveform()
+
+</script>

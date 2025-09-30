@@ -212,23 +212,24 @@ window.utils.updateEditorTheme = function (e, theme) {
   })
 }
 
-window.utils.loadExample = async function (ex, editor, info) {
-  const ext = ex.file.split('.')[1]
-  const lang = ext === 'js' ? 'javascript' : 'html'
-  if (editor.language !== lang) editor.language = lang
-  if (ex.template) {
-    editor.update(window.createCodeTemplate(ex.template))
-    editor.__codeTemplate = ex.template
+window.utils.loadExample = async function ({ example, editor, template, info }) {
+  const ct = template || 0
+  const ext = template ? 'js' : 'html'
+
+  if (template) {
+    editor.language = 'javascript'
+    editor.update(codeTemplates[ct])
+  } else {
+    editor.langauge = 'html'
   }
 
-  const res = await window.fetch(`/examples/${ex.file}`)
+  const res = await window.fetch(`/examples/v1/${example}.${ext}`)
   const code = await res.text()
   editor.code = code
 
-  if (ex.info && info) {
-    const filename = ex.file.split('.')[0]
+  if (info) {
     try {
-      const res = await window.fetch(`/examples/${filename}.txt`)
+      const res = await window.fetch(`/examples/v1/${example}.txt`)
       if (res.status >= 200 && res.status < 300) {
         const txt = await res.text()
         if (typeof info === 'string') nn.get(info).content(txt)
@@ -237,16 +238,32 @@ window.utils.loadExample = async function (ex, editor, info) {
     } catch (err) {
       // ignore error
     }
-  } else if (!ex.info && info) {
-    nn.get(info).content('')
   }
 }
 
 window.utils.createCodeEditor = function (opts) {
   const ele = document.querySelector(opts.ele)
-  let index = 0
-  const total = opts.code instanceof Array ? opts.code.length : 1
-  const codeObj = opts.code instanceof Array ? opts.code[0] : opts.code
+  const total = opts.total || 1
+  const fileprefix = opts.fileprefix
+
+  let index = opts.index
+  if (total > 1) {
+    index = index || 1
+  } else {
+    index = ''
+  }
+
+  // let template = opts.template
+  let template
+  if (typeof opts.template === 'number') {
+    template = opts.template
+  } else if (opts.template instanceof Array) {
+    if (typeof index === 'number') {
+      template = opts.template[index - 1]
+    } else if (!index || index === '') {
+      template = opts.template[0]
+    }
+  }
 
   ele.innerHTML = `
   <div class="code-controls">
@@ -266,7 +283,7 @@ window.utils.createCodeEditor = function (opts) {
   <section class="code-info">
     <nav>
       <span class="link prev">◀◀ prev</span> |
-      <span class="code-title">${opts.title} ${index + 1} / ${total}</span> |
+      <span class="code-title">${opts.title} ${index} / ${total}</span> |
       <span class="link next">next ▶▶</span>
     </nav>
     <p class="small-note">(click the "prev" and "next" links to cycle through code examples and their explinations below)</p>
@@ -276,8 +293,6 @@ window.utils.createCodeEditor = function (opts) {
   </section>
   `
 
-  const lang = codeObj.file.split('.')[1]
-
   const ne = new Netitor({
     ele: ele.querySelector('.editor'),
     render: ele.querySelector('.render'),
@@ -285,37 +300,47 @@ window.utils.createCodeEditor = function (opts) {
     renderWithErrors: true,
     background: false,
     theme: 'moz-light',
-    language: lang === 'js' ? 'javascript' : 'html',
+    language: 'html',
     wrap: true
   })
 
-  ne.__codeTemplate = codeObj.template
+  ne.__codeTemplate = template
 
   const title = ele.querySelector('.code-title')
   const nextBtn = ele.querySelector('.code-info .next')
   const prevBtn = ele.querySelector('.code-info .prev')
 
-  function update (obj, nojump) {
-    const infoEle = ele.querySelector('.content > p')
-    window.utils.loadExample(obj, ne, infoEle)
-    title.innerHTML = `${opts.title} ${index + 1} / ${total}`
+  function update (val, nojump) {
+    window.utils.loadExample({
+      example: fileprefix + val,
+      editor: ne,
+      template: template,
+      info: ele.querySelector('.content > p')
+    })
+    title.innerHTML = `${opts.title} ${index} / ${total}`
     if (!nojump) window.location.hash = opts.ele
     setTimeout(() => ne.update(), 200)
   }
 
   function next () {
-    index++; if (index >= total) index = 1
-    const obj = opts.code instanceof Array ? opts.code[index] : opts.code
-    update(obj)
+    index++; if (index > total) index = 1
+    if (opts.template) {
+      template = opts.template[index - 1]
+      ne.__codeTemplate = template
+    }
+    update(index)
   }
 
   function prev () {
-    index--; if (index < 1) index = total - 1
-    const obj = opts.code instanceof Array ? opts.code[index] : opts.code
-    update(obj)
+    index--; if (index < 1) index = total
+    if (opts.template) {
+      template = opts.template[index - 1]
+      ne.__codeTemplate = template
+    }
+    update(index)
   }
 
-  update(codeObj, true)
+  update(index, true)
 
   const ctrl = ele.querySelector('.code-controls')
   window.utils.setupCodeControls(ctrl, ne)

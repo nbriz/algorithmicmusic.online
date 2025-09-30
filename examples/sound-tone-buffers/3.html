@@ -1,0 +1,28 @@
+<script src="https://unpkg.com/tone"></script>
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
+<script>
+/* global Tone, nn */
+
+// custom function to create Tone.js buffers from scratch
+function createCustomBuffer (seconds, channels) {
+  const sr = Tone.context.sampleRate
+  const bufferSize = seconds * sr
+  const buffer = Tone.context.createBuffer(channels, bufferSize, sr)
+  // loop through each channel
+  for (let ch = 0; ch < channels; ch++) {
+    // get all the samples for this channel
+    const samples = buffer.getChannelData(ch)
+    // fill this channel with "white noise"
+    for (let s = 0; s < bufferSize; s++) {
+      // random values between -0.25 and 0.25
+      samples[s] = nn.random(-0.25, 0.25)
+    }
+  }
+  return buffer
+}
+
+const buffer = createCustomBuffer(1, 2)
+const noise = new Tone.BufferSource(buffer).toDestination()
+noise.start()
+
+</script>

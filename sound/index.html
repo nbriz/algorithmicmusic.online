@@ -58,10 +58,19 @@
         <h4 class="ch">chapter 1</h4>
         <h2 class="formatted-text ch-title">sound</h2>
 
-        <!-- <blockquote>
-          <p>[the Analytical Engine] might act upon other things besides number, were objects found whose mutual fundamental relations could be expressed by those of the abstract science of operations, and which should be also susceptible of adaptations to the action of the operating notation and mechanism of the engine . . . supposing, for instance, that the fundamental relations of pitched sounds in the science of harmony and of musical composition were susceptible of such expression and adaptations, the engine might compose elaborate and scientific pieces of music of any degree of complexity or extent.</p>
-          <cite><a href="https://en.wikipedia.org/wiki/Ada_Lovelace" target="_blank">Ada Lovelace</a> (sketch of the Analytical Engine) 1842</cite>
-        </blockquote> -->
+        <svg id="preSineWave"></svg>
+
+        <p>
+          How can we create music with a computer? One way is to use a DAW (digital audio workstation), programs like Ableton or FL Studio. These apps are great when you want to create conventional music with ready-made tools. But when we want to push boundaries and tap the full potential of this <a href="http://www.newmediareader.com/book_samples/nmr-26-kay.pdf" target="_blank">meta-medium</a>, we turn to code. Instead of simply using software someone else wrote, we can program our own. Pre-made software gives us only the buttons, knobs, and menus its designers imagined. That can save time, but it also limits what and how we can create. By relying on someone else's GUI (graphical user interface), we restrict our imagination to their design choices, rather than exploring the much larger creative possibilities of the sounds a computer can make and how we might play it.
+        </p>
+
+        <p>
+          Learning to make sound and music with code isn't just about getting programs to run, it's about understanding the principles that make them possible. The ideas you can imagine in code grow directly from your grasp of core concepts. If you skip that foundation and lean only on tools (whether pre-made software or even generative AI) you'll tend to produce work bounded by what you already know or what the tool suggests. It may feel productive, but without a sense of how and why this code works, and the history of ideas behind it, you lose the agency to shape it into something truly your own. Invest in the fundamentals, history, and theory, and your imagination will expand alongside your technical craft. The more time you spend experimenting and wrestling with the material, the more you'll tap the true potential of the computer as a creative medium, and the more interesting and original your work will become.
+        </p>
+        <br>
+        <br>
+
+        <h3 class="formatted-text">what is sound</h3>
 
         <p>
           Before we talk about music, we need to talk about sound, what it is and how we’ll be making it. Sound happens when something vibrates, like a vocal chord, a guitar string or a speaker. These vibrations cause the tiny particles in the air around it to move, creating patterns of squished-together areas (compressions) and spread-out areas (rarefactions). These patterns travel outward as waves. When these waves reach your ears, they make your eardrum vibrate in the same pattern. Your brain takes these vibrations and processes them into what you experience as sound—like speech, music or noise. In a way, sound only exists in your mind: it's your brain's way of interpreting the physical vibrations in the air into a meaningful hallucination. Without a listener, “sound” is nothing more than patterns of vibrations in the air.
@@ -91,12 +100,10 @@
         <h3 class="formatted-text">digital sound</h3>
 
         <p>
-          So how can we tell our computer to vibrate its speakers? One way we can make sounds with our computer is by using a DAW (Digital Audio Workstation) like Ableton or FL Studio. Apps like these are perfect when you want to make music the same way everyone else does, but when we want to push the boundaries of music and leverage the full potential of this <a href="http://www.newmediareader.com/book_samples/nmr-26-kay.pdf" target="_blank">meta-medium</a> we turn to code. Rather than simply “use” software someone else wrote, we can “program” our own by writing code. When we use pre-made software we’re limited to the buttons, knobs and menus the developer created for us. While this saves us the time it would take to write our own, it also limits what/how we create to what/how that developer imagined we would want to create.
+          So we'll rephrase the initial question: How can we vibrate our speakers (ie. create sound) using code on a computer? Many languages and environments can create sound. Because our goal is to publish pieces on the open web, we'll use JavaScript, the Web's de facto programming language. Websites are built on <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank">HTML</a>, a beginner-friendly language for structuring content. We won't spend much time on HTML in this class, but if you're comfortable with HTML (and <a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank">CSS</a>) you're welcome to use them in your projects. Our focus will be JavaScript. To run it in the browser, we'll put our code inside a <code>&lt;script&gt;</code> tag in an HTML file. Running JavaScript in a web browser gives us access to the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API" target="_blank">Web Audio API</a>, a set of audio building blocks for generating and shaping sound from scratch.
         </p>
 
-        <p>
-          There’s lots of different coding languages and environments used to create sound, because our goal is to create works that we can publish online for anyone to access on the open web, we’ll be using JavaScript, the web’s de facto programming language. A website or web app is written first and foremost in <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank">HTML</a>, a simple beginner friendly coding langauge for structuring content on the web. We won't be discussing HTML too much in this class, but if u're familiar with HTML (and <a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank">CSS</a>) feel free to use them as much as you'd like in your work. In this class we'll be focusing almost exclusively on JavaScript, but we do need a little bit of HTML in order to write JavaScript in the browser, it starts with the <code>&lt;script&gt;</code> element, between which we can write JavaScript code. When we run JavaScript in a web browser we’re given access to the Web Audio API, a collection of pre-made functions for generating sound from scratch.
-        </p>
+
       </div>
     </section>
 
@@ -109,11 +116,13 @@
 
     <section>
       <div class="content">
-        <h3 class="formatted-text">timbre</h3>
+        <h3 class="formatted-text">layers of abstractions</h3>
 
         <p>
-          In the examples above we created two different sounds entirely from scratch, by calculating the raw data (number values) for each. These two sounds in some sense are opposites. The first was completely random, pure “noise” like the sound of a consonant in speech or the crash symbol on a drum set. The second was a “tone” like the sound of a vowel in speech or a key on a piano. It’s actually the purest tone we could make, the sound of a “sine wave”.
+          In the last of the examples above, we created a function called <code>playTone()</code> which abstracts the logic for creating an audio buffer (the array of values determining the speaker cone's excursion, aka displacement/deflection) into a higher level concept: playing a tone. This function can be controlled by passing it two values, one representing the pitch of the tone (the sound wave's frequency) and the other the volume of the tone (the sound wave's amplitude). Abstraction is choosing what details to ignore so you can think at the right level. If we were to give our program a GUI (graphical user interface), itself another layer of abstraction, it might look like this...
         </p>
+        <br>
+
         <am-button id="play-tone">play tone</am-button>
         <p class="small-note">(waveform not to scale, slowed down for demonstration)</p>
         <svg id="sineWave"></svg>
@@ -124,6 +133,31 @@
 
         <am-range id="vol" min="0" max="10" step="0.01"></am-range>
         <div class="range-label">volume <span id="vol-val">5</span></div>
+
+        <p>
+          Computing is built from layers of abstraction, often called a "<strong>stack</strong>." At the bottom, electrons flow through transistors, encoding bits (1s and 0s) that the CPU turns into machine instructions. Above that sit the operating system and audio drivers that manage timing and move sample data to your sound hardware (which drive your speakers). In the browser, the JavaScript engine and the Web Audio API provide higher-level building blocks; our own functions sit above those, and at the top the GUI translates gestures into parameter changes. Each layer hides complexity and offers a different vocabulary for making sound. Creative agency comes from knowing where you are in that stack, what each layer affords, and when to step down a level to regain precision or invent something new.
+        </p>
+
+        <p>
+          So far we've been working in the middle of the stack with JavaScript, talking directly to the browser's low-level Web Audio API. Next, we'll layer in libraries that let us think more musically and visually. <a href="https://tonejs.github.io/" target="_blank">Tone.js</a> abstracts Web Audio into higher-level instruments and signal flow (e.g., Synth, Filter, Gain), a musical time system ('4n', BPM, bars), and a reliable scheduler (Transport) so we can focus on notes, rhythms, and timbre instead of coding all that logic ourselves. We're going to keep experimenting with creating audio buffers from scratch for now, but know that later Tone.js will add all these laeyrs of abstraction to our stack of tools. For interfaces, we'll be using the <a href="https://github.com/netizenorg/netnet-standard-library?tab=readme-ov-file#netnet-standard-library" target="_blank">netnet-standard-library</a> (or <code>nn.min.js</code> for short) which will privde some music theory functions (for creating modes, scales, chords) and also streamlines the browser's <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model" target="_blank">DOM API</a> so building sliders, buttons, and simple UIs is quick and clear. We'll use these abstractions for most of the course to move faster and explore ideas, but keep in mind that you can always drop down to raw Web Audio or vanilla DOM API when you need finer control.
+        </p>
+      </div>
+    </section>
+
+    <section id="editor-2"></section>
+
+    <hr>
+    <br>
+    <br>
+    <br>
+
+    <section>
+      <div class="content">
+        <h3 class="formatted-text">timbre</h3>
+
+        <p>
+          In the examples above we created two different sounds entirely from scratch, by calculating the raw data for each (the sample values to fill the audio buffer). These two sounds in some sense are opposites. The first was completely random, pure “noise” like the sound of a consonant in speech or the crash symbol on a drum set. The second was a “tone” like the sound of a vowel in speech or a key on a piano. It’s actually the purest tone we could make, the sound of a “sine wave”.
+        </p>
 
         <p>
           However, pure sine waves don’t exist in the natural world, they can only ever be synthesized electronically (be it analog or digital). Most "natural" sounds with repetitive or predictable vibrations—what we hear as musical tones—are a mix of a <strong>fundamental</strong> frequency (the dominant tone, like 440 Hz for A4) and additional frequencies called <strong>overtones</strong> or <strong>harmonics</strong>. These overtones are multiples of the fundamental and give the sound its complexity.
@@ -141,72 +175,30 @@
         <p>
           In digital audio, we often describe four basic wave types, each with unique characteristics. Sine waves are pure tones, containing only the fundamental frequency with no harmonics, making them smooth and simple. Square waves are richer, combining the fundamental with only the odd-numbered harmonics (e.g., 3rd, 5th, 7th), giving them a buzzy, hollow sound. Saw waves are even more complex, containing the fundamental and all harmonics, which creates a bright, edgy sound often used in synth music. Triangle waves are similar to square waves but softer; they also include only odd harmonics, but the higher harmonics are much quieter, resulting in a more subdued, rounded tone. Each wave shape has a distinct frequency content, shaping its sound and timbre.
         </p>
+      </div>
+    </section>
 
+    <section id="editor-3"></section>
+
+    <hr>
+    <br>
+    <br>
+    <br>
+
+    <section>
+      <div class="content">
         <h4 class="formatted-text">a note on these visualizations</h4>
 
         <p>
-          Visualizations like the waveform and spectrum analyzer above are created using an algorithm called <a href="https://en.wikipedia.org/wiki/Fast_Fourier_transform" target="_blank">the Fast Fourier Transform</a> or FFT for short. This algorithm has a very interesting history worth <a href="https://www.youtube.com/watch?v=nmgFG7PUHfo" target="_blank">learning more about</a>. I might also suggest you can check out Jack Schaedler's <a href="https://jackschaedler.github.io/circles-sines-signals/dft_introduction.html" target="_blank">interactive page on the Fourier Transform</a> for a more intuitive understanding of how adding/removing harmonics to a fundamental frequency changes the wave shape. The Web Audio API has a built-in implementation of the FFT algorithm in AnalyserNode which I <a href="/editor/#Web Audio API/the basics/Audio Analyser Node">explain here</a>, as well as how to use it to create rasterized visualizations <a href="/editor/#Web Audio API/the basics/visualization: canvas">with canvas</a> or vector based visualizations <a href="http://localhost/editor/#Web%20Audio%20API/the%20basics/visualization:%20svg%20with%20d3">with svg</a> using the d3 library. Tone.js also has it's higher level abstractions of this AnalyserNode including it's <a href="https://tonejs.github.io/docs/15.0.4/classes/FFT.html" target="_blank">FFT</a> class, it's <a href="https://tonejs.github.io/docs/15.0.4/classes/Waveform.html" target="_blank">Waveform</a> class and it's <a href="https://tonejs.github.io/docs/15.0.4/classes/Meter.html" target="_blank">Meter</a> class.
+          The examples above all make use of a couple of helper functions for visualizing our audio, <code>createWaveform()</code> and <code>createSpectrum()</code>, this lesson isn't about audio visualization, but if you're curious to see the code behind those functions you can view the source code for both the <a href="http://localhost:8000/js/create-waveform.js" target="_blank">createWaveform</a> and <a href="http://localhost:8000/js/create-spectrum.js" target="_blank">createSpectrum</a> functions if you'd like. Visualizations like these are  created using an algorithm called <a href="https://en.wikipedia.org/wiki/Fast_Fourier_transform" target="_blank">the Fast Fourier Transform</a> or FFT for short. This algorithm has a very interesting history worth <a href="https://www.youtube.com/watch?v=nmgFG7PUHfo" target="_blank">learning more about</a>. I might also suggest you can check out Jack Schaedler's <a href="https://jackschaedler.github.io/circles-sines-signals/dft_introduction.html" target="_blank">interactive page on the Fourier Transform</a> for a more intuitive understanding of how adding/removing harmonics to a fundamental frequency changes the wave shape. The Web Audio API has a built-in implementation of the FFT algorithm in AnalyserNode which I <a href="/editor/#Web Audio API/the basics/Audio Analyser Node">explain here</a>, as well as how to use it to create rasterized visualizations <a href="/editor/#Web Audio API/the basics/visualization: canvas">with canvas</a> or vector based visualizations <a href="/editor/#Web%20Audio%20API/the%20basics/visualization:%20svg%20with%20d3">with svg</a> using the d3 library. Tone.js also has it's higher level abstractions of this AnalyserNode including it's <a href="https://tonejs.github.io/docs/15.0.4/classes/FFT.html" target="_blank">FFT</a> class, it's <a href="https://tonejs.github.io/docs/15.0.4/classes/Waveform.html" target="_blank">Waveform</a> class and it's <a href="https://tonejs.github.io/docs/15.0.4/classes/Meter.html" target="_blank">Meter</a> class.
+        </p>
+
+        <p>
+          That said, our main goal with this lesson is understand one of the most fundamental principles of digital audio: sound buffers. Over the next few weeks we'll start climbing the ladder of abstraction and begin expressing sounds at a higher level (eventually in terms of musical notes), but before we do it's worth spending some time to experiment with buffers at this lower level, this will not only help in your fundamental understanding of digital audio, but might also plant a seed for ideas you might have in the future which could benefit from dipping back down into this lower level.
         </p>
       </div>
     </section>
 
-    <section id="editor-2"></section>
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <hr>
-    <br>
-    <br>
-    <br>
-
-    <section>
-      <div class="content">
-        <h3 class="formatted-text">online theremin</h3>
-        <p>
-          We've now learned enough code to make an online <strong>theremin</strong>. Historically, the theremin was one of the first electronic instruments, invented in the 1920s by Léon Theremin. Instead of physical strings or keys, the theremin generates sound by translating the distance of your hands from two antennas into control signals for pitch and volume. It works by creating magnetic fields around its antennas, which are sensitive to the proximity of your hands. As your hand moves closer to the vertical pitch antenna, it alters the frequency of an analog oscillator, raising or lowering the pitch. Similarly, moving your other hand near the horizontal volume antenna changes another magnetic field, adjusting the amplitude (loudness) of the sound. In the example below I've created a digital theramin which uses the mouse instead of antennas. Holding the mouse button down produces the sound, then moving the mouse left/right changes the pitch while moving it up/down changes the volume.
-        </p>
-      </div>
-    </section>
-
-    <section id="editor-3"></section>
-
-    <section>
-      <div class="content">
-        <p>
-          There's some new code we haven't seen before. Towards the bottom you'll notice <code>nn.on()</code> event listeners, similar to the ones we've seen before except this time the <code>.on()</code> method is attached directly to the <code>nn</code> object. When we do this we're essentially saying we want to listen for events in the entire window (rather than on a specific UI element). We're also listening for some new events we haven't seen yet, 'mousedown' which will trigger the <code>start</code> function, 'mouseup' which will trigger the <code>stop</code> function and 'mousemove' which triggers the <code>update</code> function. The update function takes the event object and maps its <code>e.x</code> and <code>e.y</code> values (the horizontal and vertical mouse coordinates) to specific ranges using the <code>nn.map()</code> method. This method takes more arguments than we've seen any other method or function take so it's worth discussing a bit.
-        </p>
-
-        <p>
-          The <code>map</code> method is used to take value which falls within a given range and convert it to another value in the same position of a different range. For example, if our value is "6" representing the 6th hour in a range from 0-12 we could map that to another range for example 0-100. In this range the 6 would become 50, because 6 is directly in the center of it's range (1-12) and the center of the new range (0-100) would be 50.
-        </p>
-        <p>
-          In the case of our theremin, it takes the mouse's horizontal position <code>e.x</code> which will be a value between 0 and the width of our page. Every user will have a different sized page, so rather than hard-coding the value for the width of the page we can pull it dynamically using <code>nn.width</code>. Then we map this value to a new range between 220 (the lowest note I want to play, an "A3" on a piano) and 1760 (the highest note I want to play, an "A7"). Similarly the mouse's vertical position <code>e.y</code> gets mapped to a new range of 0 to -80, so that when our mouse is at the top of the page it's volume is unchanged, but when it's at the bottom of the page we lower it by -80 db.
-        </p>
-      </div>
-    </section>
-
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <hr>
-    <br>
-    <br>
-    <br>
-
-    <section>
-      <div class="content">
-        <h3 class="formatted-text">homework</h3>
-        <p>
-          For homework read "<a href="https://www.bbc.com/culture/article/20201111-the-theremin-the-strangest-instrument-ever-invented" target="_blank">The theremin: The strangest instrument ever invented?</a>" and then experiment with the example above to create your own variation. Consider using some of the other UI (user interface) elements covered in the previous examples. Consider the other adjustable paramters we've covered and how you might want to limit or enable control over them with the interface you present to the user. At its core, the theremin generates a simple sine wave—the purest form of sound with no harmonics (you can change that of course). Yet, through its motion-controlled pitch and volume, it transforms this basic tone into a uniquely expressive and dynamic musical instrument, allowing players to "sculpt" sound in real time. We might only be at the beginning of our algorithmic music journey, but we have already enough tools to make something interesting, what is required now is practice and lots of experimentation.
-        </p>
-      </div>
-    </section>
-
-    <section id="editor-3"></section>
 
     <section class="attribution">
       <div class="content">
@@ -248,31 +240,57 @@
 
       // code examples
       // --------------------------------------------
+
       utils.createCodeEditor({
         ele: '#editor-1',
         title: 'raw audio data',
-        fileprefix: 'sound-',
-        total: 8
+        code: [
+          { file: 'sound-buffers/sound-1.html', info: true },
+          { file: 'sound-buffers/sound-2.html', info: true },
+          { file: 'sound-buffers/sound-3.html', info: true },
+          { file: 'sound-buffers/sound-4.html', info: true },
+          { file: 'sound-buffers/sound-5.html', info: true },
+          { file: 'sound-buffers/sound-6.html', info: true },
+          { file: 'sound-buffers/sound-7.html', info: true },
+          { file: 'sound-buffers/sound-8.html', info: true }
+        ]
       })
 
       utils.createCodeEditor({
         ele: '#editor-2',
-        title: 'shaping waveforms',
-        fileprefix: 'timbre-',
-        template: [0, 0, 0, 0, 3, 3, 3, 3],
-        // index: 7,
-        total: 8
+        title: 'tone.js audio buffers',
+        code: [
+          { file: 'sound-tone-buffers/1.html', info: true },
+          { file: 'sound-tone-buffers/2.html', info: true },
+          { file: 'sound-tone-buffers/3.html', info: true },
+          { file: 'sound-tone-buffers/4.html', info: true },
+          { file: 'sound-tone-buffers/5.html', info: true }
+        ]
       })
 
+      const ttemps = ['body', 'nn', 'tone', 'wave', 'spec']
       utils.createCodeEditor({
         ele: '#editor-3',
-        fileprefix: 'theramin',
-        template: 3
+        title: 'sound wave buffers',
+        code: [
+          { file: 'sound-tone-buffers/6.js', template: ttemps, info: true },
+          { file: 'sound-tone-buffers/7.js', template: ttemps, info: true },
+          { file: 'sound-tone-buffers/8.js', template: ttemps, info: true },
+          { file: 'sound-tone-buffers/9.js', template: ttemps, info: true },
+          { file: 'sound-tone-buffers/10.js', template: ttemps, info: true }
+        ]
       })
-
 
       // sine wave diagram
       // --------------------------------------------
+      const preSineWave = new SVGSineWave({
+        svg: '#preSineWave',
+        frequency: 4,
+        amplitude: 0.5,
+        colors: ['var(--text-color)', 'var(--accent-color3)'],
+        width: nn.get('.content').width
+      })
+
       const sineWave = new SVGSineWave({
         svg: '#sineWave',
         frequency: 12,
@@ -283,6 +301,7 @@
 
       nn.on('resize', () => {
         sineWave.update({ width: nn.get('.content').width })
+        preSineWave.update({ width: nn.get('.content').width })
       })
 
       nn.get('#freq').value = 440
