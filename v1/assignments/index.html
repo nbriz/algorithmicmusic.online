@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Algorithmic Music Online: Visiting Artists</title>
+    <meta name="author" content="Nick Briz">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <!-- TODO: social media stuff -->
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+      .table img {
+        max-width: 180px;
+        border-radius: 10px;
+        margin: 1em;
+      }
+    </style>
+  </head>
+  <body>
+
+    <main-menu>
+      <div slot="menu-items">
+        <div class="color-mode-wrap">
+          <label class="color-mode-switch">
+            <input type="checkbox">
+            <span class="color-mode-slider"></span>
+          </label>
+          <span class="color-mode-label">light/dark mode</span>
+        </div>
+      </div>
+    </main-menu>
+
+    <section id="prologue">
+      <div class="content">
+        <h2 class="formatted-text">Assignments</h2>
+
+        <br><br>
+        <blockquote>
+          <p> The idea becomes a machine that makes the art.</p>
+          <cite><a href="https://en.wikipedia.org/wiki/Sol_LeWitt" target="_blank">Sol LeWitt</a></cite>
+        </blockquote>
+        <br><br>
+
+        <p>
+          For homework each week there will be recommended sketches, viewings and or readings aimed at supplementing, reviewing and/or putting into practice concepts covered in class. We will often discuss the homework at the start of the next class each week. These are for your own benefit, the only work which you will be submitting to <a href="https://canvas.uchicago.edu/courses/62066" target="_blank">canvas</a> for evaluation are the following two official assignments:
+        </p>
+        <br><br><br><br>
+
+        <h4>
+          <a href="/assignments/instrument">1: web-based musical instrument</a>
+        </h4>
+        <p>
+          For this assignment, students will design and develop a web-based musical instrument. The instrument should allow users to interact with it and generate sounds in a meaningful way. This should not be a web-based version of an existing instrument (like a guitar or piano) but rather something more experimental which embraces the creative possibilities of the Web. Students should explore different interfaces and consider the use of sensors or controllers to enhance the user experience. The final deliverable will be a functional web-based instrument that can be shared online, along with a brief written reflection on the creative process and technical challenges.
+        </p>
+        <br><br>
+
+        <h4>2: algorithmic composition </h4>
+        <p>
+          For this assignment, students will create an algorithmic system that generates musical compositions. This should not be digital/coded version of a pre-existing song or melody and ideally not something that could be easily written as a classical score, rather it should be a composition that leverages the generative potential of the Web. The final deliverable will be a functional algorithm that generates unique and interesting musical compositions, along with a brief written reflection on the creative process and technical challenges.
+        </p>
+
+        <br><br><br><br>
+
+        <h4 id="publishing">Publishing your work on the Web</h4>
+        <p>
+          These two assignments should be published on the web, and turned in on <a href="https://canvas.uchicago.edu/courses/62066" target="_blank">canvas</a> by submitting the project's URL (published web address).
+        </p>
+
+        <p>
+          If you have a preferred workflow you are free to work in any code editor and publish to any server, so long as the work can be submitted on canvas via a publically available URL. This can mean <a href="https://en.wikipedia.org/wiki/Web_hosting_service" target="_blank">hosting</a> on your own server (or shared host), or if you're familiar with GitHub, you can create a repository for your project and use GitHub's "Pages" service to serve your project on the Web. This is the same service netnet uses, which means you could either open your project in netnet and follow the steps below or <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site" target="_blank">setup GitHub Pages</a> directly yourself.
+        </p>
+
+        <p>
+          If you do not have a preferred code editor and workflow, I suggest using <a href="https://netnet.studio">netnet</a> with the following workflow:
+        </p>
+
+        <ol>
+          <li>First make sure you've created a free <a href="https://github.com/" target="_blank">GitHub</a> account, we'll be using this account to store our code as well as publish our work on the web.</li>
+          <li>Then, on <a href="https://netnet.studio">netnet</a> click on netnet's face to open up the "Functions Menu" and click "Log In" to connect your GitHub account to netnet (you only need to do this once)</li>
+          <li>Once netnet is connected to your GitHub account you can create a new project by pressing <span class="hotkey" data-key="S"></span> and choosing the <b>create new project</b> option. Once you're working on a project pressing <span class="hotkey" data-key="S"></span> again will let you can save your progress and update your project</li>
+          <li>Alternatively, if you'd like to open a previously saved project you can do so by pressing <span class="hotkey" data-key="O"></span></li>
+          <li>When you're ready to publish your saved project on the open web, click on netnet's face to search for "publish project" or open up the "Functions Menu" and choose "publishProject()" under the "my project" section.</li>
+        </ol>
+
+        <br><br>
+
+        <p>
+          Once a project is plublished netnet will show you it's publically available URL, though it does usually take a couple of minutes for the URL to work. From now on, any time you save your progress the published site will also update (usually takes a couple of minutes) but the web address itself never changes, only the contents of your website.
+        </p>
+      </div>
+
+      <br>
+      <br>
+      <br>
+      <br>
+    </section>
+
+
+
+    <script src="/js/libs/nn.min.js"></script>
+    <script src="/js/custom-elements/main-menu.js"></script>
+    <script src="/js/utils.js"></script>
+    <script>
+      utils.init()
+      nn.getAll('h4').forEach(e => utils.formatText(e))
+    </script>
+  </body>
+</html>

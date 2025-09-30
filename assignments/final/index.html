@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Final Project</title>
+    <meta name="author" content="Nick Briz">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <!-- TODO: social media stuff -->
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+      .table img {
+        max-width: 180px;
+        border-radius: 10px;
+        margin: 1em;
+      }
+    </style>
+  </head>
+  <body>
+
+    <main-menu>
+      <div slot="menu-items">
+        <div class="color-mode-wrap">
+          <label class="color-mode-switch">
+            <input type="checkbox">
+            <span class="color-mode-slider"></span>
+          </label>
+          <span class="color-mode-label">light/dark mode</span>
+        </div>
+      </div>
+    </main-menu>
+
+    <section id="prologue">
+      <div class="content">
+        <h2 class="formatted-text">final project</h2>
+
+        <br><br>
+        <blockquote>
+          <p> The idea becomes a machine that makes the art.</p>
+          <cite><a href="https://en.wikipedia.org/wiki/Sol_LeWitt" target="_blank">Sol LeWitt</a></cite>
+        </blockquote>
+        <br><br>
+
+        <p>
+          The final project will be a polished, hand crafted/coded interactive and/or generative musical system published on the web. If it’s an interactive system, like a digital instrument, it should allow users to interact with it and generate sounds in a meaningful way. This should not be a web-based version of an existing instrument (like a guitar or piano) but rather something more experimental which embraces the creative possibilities of the Web. If you create a generative (non-interactive) musical composition, it should not be coded version of a pre-existing song or melody and ideally not something that could be easily written as a classical score, rather it should be a composition that leverages the generative potential of the Web. Submit a publicly accessible URL on <a href="https://canvas.uchicago.edu/courses/67301" target="_blank">canvas</a> and be prepared to present it in a class for critique. You’ll be expected to demo/perform and briefly explain your concept, approach, and key challenges.
+        </p>
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <h4 id="points">Points to Consider</h4>
+
+        <p>
+          <strong>1. Level of Abstraction,</strong> <i><u>think about which tools you'd like to use to generate sound.</u></i>&nbsp;we've introduced multiple layers of abstraction, the higher the level the easier to use (but the more pre-defined the sound will be) the lowest level is most difficult to use (but the least defined and most malliable). These break down as follows (from high-level to low-level):<br /><br />
+        </p>
+
+        <ul>
+            <li>
+                Tone.js "Instruments" (<a title="https://tonejs.github.io/docs/15.0.4/classes/Synth.html" href="https://tonejs.github.io/docs/15.0.4/classes/Synth.html">docs</a>&nbsp;/ <a title="https://algorithmicmusic.online/editor/#Tone.js/Synths/Synth" href="https://algorithmicmusic.online/editor/#Tone.js/Synths/Synth">demos</a>) Tone.js provides a list of classes (which it calls "instruments") for generating sounds, most are created using some pre-built combination of Oscillators (one exception being the Tone.js Sampler: <a class="inline_disabled" href="https://tonejs.github.io/docs/15.0.4/classes/Sampler.html" target="_blank" rel="noopener noreferrer">docs</a> / <a class="inline_disabled" href="https://algorithmicmusic.online/editor/#Tone.js/Sampling/sampler%20(pitch%20shifting)" target="_blank" rel="noopener noreferrer">demo</a>) attached to an <a id="LPlnk839407" title="https://tonejs.github.io/docs/15.0.4/classes/AmplitudeEnvelope.html" href="https://tonejs.github.io/docs/15.0.4/classes/AmplitudeEnvelope.html">AmplitudeEnvelope</a> (so that our sounds have that more natural sounding ADSR envelope when we play them). These come with a variety of different settings we can modify, either by setting them manually (as with the present examples) or adjusting them with UI we create (like buttons or input range sliders) or algorithmically (ex: by "modulating" them with an LFO)
+            </li>
+            <li>
+                Tone.js "Sources" (<a id="LPlnk501717" title="https://tonejs.github.io/docs/15.0.4/classes/Oscillator.html" href="https://tonejs.github.io/docs/15.0.4/classes/Oscillator.html">docs</a>&nbsp;/ <a id="LPlnk115793" title="https://algorithmicmusic.online/editor/#Tone.js/Oscillators/Basic%20Oscillator" href="https://algorithmicmusic.online/editor/#Tone.js/Oscillators/Basic%20Oscillator">demos</a>) Tone.js also provides different types of Oscillators (beyond the basic "sine", "square", "triangle" and "sawtooth") which are made from some combination of nodes and thus have other properties besides frequency (or pitch) volume (or amplitude) and type (or shape). Similarly, the Tone.js Player (<a class="inline_disabled" href="https://tonejs.github.io/docs/15.0.4/classes/Player.html" target="_blank" rel="noopener noreferrer">docs</a> / <a class="inline_disabled" href="https://algorithmicmusic.online/editor/#Tone.js/Sampling/player%20(basic)" target="_blank" rel="noopener noreferrer">demo</a>) and Players (<a class="inline_disabled" href="https://tonejs.github.io/docs/15.0.4/classes/Players.html" target="_blank" rel="noopener noreferrer">docs</a>) allow us to create instruments from pre-recorded sound files without having to work directly with audio buffers.
+            </li>
+            <li>
+                Keep in mind that the Tone.js classes (both the oscillators and higher level "instruments") are really just different combinations of a small set of lower level nodes, namely the basic <a id="LPlnk353982" title="https://tonejs.github.io/docs/15.0.4/classes/Oscillator.html" href="https://tonejs.github.io/docs/15.0.4/classes/Oscillator.html">Oscillator</a>, the basic <a id="LPlnk" title="https://tonejs.github.io/docs/15.0.4/classes/Gain.html" href="https://tonejs.github.io/docs/15.0.4/classes/Gain.html">GainNode</a>&nbsp;and the <a id="LPlnk" title="https://tonejs.github.io/docs/15.0.4/classes/LFO.html" href="https://tonejs.github.io/docs/15.0.4/classes/LFO.html">LFO</a>&nbsp;(with occasional help from some of Tone.js's <a id="LPlnk323923" title="https://tonejs.github.io/docs/15.0.4/classes/Multiply.html" href="https://tonejs.github.io/docs/15.0.4/classes/Multiply.html">signal math classes</a>). The big difference between the Tone.js Oscillators and Instruments is that the latter all have an AmplitudeEnvelope plugged in at the end (for that ADSR).
+            </li>
+            <li>
+                At the lowest level you can work <a title="https://algorithmicmusic.online/editor/#Tone.js/Buffers/Raw%20Buffer" href="https://algorithmicmusic.online/editor/#Tone.js/Buffers/algorithmically%20generated">directly with audio buffers</a>, at the end of the day all the interfaces/nodes mentioned above are just ways of creating buffers by describing higher level concepts (like "frequency") as opposed to thinking mathematically about the actual values representing that signal (or sound wave), you could of course create any sound from pure maths, which is what working with buffers directly allows for.
+            </li>
+        </ul>
+
+        <br>
+
+        <p>
+          <strong>2. Timbre, </strong><i><u>think about what you want your sounds to sound like</u></i>. On one end of the spectrum we have a <a href="https://algorithmicmusic.online/editor/#Tone.js/Oscillators/Basic%20Oscillator">simple sine wave</a>, on the other end we have <a title="https://algorithmicmusic.online/editor/#Tone.js/Buffers/Raw%20Buffer" href="https://algorithmicmusic.online/editor/#Tone.js/Buffers/algorithmically%20generated">pure noise</a>, there's loads of space in-between. a big part of making your sound your own will be shaping it's timbre (it's texture or flavor).
+        </p>
+
+        <ul>
+          <li>
+            Besides adjusting the properties built into the Oscillators and Instruments in Tone.js, we can also shape our sound by adding to our audio graph (or signal chain) some of <strong>Tone.js's Effects</strong> classes (<a id="LPlnk" title="https://tonejs.github.io/docs/15.0.4/classes/AutoFilter.html" href="https://tonejs.github.io/docs/15.0.4/classes/AutoFilter.html">docs</a>&nbsp;/ <a id="LPlnk388351" title="https://algorithmicmusic.online/editor/#Tone.js/Effects/Reverb" href="https://algorithmicmusic.online/editor/#Tone.js/Effects/Reverb">demos</a>). These too have their own properties which can be modified, controlled (with UI) or modulated (with code like LFOs), and don't forget, as with the source nodes themselves, <a class="inline_disabled" href="https://algorithmicmusic.online/editor/#Tone.js/Effects/Tremolo%20(from%20scratch)" target="_blank" rel="noopener noreferrer">u can create your own types of effects</a> from some of the more "core" or basic types of effect nodes, namely Delay, Reverb and Distortion (most of the other effects are really some combination of those with Oscillators and LFOs)
+          </li>
+        </ul>
+
+        <br>
+
+        <p><strong>3. Controls,</strong> <i><u>If your piece is interactive, think about what aspect of the sound generation you want to be able to control and in what way.</u></i>&nbsp;Some might be obvious (most instruments let you control the frequency, ie. which note/pitch is played) but some controls might be less obvious and more specific to the design of your piece. We've gone over some <a id="LPlnk555987" title="https://algorithmicmusic.online/editor/#nn.min.js/basic%20user%20interface%20(ui)/button" href="https://algorithmicmusic.online/editor/#nn.min.js/basic%20user%20interface%20(ui)/button">basic UI</a>&nbsp;as well as how to use the <a title="https://algorithmicmusic.online/editor/#nn.min.js/mouse/movement" href="https://algorithmicmusic.online/editor/#nn.min.js/mouse/movement">mouse/trackpad</a> and the <a id="LPlnk829566" title="https://algorithmicmusic.online/editor/#nn.min.js/keyboard/keydown%20event" href="https://algorithmicmusic.online/editor/#nn.min.js/keyboard/keydown%20event">keyboard </a>as inputs, as well as <a class="inline_disabled" href="https://algorithmicmusic.online/editor/#nn.min.js/MIDI/MIDI%20data" target="_blank" rel="noopener noreferrer">MIDI controllers</a> and even our <a class="inline_disabled" href="https://algorithmicmusic.online/editor/#nn.min.js/camera/pose%20detection%20(AI)" target="_blank" rel="noopener noreferrer">video camera (with the help of AI)</a>.</p>
+
+      </div>
+
+      <br>
+      <br>
+      <br>
+      <br>
+    </section>
+
+
+
+    <script src="/js/libs/nn.min.js"></script>
+    <script src="/js/custom-elements/main-menu.js"></script>
+    <script src="/js/utils.js"></script>
+    <script>
+      utils.init()
+      nn.getAll('h4').forEach(e => utils.formatText(e))
+    </script>
+  </body>
+</html>

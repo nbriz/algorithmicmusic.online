@@ -55,25 +55,13 @@
         <h3 class="formatted-text">course description</h3>
 
         <p>
-          <strong>In this course, students will learn how to use JavaScript and web-based technologies to create algorithmic musical compositions and experimental web-based instruments. </strong>
+          In this course, students will learn how to use JavaScript and web-based technologies to create algorithmic musical compositions and experimental web-based instruments. Through the use of the WebAudio API and JavaScript libraries like Tone.js, students will learn how to programmatically generate and manipulate sound, creating interactive and generative audio works that can be shared online.
         </p>
         <p>
-          These are <a href="/assignments">two separate assignments</a> you'll be submitting on <a href="https://canvas.uchicago.edu/courses/62066" target="_blank">canvas</a>. For the first assignment, you will design and develop your own web-based musical instrument. The instrument should allow users to interact with it and generate sounds in a meaningful way. This should not be a web-based version of an existing instrument (like a guitar or piano) but rather something more experimental which embraces the creative possibilities of the Web.
-        </p>
-        <p>
-          The second assignment will be to create an algorithmic system that generates musical compositions. This should not be a digital/coded version of a pre-existing song or melody and ideally not something that could be easily written as a classical score, rather it should be a composition that leverages the generative potential of the Web. That all might sound a bit vague at this point, but we’ll be spending all quarter digging into the details, starting with how we can generate sounds from code.
-        </p>
-        <p>
-          <strong>Through the use of the WebAudio API and JavaScript libraries like Tone.js, students will learn how to programmatically generate and manipulate sound, creating interactive and generative audio works that can be shared online.</strong>
-        </p>
-        <p>
-          This will usually start with some example code I share on this site. Like the example below, this code will be interactive. Press the "play note" button to hear a sound, then change the number on line 2 below and press the "run code" button above the code. Then click the button again to hear the change in frequency.
+          This will usually start with some example code I share on this site. Like the example below, this code will be interactive. Press the "play note" button to hear a sound, then change the number on line 6 below and press the "run code" button above the code to re-compile it. Then click the button again to hear the change in frequency.
         </p>
       </div>
     </section>
-
-    <!-- SOMEWHER PRE CODE -->
-    In this class we’ll learn how to use code—specifically JavaScript in the web browser—to make sound from scratch. While software like Ableton or FL Studio gives us powerful pre-made tools, those tools also limit us to the buttons and menus their designers imagined. By learning the fundamentals of programming, we open ourselves to a much larger range of creative possibilities: we gain the ability to design our own instruments, invent new ways of playing, and shape sound in ways no off-the-shelf program can. This isn’t about “vibe coding” our way to results, but about developing the literacy to understand and mold code so our ideas can grow from it. The goal is not just to make music with a computer, but to explore what music can be when the computer itself becomes our medium.
 
     <section id="editor"></section>
 
@@ -81,7 +69,7 @@
       <img src="images/run.svg" alt="run code">
       <p>← Press this button to re-run the code, this will take any changes you made and re-render the result to the right of the editor.</p>
       <img src="images/copy.svg" alt="copy code">
-      <p>← Press this button to copy the full code (including any hidden code) to your clipboard. If you have an idea or a question you want to "discuss" (ie <i>process</i>) with an AI (like <a href="https://claude.ai/" target="_blank">Claude</a>, <a href="https://chatgpt.com/" target="_blank">ChatGPT</a> or <a href="https://phoenixai.uchicago.edu" target="_blank">PhoenixAI</a>) it helps to include the code in your "question" (ie <i>input</i>)</p>
+      <p>← Press this button to copy the full code (including any hidden code) to your clipboard. If you have an idea or a question you want to "discuss" (ie <i>process</i>) with an AI (like <a href="https://claude.ai/" target="_blank">Claude</a>, <a href="https://chatgpt.com/" target="_blank">ChatGPT</a> or <a href="https://phoenixai.uchicago.edu" target="_blank">PhoenixAI</a>) it helps to include the code in your "question" (ie <i>input</i>) refer to the AI Policy for more on this.</p>
       <img src="images/open-out.svg" alt="open code in netnet">
       <p>← Press this button to open the full code <a href="https://netnet.studio/" target="_blank">netnet</a>. This website is great for quick tests, but if you want to keep experimenting with an example you should work on it elsewhere. On netnet you can learn more about the code and spot errors, you can also "save" your progress by pressing <span class="hotkey" data-key="S"></span> and choosing to either download it, create a project (when u're logged into a <a href="https://github.com/" target="_blank">GitHub</a> account on netnet) or generate a quick URL you can use to share a sketch with me via email.</p>
       <img src="images/download.svg" alt="download code">
@@ -90,84 +78,17 @@
 
     <section>
       <div class="content">
+
         <p>
-          <strong>Along the way, the class will also survey works by artists working in this field and (may also) feature a <a href="/visiting-artists">visiting artist</a> who will walk students through their own practice. Themes of generative art, randomness and chance, originality and machine creativity, and the cultural implications of influential musical algorithms will also be explored.</strong>
+          This class is an intermediate level programming course. A beginner to intermediate level understanding of core programming concepts (ideally in JavaScript) is required. While a background in music can certainly be beneficial, it is not required for success in this course. Ultimately, this means you need to understand what code is, a special language that can be used to get the computer to do all the myriad things a computer can do. Like writing a recipe or casting a spell, the code we write are instructions for the “magic” we want the computer to generate. In our case, we’ll be writing in <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">JavaScript</a>, the defacto programming language of the Internet. If you’re familiar with other programming languages (like C++, Python, Java, etc) then you’re likely already familiar with all the core concepts and will just need to get used to JavaScript’s <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types" target="_blank">syntax</a> and <a href="https://www.smashingmagazine.com/2023/12/making-sense-of-senseless-javascript-features/" target="_blank">eccentricities</a>. We’ll be reviewing these in week 1, but for a much deeper dive I highly recommend the book <a href="https://eloquentjavascript.net/" target="_blank">Eloquent Javascript</a> by Marijn Haverbeke (the entirety of which is available online for free).
         </p>
+
         <p>
-          In addition to the class lectures and accompnaying notes (on this site), throughout the quarter I’ll be recommending readings and videos to supplement discussions we’ll have in class, as well as starting points for sketches (code experiments like the one above) for you to keep practicing and expanding on what we learn in class. This will all form the necessary background and foundation for the two assignments mentioned above.
-        </p>
-        <p>
-          <strong>This class is an intermediate level programming course. A beginner to intermediate level understanding of core programming concepts (ideally in JavaScript) is required. While a background in music can certainly be beneficial, it is not required for success in this course.</strong>
-        </p>
-        <p>
-          Ultimately, this means you need to understand what code is, a special language that can be used to get the computer to do all the myriad things a computer can do. Like writing a recipe or casting a spell, the code we write are instructions for the “magic” we want the computer to generate. In our case, we’ll be writing in <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">JavaScript</a>, the defacto programming language of the Internet. If you’re familiar with other programming languages (like C++, Python, Java, etc) then you’re likely already familiar with all the core concepts and will just need to get used to JavaScript’s <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types" target="_blank">syntax</a> and <a href="https://www.smashingmagazine.com/2023/12/making-sense-of-senseless-javascript-features/" target="_blank">eccentricities</a>. We’ll be reviewing these in Ch 1, but for a much deeper dive I highly recommend the book <a href="https://eloquentjavascript.net/" target="_blank">Eloquent Javascript</a> by Marijn Haverbeke (the entirety of which is available online for free).
+          Of course, today we have generative AI, LLM-powered chatbots that can help us write and debug code (which we'll use), and on the software side we have DAWs (apps like Ableton or FL Studio) that let us shape sound without even having to code at all. Those tools are useful, but can undermine the point of this class, our goal isn't to create digital music the easist/quickest way possible, it's to to unlock the creative possibilities that come from understanding the computer as a creative medium itself. Music software limit us to the buttons and menus their designers imagined. By learning the fundamentals of sound/music programming, we open ourselves to a much larger range of creative possibilities: we gain the ability to design our own instruments, invent new ways of playing, and shape sound in ways no off-the-shelf program can. And while we'll be leveraging AI throughout this course (see AI Policy) this won't be about "vibe coding" our way to a result, but about developing the literacy to understand and mold code so our ideas can grow from it. The goal is not just to make music with a computer, but to explore what music can be when the computer itself becomes our medium.
         </p>
 
         <br><br><br>
 
-        <h3 class="formatted-text">Plagiarism</h3>
-
-        <p>
-          <a href="https://www.youtube.com/watch?v=X9RYuvPCQUA" target="_blank">Everything is, in some sense, a remix</a>. Plagiarism of concepts, code, compositions, samples and/or other elements is strongly encouraged, so long as you leave clear attribution within your code via <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#comments" target="_blank">comments</a>. Ensure that anything you copy is in some way transformed, either by creating a variation on the copied elements or combining those elements with other copied elements. NOTE: transformation or combination is not a substitute for attribution, but rather a requirement for all copied elements.
-        </p>
-
-        <br><br><br>
-
-        <h3 class="formatted-text">ai policy</h3>
-        <!-- <blockquote>
-          <p>[the Analytical Engine] might act upon other things besides number, were objects found whose mutual fundamental relations could be expressed by those of the abstract science of operations, and which should be also susceptible of adaptations to the action of the operating notation and mechanism of the engine . . . supposing, for instance, that the fundamental relations of pitched sounds in the science of harmony and of musical composition were susceptible of such expression and adaptations, the engine might compose elaborate and scientific pieces of music of any degree of complexity or extent.</p>
-          <cite><a href="https://en.wikipedia.org/wiki/Ada_Lovelace" target="_blank">Ada Lovelace</a> (sketch of the Analytical Engine) 1842</cite>
-        </blockquote> -->
-
-        <!-- somewhere pre-ai -->
-        When we turn to code, though, the scope of what we can imagine is shaped by our understanding of it. The more we grasp the fundamentals—loops, conditionals, functions, data structures—the more possibilities open up for how we might compose, transform, or generate sound. It can be tempting, especially now with AI tools at our fingertips, to “vibe code” our way into something that seems interesting. But without a grounding in the principles of programming, our ideas will be constrained by what we already know, or by what a chatbot happens to suggest. Learning the fundamentals gives us agency: we can see what the code is doing, reshape it to our liking, and let our ideas grow out of that knowledge rather than being boxed in by it.
-
-
-        <p>
-          We’ve entered a new era of “Machine Learning” or AI. These algorithms are having (and will continue to have) drastic effects on every aspect of our society (including art). Today, artificial neural networks trained (often requiring enormous amounts of energy) on troves of data (which are not always ethically sourced) can make “predictions” and generate “hallucinations” (often with clear biases) that would have seemed like impossible sorcery just a few short years ago. In certain high stakes applications this can save lives, but it can also destroy them. In other contexts this biased hallucinatory predictive sorcery can be quite exciting, as is the case with media art. This technology, like many others that came before it (smart phones, the Internet, the computer) will most certainly change everything in our field, exactly how and to what extent is still anyone’s guess.
-        </p>
-
-        <br><br>
-
-        <blockquote>
-          <p>These talking machines are going to ruin the artistic development of music in this country. When I was a boy [...] in front of every house in the summer evenings, you would find young people together singing the songs of the day or old songs. Today you hear these infernal machines going night and day. We will not have a vocal cord left. The vocal cord will be eliminated by a process of evolution, as was the tail of man when he came from the ape."</p>
-          <cite>John Philip Sousa (1906)</cite>
-        </blockquote>
-
-        <br><br>
-
-        <p>
-          In the interest of collectively learning how to leverage its promises and minimize its perils, I encourage anyone interested to experiment with AI (beyond the tools covered in class) so long as you are transparent about what/when/how you use it and are willing to share your process/perspective on it in class.
-        </p>
-
-        <audio src="/audios/on-the-media--ai-music-generators.mp3" controls style="width: 100%"></audio>
-        <p class="small-note">Composer and sound designer, Mark Henry Phillips, on how AI music generators could fundamentally upend the industry, from <a href="https://www.wnycstudios.org/podcasts/otm/articles/how-ai-and-algorithms-are-transforming-music" target="_blank">WNYC's On the Media</a>(Dec 27, 2024)</p>
-
-        <p>
-          To be clear, when I say that we’ll be creating algorithmic systems that generate musical compositions I am not talking about artificial neural networks (like so many of the generative AI today) I’m talking about something much simpler, what we might call “classical AI”, meticulously and deliberately hand crafted code. We’ll be “writing” our algorithms, not “training” them as has become the norm in this era of machine learning. Our goal is to be very intentional and critical about the algorithms we write, we want to explore and experiment with the possibilities of the digital medium, to do so successfully requires a different starting point. Some of us may choose to incorporate specific neural networks as a part of our code, or maybe use a generative AI system to generate samples or an LLM to help us debug our code (more on that below), but at the end of the day it should be your bias that finds its way into the DNA of the systems you create (not the bias of a large foreign dataset).
-        </p>
-
-        <p>
-          Consider, for example, the difference between how Mark Henry Phillips, a musician and composer with a more conventional background, engages with AI as a collaborator vs how Holly Herndon, an artist and composer with a background in experimental new media, engages with AI as a medium in itself.
-        </p>
-
-
-        <a href="https://youtu.be/5cbCYwgQkTE?feature=shared" target="_blank">
-          <img src="/images/holly-yt.jpg" alt="Holly Herndon TED talk" class="rwd">
-        </a>
-
-        <p class="small-note"><a href="https://en.wikipedia.org/wiki/Holly_Herndon" target="_blank">Holly Herndon</a> presents her AI project <a href="https://holly.plus/" target="_blank">Holly+</a> At TED</p>
-
-        <p>
-          In this class the most likely use of AI will be code generation/evaluation using LLM (large language models), again you are encouraged to use these in ways that supplement your learning, rather than impede it. To ensure that is the case I ask that:
-        </p>
-
-        <ul>
-          <li>When asking an LLM for help with your code make sure to practice the terminology we’ve learned in class, use it as an opportunity to practice articulating your creative goals just like you would to another person. Consider starting with something similar to <a href="https://chatgpt.com/share/67785d03-8a78-800c-9853-3d59bcc577bd" target="_blank">this prompt</a>.</li>
-          <li>If an LLM generates any code (even a single line) that you do not understand, ask it to explain it to you before you copy it into your own sketch.</li>
-          <li>Consider sharing your code with an LLM and asking it for feedback, be specific about what you want feedback on (coding style, clarity, efficiency, creativity)</li>
-          <li><strong>Any conversations related to a sketch should be submitted alongside the assignment on <a href="https://canvas.uchicago.edu/courses/62066" target="_blank">canvas</a></strong>, this can be done by either generating a <a href="https://help.openai.com/en/articles/7925741-chatgpt-shared-links-faq" target="_blank">share link on ChatGPT</a> or using <a href="https://aiarchives.org" target="_blank">https://aiarchives.org</a> (which works with other AI models beyond ChatGPT).</li>
-        </ul>
       </div>
 
     </section>
@@ -218,8 +139,10 @@
 
       utils.createCodeEditor({
         ele: '#editor',
-        fileprefix: 'homepage-example',
-        template: 2
+        code: {
+          file: 'homepage-demo.js',
+          template: ['body', 'tone', 'nn']
+        }
       })
 
       utils.init()

@@ -187,14 +187,20 @@
 
     <section>
       <div class="content">
-        <h4 class="formatted-text">a note on these visualizations</h4>
+        <h3 class="formatted-text">a note on these visualizations</h3>
 
         <p>
           The examples above all make use of a couple of helper functions for visualizing our audio, <code>createWaveform()</code> and <code>createSpectrum()</code>, this lesson isn't about audio visualization, but if you're curious to see the code behind those functions you can view the source code for both the <a href="http://localhost:8000/js/create-waveform.js" target="_blank">createWaveform</a> and <a href="http://localhost:8000/js/create-spectrum.js" target="_blank">createSpectrum</a> functions if you'd like. Visualizations like these are  created using an algorithm called <a href="https://en.wikipedia.org/wiki/Fast_Fourier_transform" target="_blank">the Fast Fourier Transform</a> or FFT for short. This algorithm has a very interesting history worth <a href="https://www.youtube.com/watch?v=nmgFG7PUHfo" target="_blank">learning more about</a>. I might also suggest you can check out Jack Schaedler's <a href="https://jackschaedler.github.io/circles-sines-signals/dft_introduction.html" target="_blank">interactive page on the Fourier Transform</a> for a more intuitive understanding of how adding/removing harmonics to a fundamental frequency changes the wave shape. The Web Audio API has a built-in implementation of the FFT algorithm in AnalyserNode which I <a href="/editor/#Web Audio API/the basics/Audio Analyser Node">explain here</a>, as well as how to use it to create rasterized visualizations <a href="/editor/#Web Audio API/the basics/visualization: canvas">with canvas</a> or vector based visualizations <a href="/editor/#Web%20Audio%20API/the%20basics/visualization:%20svg%20with%20d3">with svg</a> using the d3 library. Tone.js also has it's higher level abstractions of this AnalyserNode including it's <a href="https://tonejs.github.io/docs/15.0.4/classes/FFT.html" target="_blank">FFT</a> class, it's <a href="https://tonejs.github.io/docs/15.0.4/classes/Waveform.html" target="_blank">Waveform</a> class and it's <a href="https://tonejs.github.io/docs/15.0.4/classes/Meter.html" target="_blank">Meter</a> class.
         </p>
 
+        <br>
+        <br>
+        <hr>
+        <br>
+        <br>
+
         <p>
-          That said, our main goal with this lesson is understand one of the most fundamental principles of digital audio: sound buffers. Over the next few weeks we'll start climbing the ladder of abstraction and begin expressing sounds at a higher level (eventually in terms of musical notes), but before we do it's worth spending some time to experiment with buffers at this lower level, this will not only help in your fundamental understanding of digital audio, but might also plant a seed for ideas you might have in the future which could benefit from dipping back down into this lower level.
+          That said, our main goal with this lesson is understand one of the most fundamental principles of digital audio: sound buffers. Over the next few weeks we'll start climbing the ladder of abstraction and begin expressing sounds at a higher level (eventually in terms of musical notes), but before we do it's worth spending some time to experiment with buffers at this lower level, this will not only help in your fundamental understanding of what digital audio <i>is</i> and how it works, but might also plant a seed for ideas you might have in the future which could benefit from dipping back down into this lower level.
         </p>
       </div>
     </section>
