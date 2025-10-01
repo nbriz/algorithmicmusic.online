@@ -197,7 +197,6 @@
         if (window.localStorage.getItem('theme')  === 'dark') {
           t = '-white'
         }
-        console.log('T', t);
         for (const alt in src) {
           nn.get(`[alt="${alt}"]`).src = `${src[alt]}${t}.svg`
         }
