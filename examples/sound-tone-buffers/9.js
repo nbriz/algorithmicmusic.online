@@ -1,6 +1,6 @@
 let sound
-const wave = createWaveform()
-const spec = createSpectrum({ range: [0, 4000] })
+const wave = viz.createWaveform()
+const spec = viz.createSpectrum({ range: [0, 4000] })
 
 function createCustomBuffer (freq = 440, seconds, channels) {
   const sr = Tone.context.sampleRate
