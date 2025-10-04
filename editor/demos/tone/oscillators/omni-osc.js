@@ -55,7 +55,7 @@ const presetSelect = nn.create('select')
   .on('change', applyPreset)
 
 // Visualization
-const wave = createWaveform()
-const spec = createSpectrum({ range: [20, 7040] })
+const wave = viz.createWaveform()
+const spec = viz.createSpectrum({ range: [20, 7040] })
 omniOsc.connect(wave)
 omniOsc.connect(spec)

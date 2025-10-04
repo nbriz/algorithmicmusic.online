@@ -12,39 +12,37 @@ async function setupModel () {
   // here we setup some "configuration" settings
   const detectorConfig = {
     runtime: 'mediapipe',
-    solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/pose'
+    solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/pose',
+    numPoses: 1 // we only need 1 person
   }
   // we combine the two to create the AI "detector" function
   const detector = await poseDetection.createDetector(model, detectorConfig)
   return detector
 }
 
-// our update function (a recursive looping function)
+// update the volume/frequency and UI elements every frame
 async function update () {
+  requestAnimationFrame(update) // recursively call update loop
+
   // we first use the detector AI function to predict our "pose" based on the video frame
   const poses = await detector.estimatePoses(video)
-  // we'll store the keypoints for the first person it sees every frame
-  const keypoints = poses[0]?.keypoints
+  const person = poses[0] // get the first person
 
-  if (keypoints) {
+  if (person) {
     // we grab the 19 (left_index) and 20 (right_index) keypoints, we can see which keypoint indexes refer to which part of the pose [using this BlazePose diagram](https://github.com/tensorflow/tfjs-models/tree/master/pose-detection#blazepose-keypoints-used-in-mediapipe-blazepose)
-    const left = keypoints[19]
-    const right = keypoints[20]
-
-    // Adjust volume based on left index finger position
-    osc.volume.value = (left.y >= 0 && left.y <= 480)
-      ? nn.map(left.y, 0, 480, 0, -50) : -100
-    // update the visual reference as well
-    volEle.css({ top: `${left.y}px`, left: `${left.x}px` })
-    // Adjust frequency based on right index finger position
+    const left = person.keypoints[19]
+    const right = person.keypoints[20]
+    // Adjust volume (and UI) based on left hand position
+    if (left.y >= 0 && left.y <= 480) {
+      osc.volume.value = nn.map(left.y, 0, 480, 0, -50)
+      volEle.position(left.x, left.y)
+    }
+    // Adjust frequency (and UI) based on right hand position
     osc.frequency.value = nn.map(right.y, 0, 480, 220, 880)
-    // update the visual reference as well
-    freqEle.css({ top: `${right.y}px`, left: `${right.x}px` })
+    freqEle.position(right.x, right.y)
   } else {
-    osc.volume.value = -100; // Mute if no pose is detected
+    osc.volume.value = -100 // Mute if no pose is detected
   }
-
-  window.requestAnimationFrame(update)
 }
 
 async function setup () {
@@ -54,12 +52,12 @@ async function setup () {
 
   // here we create the visual elements
   volEle = nn.create('div')
-    .css({ color: 'red', fontSize: '48px', position: 'absolute' })
+    .css({ color: 'red', fontSize: '48px' })
     .content('VOL')
     .addTo('body')
 
   freqEle = nn.create('div')
-    .css({ color: 'red', fontSize: '48px', position: 'absolute' })
+    .css({ color: 'red', fontSize: '48px' })
     .content('FREQ')
     .addTo('body')
 
@@ -75,8 +73,11 @@ async function setup () {
   // then we create our AI function
   detector = await setupModel()
 
-  // run the update function to start the recursive loop
-  update()
+  update() // begin update loop
+  start.remove() // remove the start button
 }
 
-nn.on('load', setup)
+const start = nn.create('button')
+  .content('start')
+  .addTo('body')
+  .on('click', setup)

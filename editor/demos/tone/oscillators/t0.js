@@ -16,7 +16,7 @@ nn.create('button')
   .on('click', play)
 
 // for visualizations
-const wave = createWaveform()
-const spec = createSpectrum({ range: [20, 7040] })
+const wave = viz.createWaveform()
+const spec = viz.createSpectrum({ range: [20, 7040] })
 osc.connect(wave)
 osc.connect(spec)

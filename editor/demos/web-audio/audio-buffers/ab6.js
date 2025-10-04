@@ -31,8 +31,8 @@ function pinkNoise (seconds, loop) {
 }
 
 // for visuals
-const wave = createWaveform({ audioCtx: ctx })
-const freq = createSpectrum({ audioCtx: ctx })
+const wave = viz.createWaveform({ audioCtx: ctx })
+const freq = viz.createSpectrum({ audioCtx: ctx })
 
 const noise = pinkNoise(1, false)
 

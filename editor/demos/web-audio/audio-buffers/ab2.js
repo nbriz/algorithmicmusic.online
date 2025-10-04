@@ -25,8 +25,8 @@ function brownNoise (seconds, loop) {
 }
 
 // for visuals
-const wave = createWaveform({ audioCtx: ctx })
-const freq = createSpectrum({ audioCtx: ctx })
+const wave = viz.createWaveform({ audioCtx: ctx })
+const freq = viz.createSpectrum({ audioCtx: ctx })
 
 const noise = brownNoise(1, false)
 

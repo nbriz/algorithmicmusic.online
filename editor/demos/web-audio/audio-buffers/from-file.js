@@ -64,8 +64,8 @@ const files = [
 // ----------------------------------
 // UI + visuals
 // ----------------------------------
-const wave = createWaveform({ audioCtx: ctx })
-const freq = createSpectrum({ audioCtx: ctx, range: [0, 7040] })
+const wave = viz.createWaveform({ audioCtx: ctx })
+const freq = viz.createSpectrum({ audioCtx: ctx, range: [0, 7040] })
 
 const para = nn.create('p').addTo('body')
 

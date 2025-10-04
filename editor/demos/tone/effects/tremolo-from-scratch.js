@@ -82,7 +82,7 @@ const rateLabel = nn.create('label')
 // ----------------------------------------
 // Visualization
 // ----------------------------------------
-const waveAM = createWaveform()
-const specAM = createSpectrum({ range: [20, 7040] })
+const waveAM = viz.createWaveform()
+const specAM = viz.createSpectrum({ range: [20, 7040] })
 gainNode.connect(waveAM)
 gainNode.connect(specAM)

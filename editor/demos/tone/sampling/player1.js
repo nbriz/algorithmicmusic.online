@@ -9,5 +9,5 @@ nn.create('button')
   .on('click', () => player.start())
 
 // visualizations
-const spec = createSpectrum({ range: [0, 8000] })
+const spec = viz.createSpectrum({ range: [0, 8000] })
 player.connect(spec)

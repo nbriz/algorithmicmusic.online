@@ -72,6 +72,11 @@
         margin: 0 4px;
       }
 
+      .editor {
+        max-height: 100%;
+        overflow: scroll;
+      }
+
       .CodeMirror .link {
         text-decoration: underline;
         cursor: pointer;
@@ -204,7 +209,7 @@
       // JS Libs menu
 
       function createLibMenu () {
-        const lbl = window.codeTemplate.labels
+        const lbl = window.codeTemplate.globals
         nn.get('.lib-menu').data.hidden = true
 
         Object.keys(lbl).forEach(lib => {

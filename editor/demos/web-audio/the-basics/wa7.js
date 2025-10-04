@@ -17,7 +17,7 @@ osc.connect(lvl)
 lvl.connect(ctx.destination)
 
 // the [SVG wave](https://algorithmicmusic.online/editor/#Web Audio API/the basics/visualization: svg with d3) visualization [packaged](https://algorithmicmusic.online/js/create-waveform.js) into a function
-const wave = createWaveform({ audioCtx: ctx })
+const wave = viz.createWaveform({ audioCtx: ctx })
 lvl.connect(wave)
 
 // tone will play for 2.1 seconds with the followin ADSR envelope

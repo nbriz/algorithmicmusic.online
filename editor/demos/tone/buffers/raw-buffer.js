@@ -54,5 +54,5 @@ nn.create('label')
   .addTo('body')
 
 // visuals
-const wave = createWaveform()
-const spec = createSpectrum()
+const wave = viz.createWaveform()
+const spec = viz.createSpectrum()

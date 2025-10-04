@@ -36,8 +36,8 @@ function customWave (freq, harm, seconds, loop) {
 }
 
 // for visuals
-const wave = createWaveform({ audioCtx: ctx })
-const freq = createSpectrum({ audioCtx: ctx })
+const wave = viz.createWaveform({ audioCtx: ctx })
+const freq = viz.createSpectrum({ audioCtx: ctx })
 
 const harmonics = [1, 0.2, 0.01, 0.2, 1]
 const noise = customWave(440, harmonics, 1, false)

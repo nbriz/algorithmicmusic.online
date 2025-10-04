@@ -33,8 +33,8 @@ function silence (seconds) {
 }
 
 // for visuals
-const wave = createWaveform({ audioCtx: ctx })
-const freq = createSpectrum({ audioCtx: ctx })
+const wave = viz.createWaveform({ audioCtx: ctx })
+const freq = viz.createSpectrum({ audioCtx: ctx })
 
 // create a silent buffer (1 second long)
 const noise = silence(1)

@@ -20,7 +20,7 @@ nn.on('keyup', (e) => {
 
 
 // visualizations
-const wave = createWaveform()
-const spec = createSpectrum({ range: [0, 8000] })
+const wave = viz.createWaveform()
+const spec = viz.createSpectrum({ range: [0, 8000] })
 sampler.connect(wave)
 sampler.connect(spec)

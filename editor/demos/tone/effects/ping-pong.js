@@ -57,7 +57,7 @@ const mlabel = nn.create('label')
   .addTo('body')
 
 // Visualization
-const wave = createWaveform()
-const spec = createSpectrum({ range: [20, 7040] })
+const wave = viz.createWaveform()
+const spec = viz.createSpectrum({ range: [20, 7040] })
 effect.connect(wave)
 effect.connect(spec)

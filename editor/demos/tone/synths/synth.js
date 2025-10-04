@@ -139,7 +139,7 @@ nn.create('button')
     .on('mouseup', release)
 
 // Visualization
-const wave = createWaveform()
-const spec = createSpectrum({ range: [20, 7040] })
+const wave = viz.createWaveform()
+const spec = viz.createSpectrum({ range: [20, 7040] })
 synth.connect(wave)
 synth.connect(spec)

@@ -95,7 +95,7 @@ nn.create('br').addTo('body')
 // ----------------------------------------
 // Visualization
 // ----------------------------------------
-const waveAM = createWaveform()
-const specAM = createSpectrum({ range: [20, 7040] })
+const waveAM = viz.createWaveform()
+const specAM = viz.createSpectrum({ range: [20, 7040] })
 carrierGain.connect(waveAM)
 carrierGain.connect(specAM)

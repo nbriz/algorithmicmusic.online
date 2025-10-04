@@ -47,5 +47,5 @@ nn.on('keydown', attack)
 nn.on('keyup', release)
 
 // visualizations
-const wave = createWaveform()
+const wave = viz.createWaveform()
 piano.connect(wave)

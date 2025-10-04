@@ -11,7 +11,7 @@ osc.connect(lvl)
 lvl.connect(ctx.destination)
 
 // the [SVG wave](https://algorithmicmusic.online/editor/#Web Audio API/the basics/visualization: svg with d3) visualization [packaged](https://algorithmicmusic.online/js/create-waveform.js) into a function
-const wave = createWaveform({ audioCtx: ctx })
+const wave = viz.createWaveform({ audioCtx: ctx })
 lvl.connect(wave)
 
 // Fade up the gain linearly from 0.1 to 1.0 over the next 5 seconds

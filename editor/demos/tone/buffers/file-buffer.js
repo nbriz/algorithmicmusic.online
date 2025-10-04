@@ -1,4 +1,4 @@
-const wave = createWaveform()
+const wave = viz.createWaveform()
 
 const player = new Tone.Player()
 player.toDestination()

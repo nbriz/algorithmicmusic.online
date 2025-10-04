@@ -26,7 +26,7 @@ nn.create('label')
   .addTo('body')
   .content('use keys "q" - "p" to trigger the samples')
 
-const wave = createWaveform()
+const wave = viz.createWaveform()
 player.connect(wave)
 
 nn.on('keydown', (e) => {
