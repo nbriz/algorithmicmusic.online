@@ -425,7 +425,19 @@ window.data = {
       {
         title: 'Basic Melody',
         path: 'tensorflow.js/musicVAE/melodies.js',
-        template: ['body', 'nn', 'tone', 'vae']
+        template: ['body', 'nn', 'tone', 'viz', 'vae']
+      }
+    ],
+    GANSynth: [
+      {
+        title: 'random timbre',
+        path: 'tensorflow.js/GANSynth/gan-synth.js',
+        template: ['body', 'nn', 'tone', 'viz', 'gan']
+      },
+      {
+        title: 'seeded timbre',
+        path: 'tensorflow.js/GANSynth/gan-seeded.js',
+        template: ['body', 'nn', 'tone', 'viz', 'gan']
       }
     ]
   }

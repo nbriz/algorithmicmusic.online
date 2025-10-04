@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>AI Policy</title>
+    <meta name="author" content="Nick Briz">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <!-- TODO: social media stuff -->
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+      .table img {
+        max-width: 180px;
+        border-radius: 10px;
+        margin: 1em;
+      }
+    </style>
+  </head>
+  <body>
+
+    <main-menu>
+      <div slot="menu-items">
+        <div class="color-mode-wrap">
+          <label class="color-mode-switch">
+            <input type="checkbox">
+            <span class="color-mode-slider"></span>
+          </label>
+          <span class="color-mode-label">light/dark mode</span>
+        </div>
+      </div>
+    </main-menu>
+
+    <section id="prologue">
+      <div class="content">
+        <h2 class="formatted-text">music + ai</h2>
+
+        <br><br>
+        <blockquote>
+          <p>[the Analytical Engine] might act upon other things besides number, were objects found whose mutual fundamental relations could be expressed by those of the abstract science of operations, and which should be also susceptible of adaptations to the action of the operating notation and mechanism of the engine . . . supposing, for instance, that the fundamental relations of pitched sounds in the science of harmony and of musical composition were susceptible of such expression and adaptations, the engine might compose elaborate and scientific pieces of music of any degree of complexity or extent.</p>
+          <cite><a href="https://en.wikipedia.org/wiki/Ada_Lovelace" target="_blank">Ada Lovelace</a> (sketch of the Analytical Engine) 1842</cite>
+        </blockquote>
+        <br><br>
+
+        <h3 class="formatted-text">prologue</h3>
+
+        <p>
+          Nearly 200 years ago Ada Lovelace dreamed that computers might one day "compose elaborate and scientific pieces of music of any degree of complexity or extent", that dream (or nightmare, depending on how you look at it) has finally come true. Computers are not only used as a tool for creating music, having become both an instrument and a recording studio, but now, with "AI" models, computers can also do the composing... sort of. We're entering a new era of "AI", thanks to a new approach to creating algorithms known as "Machine Learning", where instead of <i>writing</i> algorithms, programmers now <i>train</i> them to write themselves.
+        </p>
+
+        <p>
+           These algorithms are having (and will continue to have) drastic effects on every aspect of our society (including art). Today, artificial neural networks trained (often requiring enormous amounts of energy) on troves of data (which are not always ethically sourced) can make “predictions” and generate “hallucinations” (often with clear biases) that would have seemed like impossible sorcery just a few short years ago. In certain high stakes applications this can save lives, but it can also destroy them. In other contexts this biased hallucinatory predictive sorcery can be quite exciting, as is the case with media art. This technology, like many others that came before it (smart phones, the Internet, the computer) will most certainly change everything in our field, exactly how and to what extent is still anyone’s guess.
+        </p>
+
+        <br><br>
+
+        <blockquote>
+          <p>These talking machines are going to ruin the artistic development of music in this country. When I was a boy [...] in front of every house in the summer evenings, you would find young people together singing the songs of the day or old songs. Today you hear these infernal machines going night and day. We will not have a vocal cord left. The vocal cord will be eliminated by a process of evolution, as was the tail of man when he came from the ape."</p>
+          <cite>John Philip Sousa (1906)</cite>
+        </blockquote>
+
+        <br><br>
+
+        <p>
+          In the early 1900s the composer John Philip Sousa (best known for his <a href="https://www.youtube.com/watch?v=h8RnD9Qz1tI" target="_blank">patriotic marches</a>) went on a public campaign to ban the new musical technology of his day. Sousa was deeply worried about the rise of recorded music on phonographs and gramophones. He believed these new machines would harm live music traditions, discourage people from learning to sing or play instruments, and even damage the nation’s culture. In 1906, he wrote an essay called <a href="https://ocw.mit.edu/courses/21m-380-music-and-technology-contemporary-history-and-aesthetics-fall-2009/18ab3aba9fe7aa1502a55cd049333659_MIT21M_380F09_read02_sousa.pdf" target="_blank">The Menace of Mechanical Music</a>, where he argued that recordings would turn people into “passive listeners” instead of active creators.
+        </p>
+
+        <p>
+          To spread his message, Sousa gave speeches and interviews urging the public to resist recorded music. He even lobbied Congress to outlaw it, fearing that if families stopped gathering around the piano to sing, America’s musical spirit would fade. It’s easy to say, in hindsight, that Sousa was wrong: the record player didn’t kill music. It launched a new industry, widened access, and sparked fresh innovation, turntables became instruments, and whole genres (like hip-hop) emerged.
+        </p>
+
+        <p>
+          But new technologies usually bring both magic and loss. In Sousa’s day, pianos were common in middle-class homes, and U.S. piano sales peaked around 1909. As records (and later radio) rose, sheet-music sales fell (as did our ability to read it). Listening shifted from a social activity (going to a concert or gathering around the family piano to sing together) to something you could do alone: no family, no piano, not even a live band was necessary. While it's impossible to characterize these shifts as purely good or bad, they've certainly changed our relationship to music in drastic ways. Whether this next wave of technological change brings more benefits than harms will depend less on the tech itself and more on the choices we make as cultural producers and consumers.
+        </p>
+
+        <p>
+          At his pivotal moment, it's worth thinking deeply about what it means to creatively engage with AI. This is a big topic, but considering our goals in this class, a good place to start is thinking about how we plan on engaging with coding assistants.
+        </p>
+
+        <br><br><br>
+        <h3 class="formatted-text">coding with ai</h3>
+
+        <p>
+        As Ada Lovelace imagined nearly two centuries ago, we’ll treat the computer not as a mere sound-making tool but as an instrument that embeds the logic of composition, systems that encode musical ideas and generate pieces. The code we write will push what it means "write" music. To be clear: though we'll be creating generative algorithmic systems, we won’t be training artificial neural networks (what's folks are calling "generative AI", I’ll briefly address these systems at the end of this page). Instead, we'll be creating what you might call “classical AI”: meticulously and deliberately hand crafted code. Our goal is to be very intentional and critical about the algorithms we write, we want to explore and experiment with the possibilities of the digital medium, and create systems biased by our aesthetic judgments (not the bias of a large and foreign training-dataset).
+        </p>
+
+        <p>
+          It’s tempting, especially with coding assistants at hand, to “vibe-code” our way to something interesting. So much is possible when we use code as a creative medium, but our imagination is always bounded by our understanding of it. If we turn to AI coding assistants to early and too often, our ideas become constrained by what a chatbot suggests, and while they're very profficient coders, they're not very creative thinkers. The more time you invest in mastering the fundamentals and practice-based experimentation, the better you'll understand what LLM-generated code is doing, have the agency to reshape it, and ensure your ideas grow from your own knowledge and experience rather than be boxed in by what an LLM produces.
+        </p>
+
+        <br><br><br>
+        <h2 class="formatted-text">ai policy</h2>
+
+        <p>
+          The future of coding is likely going to always involve some sort of AI-assistance, in order to make sure we learn to use these systems in ways that benefit us, extending our capabilities and supporting our creativity, rather than undermining our learning and limiting our ideas, I ask that you adhere to the following;
+          <ul>
+            <li>
+              <strong>Chat Bots vs Code Completion</strong>: LLMs plug into dev workflows in different ways: in-editor auto-completion (ex: GitHub Copilot) writes directly into your files; terminal/IDE "agent" tools (ex: Claude Code, Codex) can run commands and even refactor entire projects; and chatbots (ex: <a href="https://chatgpt.com/" target="_blank">ChatGPT</a>, <a href="https://claude.ai/" target="_blank">Claude</a>, <a href="https://gemini.google.com/" target="_blank">Gemini</a>, and our <a href="https://phoenixai.uchicago.edu/" target="_blank">Phoenix AI</a> <i>powered by OpenAI</i>) live in a separate window where you discuss code and get explanations. AI is now part of modern programming, so while it's important we become literate in this new technology, we want to choose a version of it that's right for us. For beginners, many of these tools can undermine our learning goals, robbing us of the opportunity to master the fundamentals. This is why you are only allowed to use conversational models, like chat bots, which operate outside your coding environment.  Our aim is AI literacy that supports learning, not automation that replaces it. If you're unsure whether a tool fits this criteria, ask me first.
+            </li>
+            <li>
+              <strong>Struggle a little first</strong>: Start each assignment by working independently and producing a first draft or working sketch. If you turn to AI, write the first few iterations yourself, then use it near the end for critique, debugging, and polish. Asking for feedback (on your coding style, clarity, efficiency, creativity) after you complete the assignment is a great use of AI. You may also use AI to troubleshoot issues (see AI Protocol below), but start by isolating the problem and stay in charge of the design. Struggling through a hard problem is key to learning, <a href="https://www.media.mit.edu/publications/your-brain-on-chatgpt/" target="_blank">recent research</a> suggests that early AI reliance can weaken understanding and memory, while late, targeted use can actually help reinforce what you’ve learned.
+            </li>
+            <li>
+              <strong>Transcribe, no copy/paste</strong>: You may not paste AI-generated code, retype it yourself. It's realistic to transcribe a short function, not an entire app, so retyping ensures we keep AI assistance small and focused. We want AI to help with grunt work, not design the entire project. Transcribing also ensures you read every line closely which will deepen your understanding but also gives you the chance to rewrite code in your own voice/style (renaming variables, tweaking structure, adding comments, etc). Only transcribe code you fully understand; if the AI suggests unfamiliar code or patterns, pause and ask follow-up questions until every line is clear, then retype in small snippets and test your code as you go.
+            </li>
+            <li>
+              <strong>Submit chats with your assignments</strong>: Any conversations related to an assignment should be submitted alongside your work on <a href="https://canvas.uchicago.edu/courses/67301" target="_blank">canvas</a>. All the modern chat bots, including <a href="https://chatgpt.com/" target="_blank">ChatGPT</a>, <a href="https://claude.ai/" target="_blank">Claude</a>, <a href="https://gemini.google.com/" target="_blank">Gemini</a>, let you create sharable links to your chats, but if the site you’re using does not, use an extension like <a href="https://aiarchives.org" target="_blank">https://aiarchives.org</a>
+            </li>
+          </ul>
+        </p>
+
+        <br><br><br>
+        <h3 class="formatted-text">ai protocol: crafting prompts</h3>
+
+        <p>
+          Use AI for hard problems or feedback after completing an assignment, not for basic short questions like "why isn't my div centered?". LLMs are “sycophantic” by default: they’ll agree with your assumptions and guess your preferences, which can trap beginners either in long loops or chats that "drift" and can lead to code that sort-of-works but is far from ideal. Instead, write your first prompt like a good <a href="https://stackoverflow.com/questions" target="_blank">Stack Overflow</a> post: state the goal, give context and constraints, include your environment and a minimal reproducible snippet of code containing the issue. This not only improves the model's answer but the act of articulating the problem can be generative and often also reveal the fix.
+          <ul>
+            <li>
+              <strong>Goal, Context and Constraints</strong>: explain what you're working on and what you expect to happen vs what actually happens. This gives the AI a clear target. Share any relevant constraints as well. For example, <i>"Hi, I'm a college student taking an introductory class on web based algorithmic music. I've loaded an audio file which should play automatically but I'm not hearing any sound. I need my audio to play as soon as the user visits my page and I need all my code to be written in a single HTML file."</i>
+            </li>
+            <li>
+              <strong>Describe your Environment</strong>: List what you're working with: coding language(s), browser, OS, code editor, and any code libraries (including their version number). For example, <i>"I'm writing my JavaScript code in a single HTML file on netnet.studio, I've tested it on Chrome and Firefox and I'm still not hearing any sound on either. I'm using the Tone.js library v15.1.22"</i>
+            </li>
+            <li>
+              <strong>Include Docs</strong>: When using libraries, frameworks or APIs, link to (or better, attach) the official docs for the libraries and APIs you’re using. This anchors the discussion to a shared source of truth and reduces "hallucinations", where AI produces code that looks believable but doesn’t actually exist.
+            </li>
+            <li>
+              <strong>Create an Isolated Example</strong>: Paste (or attach) the smallest code that still breaks. Create a separate mini sketch just for this bug: start a fresh file (or netnet sketch) that includes only what's needed to reproduce it: remove unrelated components or assets. Aim for a self-contained page someone can open and immediately see the same error. This not only keeps the AI focused and improves its output, but the act of isolating the issue often reveals the real cause, which gives you the chance to fix it yourself and remember the lesson far better than if the AI did it.
+            </li>
+            <li>
+              <strong>Include Error Messages</strong>: If the browser DevTools console shows errors, paste the exact text verbatim in your prompt.
+            </li>
+            <li>
+              <strong>Explain what you already tried</strong>: Briefly list 2–3 attempts and the result of each. This shows your thinking and prevents the AI from suggesting the same dead ends, for example: <i>"My original audio file was an mp3, so I tried re-exporting it as a wav an ogg but neither worked."</i>
+            </li>
+            <li>
+              <strong>Use the Lingo</strong>: Describe the issue with the terms we’ve learned in class, for example: elements, attributes, objects, properties, variables, functions, methods, requests, etc. It's good practice for real-world collaboration with other technologists and leads to clearer, higher-quality outputs from the AI.
+            </li>
+            <li>
+              <strong>Avoid Sycophancy Issues</strong>: AIs tend to be literal and always want to please, they'll jump straight to code that fits your first phrasing, even if the premise is off, which can lock you into the wrong path. Begin by asking for a plan, not code so you stay in charge of the big picture and learn why something should work before reviewing code. You want the model to surface assumptions, alternatives, and quick tests you can run. For example, <i>"Please restate my goal and constraints, then propose 2–3 approaches with a quick check to confirm/deny, don't write any code yet. If my question is too vague, ask me specific clarifying questions and say exactly what details are missing. If my phrasing suggests I misunderstand a core concept, correct that first (one-sentence explanation and a tiny example) before proposing solutions."</i>
+            </li>
+          </ul>
+        </p>
+
+        <br>
+        <hr>
+        <br>
+
+        <br><br><br>
+        <h3 class="formatted-text">epilogue</h3>
+
+
+        <p>
+          Over a century after Sousa lobbied against recording technology, his refrain returns: "We will not have a vocal cord left" in the era of AI, no one will learn instruments or theory because models can make music faster, cheaper, and personalized to each listener. Why would anyone pay a slower, more stubborn, human musician to write music when an algorithm can supply endless songs on demand? Composer Mark Henry Phillips felt that panic too, as someone who makes a living writing jingles for podcasts he had an existential crisis, until he saw some creative possibilities...
+        </p>
+
+        <audio src="/audios/on-the-media--ai-music-generators.mp3" controls style="width: 100%"></audio>
+        <p class="small-note">Composer and sound designer, Mark Henry Phillips, on how AI music generators could fundamentally upend the industry, from <a href="https://www.wnycstudios.org/podcasts/otm/articles/how-ai-and-algorithms-are-transforming-music" target="_blank">WNYC's On the Media</a>(Dec 27, 2024)</p>
+
+        <p>
+          Phillips's take is a creative and optimistic response to what has felt like an intensely demoralizing situation for many. Maybe feeding something we've made into a generative system, and seeing how it responds can be a great way of getting over writers block. Still, many of these systems aren’t designed for co-creation. They’re positioned to replace artists, targeting buyers who would otherwise commission human work. This is evident in their design, the interface is optimized for generating finished products, not pieces to be edited and reasembled by an artist. We might think ChatGPT is a great writing partner, great at helping us write new lyrics, but consider the difference between ChatGPT's inteface and this experimental tool called TextFX made by crative technologists at Google in collaboration with the rapper Lupe Fiasco: <a href="https://textfx.withgoogle.com/">https://textfx.withgoogle.com</a>
+        </p>
+
+        <a href="https://www.youtube.com/watch?v=yYp18JAvKkQ" target="_blank">
+          <img src="/images/lupe-yt.jpg" alt="Lupe Fiasco interviewed about TextFX" class="rwd">
+        </a>
+        <p class="small-note"><a href="https://en.wikipedia.org/wiki/Lupe_Fiasco" target="_blank">Lupe Fiasco</a> presents his collaborative project <a href="https://textfx.withgoogle.com/">TextFX</a> in Google's case study video</p>
+
+        <br><br><br>
+        <h3 class="formatted-text">beyond apps</h3>
+
+        <p>
+          While we can definitely take some inspiration from the way Mark Henry Phillips and Lupe Fiasco reframe these models, less as anthropomorphized thought partners (which is often how they're marketed) and more as call-and-response ideation tools, we want to push things even further. We can engage with these models at the level of code which means we can incorporate generative AI models into our the systems we create. For example, while there are models that generate complete compositions baked down into an audio file, like the ones behind the app Phillips used, there are others that simply generate sequences of notes, the musical data which we can shape with the sounds/timbres we design and layer to our liking, for example we could use the <a href="/editor/#tensorflow.js (AI)/MusicVAE/Basic Melody" target="_blank">MusicVAE AI model</a> in combination with Tone.js. We could also do the inverse, keep the decision of which notes to play on our end and instead use an AI model to generate the timbre for each note, like this example using the <a href="/editor/#tensorflow.js (AI)/GANSynth/random timbre" target="_blank">GANSynth AI model</a>.
+        </p>
+
+        <p>
+          But integrating AI models in our projects doesn't have to be limited to music-specific models. We could use AI models to do all sorts of things beyond generate music/sound, for example we could use different vision models to detect hand positions and body poses and use that as a way of controlling web based instruments we make. For example, if we use our webcam's feed and pipe that as input into an AI model, as we do in this <a href="/editor/#tensorflow.js (AI)/Body Tracking/pose detection" target="_blank">BlazePose model</a> example, we could use the AI model's outputs to control the pitch and volume of an instrument.
+        </p>
+
+        <br><br><br>
+        <h3 class="formatted-text">ai models as art</h3>
+
+        <p>
+          We could go even deeper, we could collect (or curate) data ourselves and then use it to train our own AI models which we can then integrate into our projects. The work we're producing in class are all algorithmic systems which can be used to generate sound and music, our art isn't so much the system's output (the music our systems generate) but the system itself. From this perspective, an artist might approach the creation of an AI model (itself an algorithmic system) as an art object itself. Which is exactly what Holly Herndon did.
+        </p>
+
+        <a href="https://youtu.be/5cbCYwgQkTE" target="_blank">
+          <img src="/images/holly-yt.jpg" alt="Holly Herndon TED talk" class="rwd">
+        </a>
+        <p class="small-note"><a href="https://en.wikipedia.org/wiki/Holly_Herndon" target="_blank">Holly Herndon</a> presents her AI project <a href="https://holly.plus/" target="_blank">Holly+</a> At TED</p>
+
+        <p>
+          Holly Herndon, an artist and composer with a background in experimental new media, created an AI model similar to GANSynth, in that it creates audio buffers by generating the timbre hitting a specific pitch. But GANSynth was trained on the timbre of lots of different musical instruments, which means it can create new timbres that sound like a mix of musical instruments. Herndon's model, <a href="https://holly.plus/" target="_blank">Holly+</a>, was trained on her own voice, so it can only ever create audio which sounds like Holly Herndon herself: her voice, as an AI model, as art.
+        </p>
+      </div>
+
+      <br>
+      <br>
+      <br>
+      <br>
+    </section>
+
+
+
+    <script src="/js/libs/nn.min.js"></script>
+    <script src="/js/custom-elements/main-menu.js"></script>
+    <script src="/js/utils.js"></script>
+    <script>
+      utils.init()
+      nn.getAll('h4').forEach(e => utils.formatText(e))
+    </script>
+  </body>
+</html>

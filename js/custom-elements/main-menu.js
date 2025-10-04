@@ -177,7 +177,10 @@ class MainMenu extends window.HTMLElement {
             <a href="/assignments">assignments</a>
           </span>
           <span>
-            <a href="/editor">editor</a>
+            <a href="/ai-policy">ai policy + protocol</a>
+          </span>
+          <span>
+            <a href="/editor">code editor + demos</a>
           </span>
         </div>
 

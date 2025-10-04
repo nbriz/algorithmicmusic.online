@@ -170,7 +170,10 @@ window.utils.setupCodeControls = function (c, ne) {
     return code
   }
   // setup click events
-  c.querySelector('img[alt="run code"]').addEventListener('click', () => ne.update())
+  c.querySelector('img[alt="run code"]').addEventListener('click', () => {
+    console.clear()
+    ne.update()
+  })
   c.querySelector('img[alt="copy code"]').addEventListener('click', () => {
     const textarea = document.createElement('textarea')
     textarea.value = getCode()
