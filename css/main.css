@@ -229,7 +229,7 @@ code {
   text-align: center;
   margin: 0.5em auto;
   font-style: italic;
-  opacity: 0.33;
+  /* opacity: 0.33; */
 }
 
 .rwd {

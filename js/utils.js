@@ -76,6 +76,16 @@ window.utils.init = function () {
   } else goLight()
 }
 
+window.utils.loadEditorFromHash = () => {
+  const hash = window.location.hash
+  const m = hash.match(/editor-(\d+)(?:\?i=(\d+))?/)
+  if (m && m[1] && m[2]) {
+    const e = Number(m[1])
+    const i = Number(m[2])
+    window.editors[e].jumpTo(i)
+  }
+}
+
 window.utils.loader = function () {
   const svgWidth = 100 // SVG width in viewBox units
   const svgHeight = 100 // SVG height in viewBox units
@@ -302,7 +312,7 @@ window.utils.createCodeEditor = function (opts) {
     const infoEle = ele.querySelector('.content > p')
     window.utils.loadExample(obj, ne, infoEle)
     title.innerHTML = `${opts.title} ${index + 1} / ${total}`
-    if (!nojump) window.location.hash = opts.ele
+    if (!nojump) window.location.hash = opts.ele + '?i=' + index
     setTimeout(() => ne.update(), 200)
   }
 
@@ -314,6 +324,12 @@ window.utils.createCodeEditor = function (opts) {
 
   function prev () {
     index--; if (index < 1) index = total - 1
+    const obj = opts.code instanceof Array ? opts.code[index] : opts.code
+    update(obj)
+  }
+
+  function jumpTo (i) {
+    index = i
     const obj = opts.code instanceof Array ? opts.code[index] : opts.code
     update(obj)
   }
@@ -331,7 +347,7 @@ window.utils.createCodeEditor = function (opts) {
     prevBtn.addEventListener('click', prev)
   }
 
-  const obj = { ne, ele, update, next, prev }
+  const obj = { ne, ele, update, next, prev, jumpTo }
   if (!window.editors) window.editors = []
   window.editors.push(obj)
 

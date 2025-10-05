@@ -395,15 +395,47 @@ window.data = {
         template: ['body', 'nn', 'tone']
       }
     ],
-    visuals: [
+    'visuals (basic)': [
       {
-        title: 'volume circles (canvas)',
-        path: 'nn.min.js/visuals/vol-circs.js',
+        title: 'random background (HTML+CSS)',
+        path: 'nn.min.js/visuals/bg-css.js',
         template: ['body', 'nn', 'tone']
       },
       {
-        title: 'waveforms (canvas)',
+        title: 'random elements (HTML+CSS)',
+        path: 'nn.min.js/visuals/ran-ele.js',
+        template: ['body', 'nn', 'tone']
+      },
+      {
+        title: 'random background (canvas)',
+        path: 'nn.min.js/visuals/bg-canvas.js',
+        template: ['body', 'nn', 'tone']
+      },
+      {
+        title: 'random circles (circles)',
+        path: 'nn.min.js/visuals/circles.js',
+        template: ['body', 'nn', 'tone']
+      }
+    ],
+    'visuals (analysis)': [
+      {
+        title: 'volume meter',
+        path: 'nn.min.js/visuals/vol-meter.js',
+        template: ['body', 'nn', 'tone']
+      },
+      {
+        title: 'volume + frquency',
+        path: 'nn.min.js/visuals/tones.js',
+        template: ['body', 'nn', 'tone']
+      },
+      {
+        title: 'waveform',
         path: 'nn.min.js/visuals/wave-form.js',
+        template: ['body', 'nn', 'tone']
+      },
+      {
+        title: 'frequency bars',
+        path: 'nn.min.js/visuals/freq-bars.js',
         template: ['body', 'nn', 'tone']
       }
     ]

@@ -1,0 +1,1 @@
+Here we're creating a new <code>new Tone.Player()</code> instance, we can pass a path to an audio file to it and it'll handle loading and decoding for us, as well as give us <code>.start()</code> and <code>.start()</code> methods.
