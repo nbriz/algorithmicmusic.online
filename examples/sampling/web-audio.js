@@ -4,7 +4,7 @@ const wave = viz.createWaveform({ audioCtx: ctx })
 // function to load a new file and play it
 async function playClip (path) {
   // load an mp3 file and extract it's raw data
-  const filePath = 'https://algorithmicmusic.online/audios/amen-break.mp3'
+  const filePath = 'https://algorithmicmusic.online/audios/funky-drummer.mp3'
   const request = await window.fetch(filePath)
   const rawData = await request.arrayBuffer()
 

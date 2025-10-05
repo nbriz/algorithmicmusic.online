@@ -323,7 +323,7 @@ window.utils.createCodeEditor = function (opts) {
   }
 
   function prev () {
-    index--; if (index < 1) index = total - 1
+    index--; if (index < 0) index = total - 1
     const obj = opts.code instanceof Array ? opts.code[index] : opts.code
     update(obj)
   }

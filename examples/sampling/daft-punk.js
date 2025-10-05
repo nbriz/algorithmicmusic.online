@@ -1,24 +1,28 @@
 const wave = viz.createWaveform()
 
-const filePath = '/audios/more-spell-on-you.wav'
+const filePath = 'https://algorithmicmusic.online/audios/more-spell-on-you.wav'
 const player = new Tone.Player(filePath).toDestination()
 player.connect(wave)
 player.playbackRate = 0.9 // slow down play back
 
 const cuts = [
-  { offset: 1.581750150400296, duration: 1.1510388418405915 },
-  { offset: 1.82681003285668, duration: 0.8985529023400742 },
-  { offset: 3.6313418945809612, duration: 1.344116324988045 },
-  { offset: 5.435873756305242, duration: 0.8985529023400751 }
+  { offset: 1.59, duration: 1.15 },
+  { offset: 1.83, duration: 0.89 },
+  { offset: 3.63, duration: 1.34 },
+  { offset: 5.44, duration: 0.89 }
 ]
 
 Tone.getContext().lookAhead = 0.01 // adjust latency
 
 function playSample (i) {
+  // play sample
   const now = Tone.now()
   const off = cuts[i].offset
   const dur = cuts[i].duration / player.playbackRate
   player.start(now, off, dur)
+  // change background
+  const clr = nn.randomColor()
+  nn.get('body').css('background', clr)
 }
 
 // UI

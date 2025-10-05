@@ -347,6 +347,11 @@ window.data = {
         title: 'down up',
         path: 'nn.min.js/mouse/down-up.js',
         template: ['body', 'nn', 'tone', 'viz']
+      },
+      {
+        title: 'turntable scratching',
+        path: 'nn.min.js/mouse/scratching.js',
+        template: ['body', 'nn', 'tone']
       }
     ],
     keyboard: [
