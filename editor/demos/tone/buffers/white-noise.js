@@ -4,22 +4,16 @@ function createCustomBuffer (seconds, channels) {
   const bufferSize = seconds * sr
   const buffer = Tone.context.createBuffer(channels, bufferSize, sr)
 
+  // variable to scale our buffer values by (to adjust the volume)
+  const amp = 0.25 // value from 0 -> 1
+
   // loop through each channel
   for (let ch = 0; ch < channels; ch++) {
     const samples = buffer.getChannelData(ch)
     // fill the buffer with white noise
     for (let s = 0; s < bufferSize; s++) {
-
-      // NOISE: random values between -0.25 and 0.25
-      samples[s] = nn.random(-0.25, 0.25)
-
-      // SINE WAVE: 440 hz at 0.25 volume
-      // const freq = 440
-      // const vol = 0.25
-      // const scalar = (freq * 2 * Math.PI) / sr
-      // samples[s] = Math.sin(s * scalar) * vol
-
-      // for more examples see: Web Audio API > Audio Buffers
+      // NOISE: completely random values (scaled for volume)
+      samples[s] = nn.random(-1, 1) * amp
     }
   }
   return buffer
@@ -39,7 +33,7 @@ function toggle () {
   }
 }
 
-// create buffer
+// create buffer (1 second, 2 channels)
 const buffer = createCustomBuffer(1, 2)
 let sound = null
 

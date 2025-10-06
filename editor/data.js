@@ -87,15 +87,65 @@ window.data = {
   },
   'Tone.js': {
     Buffers: [
+      // {
+      //   title: 'algorithmically generated',
+      //   path: 'tone/buffers/raw-buffer.js',
+      //   template: ['body', 'nn', 'tone', 'viz']
+      // },
       {
-        title: 'algorithmically generated',
-        path: 'tone/buffers/raw-buffer.js',
+        title: 'Silence',
+        path: 'tone/buffers/silence.js',
         template: ['body', 'nn', 'tone', 'viz']
       },
       {
-        title: 'loaded from file',
+        title: 'White Noise',
+        path: 'tone/buffers/white-noise.js',
+        template: ['body', 'nn', 'tone', 'viz']
+      },
+      {
+        title: 'Brown Noise',
+        path: 'tone/buffers/brown-noise.js',
+        template: ['body', 'nn', 'tone', 'viz']
+      },
+      {
+        title: 'Pink Noise',
+        path: 'tone/buffers/pink-noise.js',
+        template: ['body', 'nn', 'tone', 'viz']
+      },
+      {
+        title: 'Sine Wave',
+        path: 'tone/buffers/sine-wave.js',
+        template: ['body', 'nn', 'tone', 'viz']
+      },
+      {
+        title: 'Square Wave (v1)',
+        path: 'tone/buffers/square-wave-v1.js',
+        template: ['body', 'nn', 'tone', 'viz']
+      },
+      {
+        title: 'Square Wave (v2)',
+        path: 'tone/buffers/square-wave-v2.js',
+        template: ['body', 'nn', 'tone', 'viz']
+      },
+      {
+        title: 'Square Wave (v3)',
+        path: 'tone/buffers/square-wave-v3.js',
+        template: ['body', 'nn', 'tone', 'viz']
+      },
+      {
+        title: 'Custom Wave',
+        path: 'tone/buffers/custom-wave.js',
+        template: ['body', 'nn', 'tone', 'viz']
+      },
+      {
+        title: 'Loaded from File',
         path: 'tone/buffers/file-buffer.js',
         template: ['body', 'nn', 'tone', 'viz']
+      },
+      {
+        title: 'AI Generated',
+        path: 'tone/buffers/ai-buffer.js',
+        template: ['body', 'nn', 'tone', 'viz', 'gan']
       }
     ],
     Oscillators: [

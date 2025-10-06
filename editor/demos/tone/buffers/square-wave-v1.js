@@ -4,22 +4,24 @@ function createCustomBuffer (seconds, channels) {
   const bufferSize = seconds * sr
   const buffer = Tone.context.createBuffer(channels, bufferSize, sr)
 
+  // variable to scale our buffer values by (to adjust the volume)
+  const amp = 0.25 // value from 0 -> 1
+  // formula to calculate how to scale "s" (the index of the sample)
+  // so that it matches a specific frequency
+  const freq = 440 // our frequency or "pitch", 440 Hz
+  const scalar = (freq * 2 * Math.PI) / sr
+  // frequency * 2π (the circumference of a circle) / sample rate
+
   // loop through each channel
   for (let ch = 0; ch < channels; ch++) {
     const samples = buffer.getChannelData(ch)
-    // fill the buffer with white noise
+    // formula for a Square Wave ---------------- (version 1)
     for (let s = 0; s < bufferSize; s++) {
-
-      // NOISE: random values between -0.25 and 0.25
-      samples[s] = nn.random(-0.25, 0.25)
-
-      // SINE WAVE: 440 hz at 0.25 volume
-      // const freq = 440
-      // const vol = 0.25
-      // const scalar = (freq * 2 * Math.PI) / sr
-      // samples[s] = Math.sin(s * scalar) * vol
-
-      // for more examples see: Web Audio API > Audio Buffers
+      // first create the sine wave
+      const sine = Math.sin(s * scalar) * amp
+      // then round it up to 1 or down to -1 to make it square
+      if (sine > 0) samples[s] = 1 * amp
+      else samples[s] = -1 * amp
     }
   }
   return buffer
@@ -39,7 +41,7 @@ function toggle () {
   }
 }
 
-// create buffer
+// create buffer (1 second, 2 channels)
 const buffer = createCustomBuffer(1, 2)
 let sound = null
 
@@ -55,4 +57,7 @@ nn.create('label')
 
 // visuals
 const wave = viz.createWaveform()
-const spec = viz.createSpectrum()
+const spec = viz.createSpectrum({
+  range: [0, 3520],
+  harmonics: true
+})

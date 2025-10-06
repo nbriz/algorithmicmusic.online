@@ -1,3 +1,9 @@
+/*
+
+  The algorithmic version of one of the most influential compositions in experimental music history, [4:33](https://en.wikipedia.org/wiki/4%E2%80%B233%E2%80%B3) by John Cage, which is 4 minutes and 33 seconds of silence. Use this as a template for your own algorithmically crafted audio buffers (you might want to adjust the duration though)
+
+*/
+
 // custom function to create Tone.js buffers from scratch "algorithmically"
 function createCustomBuffer (seconds, channels) {
   const sr = Tone.context.sampleRate
@@ -9,17 +15,10 @@ function createCustomBuffer (seconds, channels) {
     const samples = buffer.getChannelData(ch)
     // fill the buffer with white noise
     for (let s = 0; s < bufferSize; s++) {
-
-      // NOISE: random values between -0.25 and 0.25
-      samples[s] = nn.random(-0.25, 0.25)
-
-      // SINE WAVE: 440 hz at 0.25 volume
-      // const freq = 440
-      // const vol = 0.25
-      // const scalar = (freq * 2 * Math.PI) / sr
-      // samples[s] = Math.sin(s * scalar) * vol
-
-      // for more examples see: Web Audio API > Audio Buffers
+      // THIS IS WHERE WE CREATE OUR BUFFER
+      // we create and assign every value or "sample"
+      // values closer to 1 and -1 our loudest, 0 is absolute silence
+      samples[s] = 0
     }
   }
   return buffer
@@ -40,7 +39,9 @@ function toggle () {
 }
 
 // create buffer
-const buffer = createCustomBuffer(1, 2)
+const dur = 4 * 60 + 33 // the duration,  4 mins and 33 seconds
+const ch = 2 // the number of "channels" (think speakers)
+const buffer = createCustomBuffer(dur, ch)
 let sound = null
 
 // UI
