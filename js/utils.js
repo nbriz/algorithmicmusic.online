@@ -83,6 +83,7 @@ window.utils.loadEditorFromHash = () => {
     const e = Number(m[1])
     const i = Number(m[2])
     window.editors[e].jumpTo(i)
+    nn.get(`#editor-${e}`).scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 }
 
@@ -113,8 +114,11 @@ window.utils.loader = function () {
     setTimeout(() => {
       clearInterval(interval)
       // scroll to correct spot based on URL
-      if (window.location.hash) window.location = window.location.hash
-      else window.scrollTo(0, 0)
+      if (window.location.hash) {
+        if (window.location.hash.indexOf('#editor') === 0) {
+          window.utils.loadEditorFromHash()
+        } else window.location = window.location.hash
+      } else window.scrollTo(0, 0)
       // update editors with theme after they've loaded
       const theme = window.localStorage.getItem('theme') || 'light'
       if (window.editors instanceof Array) {
