@@ -25,6 +25,6 @@ async function playClip (path) {
 
 // UI buttons
 nn.create('button')
-  .content('play')
+  .content('play the funky drummer')
   .addTo('body')
   .on('click', playClip)

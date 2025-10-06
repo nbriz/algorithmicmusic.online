@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Algorithmic Music Online: Sampling</title>
+    <meta name="author" content="Nick Briz">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <!-- TODO: social media stuff -->
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+      #search-audio-files {
+        max-width: 1300px;
+        max-height: 80vh;
+        margin: 0 auto;
+        border: 1px solid var(--text-color);
+        padding: 10px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 3fr;
+      }
+
+      #search-audio-files > div {
+        max-height: calc(80vh - 20px);
+        overflow-y: scroll;
+      }
+
+      .clickable, #af3 {
+        font-family: 'FiraMono', inconsolata, monospace;
+        padding: 4px 10px;
+      }
+
+      .clickable:hover {
+        cursor: pointer;
+        color: var(--accent-color1);
+      }
+
+      .clickable.selected {
+        background: var(--accent-color1);
+        color: var(--background-color);
+      }
+
+      #waveform-sampler {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 30px auto;
+      }
+    </style>
+  </head>
+  <body>
+
+    <main-menu>
+      <div slot="menu-items">
+        <div class="color-mode-wrap">
+          <label class="color-mode-switch">
+            <input type="checkbox">
+            <span class="color-mode-slider"></span>
+          </label>
+          <span class="color-mode-label">light/dark mode</span>
+        </div>
+      </div>
+    </main-menu>
+
+    <div class="loader">
+      <svg id="loader-wave" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="" id="loader-wave-path"></path>
+      </svg>
+    </div>
+
+    <section id="prologue">
+      <div class="content">
+        <h4 class="ch">chapter 2</h4>
+        <h2 class="formatted-text ch-title">sampling</h2>
+
+        <div style="max-width: 80%; margin: 0 auto;">
+          <a href="https://www.youtube.com/watch?v=SENzTt3ftiU" target="_blank">
+            <img src="/images/mpc.jpg" alt="video on how J Dilla humanized his MPC3000 " class="rwd">
+          </a>
+          <p class="small-note">
+            a Vox mini-doc on Hip Hop producer <a href="https://en.wikipedia.org/wiki/J_Dilla" target="_blank">J Dilla</a> and his <a href="https://en.wikipedia.org/wiki/Akai_MPC#MPC3000" target="_blank">MPC 3000</a>
+          </p>
+        </div>
+        <br>
+
+        <p>
+          In music production, “sampling” can mean a few things. In the signal-processing sense we’ve used so far, creating an audio buffer means choosing the number of channels (think speakers), the buffer's length and sample rate (often 44,100 samples per second, or 44.1 kHz) which tells us how many discrete values the buffer holds each second. In this context a "sample" is one number, between −1 to 1, that represents the signal's instantaneous amplitude (how far the speaker cone is displaced) at that moment.
+        </p>
+
+        <p>
+          Up to now we've generated audio buffers algorithmically. In this lesson, we'll create buffers by loading previously recorded sounds.  When we record an analog sound and digitize it, we're again creating an audio buffer, this time by <strong>sampling</strong> the continuous waveform into tiny snapshots (those −1 to 1 values), each capturing the amplitude at a specific instant. Once digitized this data is usually store in audio files like <code>.wav</code> and <code>.mp3</code>. The Web Audio API provides a method called <code>decodeAudioData</code> for decoding the data stored in these sorts of files and creating audio buffers from them.
+        </p>
+    </section>
+
+    <section id="editor-0"></section>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <p>
+          The audio file we’re using above is extracted from a longer song called "the Funky Drummer" by James Brown, a little over <a href="https://youtu.be/AoQ4AtsFWVM?si=JkVC1yHoWIHH-Hz1&t=317" target="_blank">5 mins into the track</a> all the musicians stop playing except for the drummer Clyde Stubblefield. This is a called a "drum break" (aka "break beat" or "break"), funk and soul songs often have moments like this, where only the drummer plays for a measure or two. These moments are perfect for "sampling" and remixing into new tracks. In the broader, creative sense, <strong>sampling</strong> usually means taking a portion of an existing recording, like a drum break, melody, or vocal phrase and reusing it in a new work, often reshaping it with slicing, editing, looping, pitch shifts/time-stretching and adding effects so it functions as fresh material in a different musical context. This particular breaks is one of the most heavily sampled in music history, you can learn more about <a href="https://www.youtube.com/watch?v=4Ku7KjNpv-4" target="_blank">the Funky Drummer here</a>.
+        </p>
+
+        <p>
+          We can also load an audio file into our code using Tone.js which requires far less code because it's a "higher-level" library. Even though we'll be using Tone.js for the rest of these examples, it's important to remember, that everything we do with Tone.js we can do directly with the Web Audio API if we need or want to, because Tone.js is built on top of the Web Audio API, which means it useses it's methods (like <code>decodeAudioData</code>) behind the scenes.
+        </p>
+
+      </div>
+    </section>
+
+    <section id="editor-1"></section>
+
+    <section>
+      <div class="content">
+        <p>
+          The drum samples from example 3 above come from a <a href="https://github.com/Tonejs/audio" target="_blank">Tone.js repo</a> containing audio files they use in many of their examples. You can use the box below to explore the different drum samples in the collection as well as copy/paste code snippets for creating your own <code>Tone.Player()</code> from any specific file path or <code>Tone.Players()</code> (plural) using each drum kit's corresponding object. This can be a quick/easy way to get started experimenting, but I also highly recommend you search large open source sound repositories, like <a href="https://freesound.org/" target="_blank">freesound.org</a> or <a href="https://commons.wikimedia.org/wiki/Category:Audio_files" target="_blank">Wiki Media</a>, for interesting sounds (or even YouTube via sites like <a href="https://ezconv.com/v820" target="_blank">this one</a>).
+        </p>
+      </div>
+    </section>
+
+    <section id="search-audio-files">
+      <div id="af1"></div>
+      <div id="af2"></div>
+      <div id="af3"></div>
+    </section>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <p>
+          We're on our way to creating a web based instrument, something like a drum "sound board", a sort of "drum machine" without the sequencer (we'll learn how to make that part later). But loading individual files from a sample pack (like the ones above) isn't the only way to create an instrument with individual drum sounds. Sometimes it can be funner and more interesting to take a single audio clip and cut it up into smaller samples. Rather than using synthetic drum sounds to create beats, musicians across many genres have been taking drum breaks (like the Funky Drummer), chopping them up into smaller pieces and re-arranging them to create new beats. One of the most iconic and heavly chopped up breaks in music history comes from a six-second drum solo in the song “Amen, Brother,” the 1969 B-side by The Winstons, performed by drummer Gregory Coleman.
+        </p>
+
+        <br><br>
+        <div style="max-width: 80%; margin: 0 auto;">
+          <a href="https://www.youtube.com/watch?v=5SaFTm2bcac" target="_blank">
+            <img src="/images/amen-yt.jpg" alt="amen break record" class="rwd">
+          </a>
+          <p class="small-note">
+            an audio documentary on the "<a href="/audios/amen-break.mp3" target="_blank">Amen Break</a>"
+          </p>
+        </div>
+        <br>
+
+        <p>
+          The tool below has the "Amen Break" pre-loaded, if you click and drag over a portion of the audio waveform you want to "sample" the tool will select that area and display the duration of the selected sample as well as the offset (amount of seonds from the start of the file) below the waveform. Press "Play" to hear the sample, or if you want to load a different audio file, press the "Browse" button to load one from your computer. If you don't have any you can  <a href="/audios/funky-drummer.mp3" download>download the Funky Drummer break here</a> to test with.
+        </p>
+      </div>
+    </section>
+
+    <section id="waveform-sampler"></section>
+
+    <section>
+      <div class="content">
+        <p>
+          Once you've clicked-and-dragged your mouse over a section of the sample above and have a selection you like, copy the  <code>{ offset, duration }</code> object it generates and paste it into the array in the example below. Take note of the <code>playSample()</code> function, it takes an index value and uses that to select the corresponding object from the "cuts" array, it then starts the player immediately (ie. <code>now</code>) but instead of playing back the clip from the beginning, it starts from the offset value <code>off</code> and instead of playing the rest of the clip all the way through, it only plays for the specified duration <code>dur</code>. We trigger the playback  of this sample using our keybaord, make sure to map they key you want to the sample (based  on it's index) you want in the <code>'keydown'</code> event listener block at the end of the sketch.
+        </p>
+      </div>
+    </section>
+
+    <section id="editor-2"></section>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <p>
+          We don't need to limit ourselves to drum breaks. While breaks, like Funky Drummer and the Amen Break, play a very important role in the  history of sampling, artists have made new music from sampling from songs, often times changing the playback rate (the speed at which the buffer is played) as a way to change the key of the song which ads another layer of transformation. In the example below I've cut up pieces from the song <a href="https://www.youtube.com/watch?v=JYya05epoZ8" target="_blank">More Spell On You</a> by Eddie Johns and slowed it down to a 90% of the original <code>.playbackRate</code> much the same way the duo <a href="https://www.youtube.com/watch?v=5AqHSvR9bqs" target="_blank">Daft Punk did</a> to create their song <a href="https://www.youtube.com/watch?v=FGBhQbmPwH8" target="_blank">One More Time</a>
+        </p>
+      </div>
+    </section>
+
+    <section id="editor-3"></section>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <p>
+          There's so much more experimenting we do with the <code>.playbackRate</code>, we can also set the player's <code>.reverse</code> propert to ture/false to reverse the playback direction. Adjusting the playback speed and direction is essentially what the original Hip Hop DJs would do to their "scratch" their samples on a turntable (rub the record back and fourth as it was playing), which means we could simulate <a href="/editor/#nn.min.js/mouse/turntable scratching" target="_blank">scratching on our trackpad</a>. I share that as an example, but remember we don't want to recreate existing instruments in this class, we want to use the programability of these features to create instruments that wouldn't have been possible before.
+        </p>
+
+        <br><br>
+        <a href="https://www.youtube.com/watch?v=o5igwpQIpi4" target="_blank">
+          <img src="/images/patatap.jpg" alt="video about the Patatap app by Lullatone and Jono" class="rwd">
+        </a>
+        <p class="small-note">
+          <a href="https://patatap.com/" target="_blank">Patatap</a> app by <a href="https://www.lullatone.com/" target="_blank">Lullatone</a> and <a href="https://www.jono.fyi/" target="_blank">Jono</a>
+        </p>
+        <br>
+
+        <p>
+          In this class our focus is on creating sound, so the most important thing to experiment with during this week's meditation is turning your laptop into an instrument for slicing and time-stretching samples. That said, if you'd like to challenge yourself to add some visuals and try to make something similar to the <a href="https://patatap.com/" target="_blank">Patatap</a> there are some examples in the site's editor section for doing that, check out the different examples in <a href="/editor/#nn.min.js/visuals (basic)/random background (HTML+CSS)" target="_bank">visuals (basic)</a> section as well as the <a href="/editor/#nn.min.js/visuals%20(analysis)/volume%20meter" target="_bank">visuals (analysis)</a> for audio responsive examples.
+        </p>
+      </div>
+    </section>
+
+
+    <section class="attribution">
+      <div class="content">
+        <p>
+          <span style="font-weight: bold;">Attribution</span>: Text and code written by <a href="https://nickbriz.com/" target="_blank">Nick Briz</a>. The code editor icons designed by <a href="https://thenounproject.com/creator/MekoDa/" target="_blank">Meko</a> and licensed under Creative Commons Attribution License (CC BY 3.0). All sounds generated using the Web Audio API and/or <a href="https://tonejs.github.io/" target="_blank">Tone.js</a> by Yotam Mann and <a href="https://github.com/Tonejs/Tone.js/graphs/contributors" target="_blank">other contributors</a>.
+        </p>
+      </div>
+    </section>
+
+
+
+    <script src="/js/libs/netitor.min.js"></script>
+    <script src="/js/libs/nn.min.js"></script>
+    <script src="/js/custom-elements/main-menu.js"></script>
+    <script src="/js/tone-sounds.js"></script>
+    <script src="/js/code-templates.js"></script>
+    <script src="/js/utils.js"></script>
+    <script>
+      utils.init()
+      nn.getAll('h4, .formatted-text').forEach(e => utils.formatText(e))
+
+      utils.createCodeEditor({
+        ele: '#editor-0',
+        code: {
+          file: 'sampling/web-audio.js',
+          template: ['body', 'nn', 'viz']
+        }
+      })
+
+      const t = ['body', 'nn', 'tone', 'viz']
+      utils.createCodeEditor({
+        ele: '#editor-1',
+        title: 'tone.js player(s)',
+        code: [
+          { file: 'sampling/tone-player1.js', template: t, info: true },
+          { file: 'sampling/tone-player2.js', template: t, info: true },
+          { file: 'sampling/tone-player3.js', template: t, info: true }
+        ]
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-2',
+        title: 'sample player',
+        code: {
+          file: 'sampling/amen-template.js',
+          template: ['body', 'nn', 'tone', 'viz']
+        }
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-3',
+        title: 'Daft Punk',
+        code: {
+          file: 'sampling/daft-punk.js',
+          template: ['body', 'nn', 'tone', 'viz']
+        }
+      })
+
+      window.utils.loadEditorFromHash()
+
+      // -----------------------------------------------------------------------
+      // -----------------------------------------------------------------------
+      // -----------------------------------------------------------------------
+
+      function createDrumSampleSearch () {
+        let selectedKit = ''
+        let kitObj = ''
+        const drums = window.toneSounds['drum-samples']
+
+        const updateObj = (file) => {
+          const url = `https://tonejs.github.io/audio/drum-samples/${selectedKit}/${file}`
+          nn.get('#af3').innerHTML = ''
+          nn.create('pre').addTo('#af3').innerHTML = `// path for single file\nconst filePath = '${url}'`
+          nn.create('audio').set({ src: url, controls: true }).addTo('#af3')
+          nn.create('pre').addTo('#af3').innerHTML = `// root path
+const dir = 'https://tonejs.github.io/audio/${selectedKit}/'
+
+// object for entire kit
+${kitObj}`
+        }
+
+        const updateKit = (kit, files) => {
+          selectedKit = kit
+          kitObj = '{\n'
+          nn.get('#af2').innerHTML = ''
+          files.forEach((file, i) => {
+            const name = file.split('.')[0]
+            kitObj += `  ${name}: dir + '${file}'`
+            if (i === files.length - 1) kitObj += '\n}'
+            else kitObj += ',\n'
+            nn.create('div')
+              .set('class', 'clickable')
+              .content(name)
+              .addTo('#af2')
+              .on('click', function () {
+                nn.getAll('#af2 .clickable').forEach(e => e.classList.remove('selected'))
+                this.classList.add('selected')
+                updateObj(file)
+              })
+          })
+          updateObj(files[0])
+        }
+
+        // setup drumkit list
+        for (const kit in drums) {
+          if (kit !== 'files') {
+            const files = drums[kit].files
+            nn.create('div')
+              .set('class', 'clickable')
+              .content(kit)
+              .addTo('#af1')
+              .on('click', function () {
+                nn.getAll('.clickable').forEach(e => e.classList.remove('selected'))
+                this.classList.add('selected')
+                updateKit(kit, files)
+              })
+          }
+        }
+
+        // select initial kit
+        nn.getAll('#af1 .clickable').find(e => e.textContent === 'Kit8').click()
+        setTimeout(() => {
+          nn.getAll('#af2 .clickable').find(e => e.textContent === 'snare').click()
+        }, 100)
+      }
+
+      nn.on('load', createDrumSampleSearch)
+
+      // -----------------------------------------------------------------------
+      // -----------------------------------------------------------------------
+      // -----------------------------------------------------------------------
+
+      function createWFSampler (opts) {
+        opts = opts || { ele: 'body', color: 'black' }
+
+        const handleAudioFile = (file) => {
+          const reader = new window.FileReader()
+          reader.onload = (e) => {
+            audioCtx.decodeAudioData(e.target.result).then((buffer) => {
+              audioBuffer = buffer
+              // loopInTime = 0
+              loopOutTime = audioBuffer.duration
+              // loopInX = 0
+              // loopOutX = canvas.width
+              resetSelection()
+              btn.css({ display: 'inline' })
+              btn2.css({ display: 'inline' })
+              loopStart.css({ display: 'block', left: '0px', top: `${canvas.offsetTop}px` })
+              loopEnd.css({ display: 'block', left: '0px', top: `${canvas.offsetTop}px` })
+              drawWaveform()
+            }).catch((error) => console.error('Error decoding audio data:', error))
+          }
+          reader.readAsArrayBuffer(file)
+        }
+
+        const drawWaveform = () => {
+          const width = canvas.width
+          const height = canvas.height
+          const data = audioBuffer.getChannelData(0)
+          const step = Math.ceil(data.length / width)
+          const amp = height / 2
+
+          ctx.clearRect(0, 0, width, height)
+          ctx.fillStyle = 'transparent'
+          ctx.fillRect(0, 0, width, height)
+
+          ctx.strokeStyle = opts.colors.wave
+          ctx.beginPath()
+
+          for (let i = 0; i < width; i++) {
+            let min = 1.0
+            let max = -1.0
+
+            for (let j = 0; j < step; j++) {
+              const datum = data[(i * step) + j]
+              if (datum < min) min = datum
+              if (datum > max) max = datum
+            }
+
+            ctx.moveTo(i, (1 + min) * amp)
+            ctx.lineTo(i, (1 + max) * amp)
+          }
+
+          ctx.stroke()
+
+          // Draw Loop Points
+          // drawLoopPoints()
+        }
+
+        const playAudio = () => {
+          player = audioCtx.createBufferSource()
+          player.buffer = audioBuffer
+          player.loop = true
+          player.loopStart = loopInTime
+          player.loopEnd = loopOutTime
+          player.connect(audioCtx.destination)
+
+          const loopLen = loopOutTime - loopInTime
+
+          const offset = loopInTime
+          player.start(0, offset)
+          // startTime = audioCtx.currentTime - offset
+          startTime = audioCtx.currentTime
+
+          isPlaying = true
+          btn.textContent = 'pause'
+
+          positionPlayheadAt(loopInTime)
+          animatePlayhead()
+        }
+
+        const pauseAudio = () => {
+          if (player) player.stop()
+          isPlaying = false
+          btn.textContent = 'play'
+          cancelAnimationFrame(animationFrameId)
+
+          // always resume from loop start
+          pausedTime = loopInTime
+          positionPlayheadAt(loopInTime)
+        }
+
+        function positionPlayheadAt (t) {
+          const rect = canvas.getBoundingClientRect()
+          const xLocal = (t / audioBuffer.duration) * canvas.width
+          const xPage = rect.left + window.scrollX + xLocal
+          const yPage = rect.top + window.scrollY
+          playhead.css({ left: `${xPage}px`, top: `${yPage}px` })
+        }
+
+        const animatePlayhead = () => {
+          if (!isPlaying) return
+
+          const loopLen = Math.max(1e-6, loopOutTime - loopInTime)
+          const elapsed = audioCtx.currentTime - startTime
+          const phase = ((elapsed % loopLen) + loopLen) % loopLen
+          const position = loopInTime + phase
+
+          const rect = canvas.getBoundingClientRect()
+          const xLocal = (position / audioBuffer.duration) * canvas.width
+          const xPage = rect.left + window.scrollX + xLocal
+          const yPage = rect.top + window.scrollY
+
+          playhead.css({ left: `${xPage}px`, top: `${yPage}px` })
+          animationFrameId = requestAnimationFrame(animatePlayhead)
+        }
+
+
+        const resetSelection = () => {
+          console.log(audioBuffer.duration);
+          startTime = 0
+          pausedTime = 0
+          loopInTime = 0
+          loopOutTime = audioBuffer.duration
+          loopInX = 0
+          loopOutX = canvas.width
+          loopArea.css({ left: 0,  width: 0 })
+          loopStart.css({ left: 0, top: `${canvas.offsetTop}px` })
+          loopEnd.css({ left: 0, top: `${canvas.offsetTop}px` })
+          btn2.css({ opacity: 0.25 })
+          timecode.content('')
+          if (player) {
+            player.loopStart = loopInTime
+            player.loopEnd = loopOutTime
+            positionPlayheadAt(loopInTime)
+          }
+        }
+
+        // .....
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+        let audioBuffer, player, animationFrameId
+        let isPlaying = false
+        let startTime = 0
+        let pausedTime = 0
+        let loopInTime = 0
+        let loopOutTime = 0
+
+        const transport = nn.create('div')
+          .css({ display: 'flex', 'justify-content': 'center', 'align-items': 'center' })
+          .addTo(opts.ele)
+
+        const btn = nn.create('button')
+          .content('play')
+          .css({ display: 'none', 'margin-right': '20px' })
+          .addTo(transport)
+          .on('click', () => {
+            if (isPlaying) pauseAudio()
+            else playAudio()
+          })
+
+        const picker = nn.create('input')
+          .set({ type: 'file', accept: 'audio/*' })
+          .addTo(transport)
+          .on('change', () => {
+            const file = event.target.files[0]
+            if (file) handleAudioFile(file)
+          })
+
+          const btn2 = nn.create('button')
+            .content('reset')
+            .css({ display: 'none', 'margin-left': '20px', opacity: 0.25 })
+            .addTo(transport)
+            .on('click', () => {
+              if (isPlaying) pauseAudio()
+              resetSelection()
+            })
+
+        const canvas = nn.create('canvas')
+          .addTo(opts.ele)
+          .on('mousedown', (e) => {
+            const x = `${e.x}px` // NOTE: assumes canvas screenLeft
+            const y  = `${canvas.offsetTop}px`
+            loopStart.css({ left: x, top: y })
+            let w = loopEnd.x - e.x
+            w = w >= 0 ? `${w}px` : '0px'
+            loopArea.css({ left: x, top: y, width: w })
+            loopEnd.dataset.down = 'true'
+          })
+        canvas.width = nn.width
+        canvas.height = nn.height / 4
+        const ctx = canvas.getContext('2d')
+
+        const playhead = nn.create('div')
+          .css({
+            background: opts.colors.playhead,
+            width: '1px',
+            height: canvas.height,
+            position: 'absolute',
+            left: '0px',
+            top: canvas.offsetTop
+          })
+          .set('class', 'audio-marker player-marker')
+          .addTo(opts.ele)
+
+        const loopStart = nn.create('div')
+          .css({
+            background: opts.colors.selectbars,
+            height: canvas.height,
+            top: canvas.offsetTop,
+            display: 'none'
+          })
+          .set('class', 'loop-marker')
+          .addTo(opts.ele)
+          .on('mousedown', () => { loopStart.dataset.down = 'true' })
+
+        const loopEnd = nn.create('div')
+          .css({
+            background: opts.colors.selectbars,
+            height: canvas.height,
+            top: canvas.offsetTop,
+            display: 'none'
+          })
+          .set('class', 'loop-marker')
+          .addTo(opts.ele)
+          .on('mousedown', () => { loopEnd.dataset.down = 'true' })
+
+        nn.on('mouseup', () => {
+          loopStart.dataset.down = 'false'
+          loopEnd.dataset.down = 'false'
+        })
+
+        nn.on('mousemove', (e) => {
+          if (loopStart.dataset.down !== 'true' && loopEnd.dataset.down !== 'true') return
+
+          btn2.css({ opacity: 1 })
+
+          // canvas-local x (not page x)
+          const rect = canvas.getBoundingClientRect()
+          const localX = e.clientX - rect.left
+
+          const xCss = `${e.clientX}px` // keep CSS in page space
+          const yCss = `${rect.top + window.scrollY}px`
+
+          if (loopEnd.dataset.down === 'true') {
+            loopEnd.css({ left: xCss, top: yCss })
+            const w = Math.max(0, e.clientX - loopStart.x)
+            loopArea.css({ left: loopStart.style.left, top: yCss, width: `${w}px` })
+          } else if (loopStart.dataset.down === 'true') {
+            loopStart.css({ left: xCss, top: yCss })
+            const w = Math.max(0, loopEnd.x - e.clientX)
+            loopArea.css({ left: xCss, top: yCss, width: `${w}px` })
+          }
+
+          // if (isPlaying) startTime = audioCtx.currentTime
+
+          // convert marker positions to times using canvas-local coords
+          const startLocal = loopStart.x - rect.left
+          const endLocal = loopEnd.x - rect.left
+
+          const duration = audioBuffer.duration
+          loopInTime = nn.clamp(startLocal / canvas.width, 0, 1) * duration
+          loopOutTime = nn.clamp(endLocal / canvas.width, 0, 1) * duration
+
+          const oRound = Number(loopInTime.toFixed(3))
+          const dVal = loopOutTime - loopInTime
+          const dRound = Number(dVal.toFixed(3))
+          timecode.content(`{ offset: ${oRound}, duration: ${dRound} }`)
+
+          if (player) {
+            player.loopStart = loopInTime
+            player.loopEnd = loopOutTime
+          }
+          if (!isPlaying) positionPlayheadAt(loopInTime)
+        })
+
+
+        const loopArea = nn.create('div')
+          .css({
+            background: opts.colors.selectarea,
+            opacity: 0.25,
+            position: 'absolute',
+            height: canvas.height,
+            top: canvas.offsetTop,
+            width: '0px'
+          }).addTo(opts.ele)
+
+        const timecode = nn.create('code')
+          .css({ 'margin-top': '30px' })
+          .addTo(opts.ele)
+
+        nn.create('style').addTo('head').innerHTML = `
+        .loop-marker {
+          width: 1px;
+          position: absolute;
+          left: 0px;
+          cursor: pointer;
+        }
+        .loop-marker:after {
+          content: '';
+          position: absolute;
+          bottom: -10px;
+          left: 50%;
+          transform: translateX(-50%);
+          border-left: 10px solid transparent;
+          border-right: 10px solid transparent;
+          border-bottom: 10px solid ${opts.colors.selectbars}
+        }`
+
+        // load initial file...
+        async function loadInitialFile () {
+          const filePath = 'https://algorithmicmusic.online/audios/amen-break.mp3'
+          const request = await window.fetch(filePath)
+          const rawData = await request.arrayBuffer()
+          audioCtx.decodeAudioData(rawData, (buffer) => {
+            audioBuffer = buffer
+            loopInTime = 0
+            loopOutTime = audioBuffer.duration
+            loopInX = 0
+            loopOutX = canvas.width
+            btn.css({ display: 'inline' })
+            btn2.css({ display: 'inline' })
+            loopStart.css({ display: 'block', left: '0px', top: `${canvas.offsetTop}px` })
+            loopEnd.css({ display: 'block', left: '0px', top: `${canvas.offsetTop}px` })
+            drawWaveform()
+          })
+        }
+
+        loadInitialFile()
+      }
+
+      nn.on('load', () => {
+        const cs = getComputedStyle(document.documentElement)
+        const ele = '#waveform-sampler'
+        const colors = {
+          wave: cs.getPropertyValue('--accent-color1').trim(),
+          playhead: cs.getPropertyValue('--text-color').trim(),
+          selectbars: cs.getPropertyValue('--accent-color5').trim(),
+          selectarea: cs.getPropertyValue('--accent-color2').trim()
+        }
+        createWFSampler({ ele, colors })
+      })
+
+    </script>
+  </body>
+</html>

@@ -1,30 +1,19 @@
 const wave = viz.createWaveform()
 
-Tone.getContext().lookAhead = 0.01 // adjust latency
+const filePath = 'https://algorithmicmusic.online/audios/funky-drummer.mp3'
+const player = new Tone.Player(filePath).toDestination()
+player.connect(wave)
+player.loop = true
 
-const path = 'https://tonejs.github.io/audio/drum-samples/Kit8/'
-const drumset = new Tone.Players({
-  kick: path + 'kick.mp3',
-  snare: path + 'snare.mp3',
-  hihat: path + 'hihat.mp3',
-  tom1: path + 'tom1.mp3',
-  tom2: path + 'tom2.mp3',
-  tom3: path + 'tom3.mp3'
-})
+function changeSpeed () {
+  // map the mouse's X (0 -> screen width) to new range (0 -> 2)
+  const speed = nn.map(nn.mouseX, 0, nn.width, 0, 2)
+  player.playbackRate = speed
+}
 
-drumset.toDestination()
-drumset.connect(wave)
-
-// UI
-nn.create('label')
-  .content('use the "q" through "y" keys to play the drum samples')
+nn.create('button')
+  .content('play the funky drummer')
   .addTo('body')
+  .on('click', () => player.start())
 
-nn.on('keydown', (e) => {
-  if (e.key === 'q') drumset.player('kick').start()
-  else if (e.key === 'w') drumset.player('snare').start()
-  else if (e.key === 'e') drumset.player('hihat').start()
-  else if (e.key === 'r') drumset.player('tom1').start()
-  else if (e.key === 't') drumset.player('tom2').start()
-  else if (e.key === 'y') drumset.player('tom3').start()
-})
+nn.on('mousemove', changeSpeed)
