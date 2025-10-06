@@ -28,11 +28,12 @@ function createCustomBuffer (seconds, channels) {
       samples[s] = 0
       // loop through the array of harmonics
       for (let n = 0; n < harmonics.length; n++) {
-        const vol = harmonics[n] // volume of harmonic
+        const vol = harmonics[n] // volume of this harmonic
         const har = n + 1 // which harmonic
         // add the next scaled harmonic to the value
         samples[s] += Math.sin(har * s * scalar) * vol
       }
+      samples[s] = samples[s] * amp // scale it for general volume control
     }
   }
   return buffer
