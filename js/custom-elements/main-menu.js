@@ -126,7 +126,7 @@ class MainMenu extends window.HTMLElement {
           <a  href='/sound'>sound</a>
         </span>
         <span>
-          <a class="inactive">sampling</a>
+          <a href="/sampling">sampling</a>
         </span>
         <span>
           <a class="inactive">signals</a>
