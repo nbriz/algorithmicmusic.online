@@ -1,18 +1,22 @@
+const wave = viz.createWaveform()
+
+Tone.getContext().lookAhead = 0.01 // adjust latency
+
 const amen = 'https://algorithmicmusic.online/audios/amen-break.mp3'
-const player = new Tone.Player(amen)
-player.toDestination()
+const player = new Tone.Player(amen).toDestination()
+player.connect(wave)
 
 const timecodes = [
-  { offset: 1.8017901897601145, duration: 0.21934837092731851 },
-  { offset: 2.0159159804272586, duration: 0.2193483709273183 },
-  { offset: 2.2404869316147513, duration: 0.2193483709273183 },
-  { offset: 2.4598353025420696, duration: 0.10445160520348473 },
-  { offset: 2.55906432748538, duration: 0.12011934598400797 },
-  { offset: 2.679183673469388, duration: 0.09922902494331032 },
-  { offset: 2.7784126984126982, duration: 0.10445160520348518 },
-  { offset: 2.8880868838763574, duration: 0.13056450650435636 },
-  { offset: 3.0186513903807137, duration: 0.08878386442296193 },
-  { offset: 3.1022126745435017, duration: 0.21412579066714388 }
+  { offset: 1.801, duration: 0.219 },
+  { offset: 2.015, duration: 0.219 },
+  { offset: 2.240, duration: 0.219 },
+  { offset: 2.459, duration: 0.104 },
+  { offset: 2.559, duration: 0.120 },
+  { offset: 2.679, duration: 0.099 },
+  { offset: 2.778, duration: 0.104 },
+  { offset: 2.888, duration: 0.130 },
+  { offset: 3.018, duration: 0.088 },
+  { offset: 3.102, duration: 0.214 }
 ]
 
 function playTimeCode (i) {
@@ -25,9 +29,6 @@ function playTimeCode (i) {
 nn.create('label')
   .addTo('body')
   .content('use keys "q" - "p" to trigger the samples')
-
-const wave = viz.createWaveform()
-player.connect(wave)
 
 nn.on('keydown', (e) => {
   if (e.key === 'q') playTimeCode(0)

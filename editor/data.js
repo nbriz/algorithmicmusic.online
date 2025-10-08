@@ -234,6 +234,11 @@ window.data = {
         template: ['body', 'nn', 'tone', 'viz']
       },
       {
+        title: 'players (multiple files)',
+        path: 'tone/sampling/players1.js',
+        template: ['body', 'nn', 'tone', 'viz']
+      },
+      {
         title: 'sampler (basic)',
         path: 'tone/sampling/sampler1.js',
         template: ['body', 'nn', 'tone', 'viz']
