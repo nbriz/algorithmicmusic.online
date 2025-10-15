@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Algorithmic Music Online: Signals</title>
+    <meta name="author" content="Nick Briz">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <!-- TODO: social media stuff -->
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+
+      #formula {
+        text-align: center;
+        font-family: 'FiraMono', inconsolata, monospace;
+        color: var(--accent-color6);
+      }
+      #formula span {
+        color: var(--accent-color3);
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <main-menu>
+      <div slot="menu-items">
+        <div class="color-mode-wrap">
+          <label class="color-mode-switch">
+            <input type="checkbox">
+            <span class="color-mode-slider"></span>
+          </label>
+          <span class="color-mode-label">light/dark mode</span>
+        </div>
+      </div>
+    </main-menu>
+
+    <div class="loader">
+      <svg id="loader-wave" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="" id="loader-wave-path"></path>
+      </svg>
+    </div>
+
+    <section>
+      <div class="content">
+        <h4 class="ch">chapter 3</h4>
+        <h2 class="formatted-text ch-title">signals</h2>
+
+        <p>
+          In the previous lessons we've explored how to create sound is (vibrations in the air) digitally by telling our speakers how to vibrate. We do this by creating an <strong>Audio Buffer</strong>, which can contain multiple <strong>channels</strong> (an array/list of values) each responsible for a different. These channels are filled with <strong>samples</strong> a value from -1 to 1 which represents the speakers position in that moment. The amount of samples, or values, we store for every second of sound buffer is called the <strong>Sample Rate</strong>, recorded in samples-per-second like 44.1K Hz or 48K Hz.
+        </p>
+
+        <p>
+          As we covered in the last lesson, we can load this buffer data from audio files (like mp3, wav or ogg like the bird sounds in this <a href="/editor/#Tone.js/Sampling/player%20(basic)">Tone.Player</a> example) and, as we covered in the first lesson, at the lowest level we could create buffers ourselves algorithmically (like this randomized buffer, aka <a href="/editor/#Tone.js/Buffers/White%20Noise" target="_blank">"white noise"</a>). When it comes to electronic music, one of the most useful buffers we can create is a serious of  oscillating values, what we call a <strong>sine wave</strong>. To our ears this sounds like a consistant tone, a musical note, the more extreme the peaks (the maximum and minimum value we're oscillating between) the louder the tone sounds to us, the faster the oscillation (time it takes to go from one peak value to the next) the higher the pitch sounds to us. The formula for this is defined below (refer to the <a href="/editor/#Tone.js/Buffers/Sine%20Wave" target="_blank">Sine Wave Buffer</a> demo to see it in context).
+        </p>
+        <br><br>
+
+
+        <div id="formula">
+          <span>samples</span>[<span>i</span>] = <span>Math</span>.<span style="color: var(--accent-color4)">sin</span>(<span>i</span> * <span>frequency</span>) * <span>amplitude</span>
+        </div>
+        <div id="buffer-demo"></div>
+        <svg id="sineWave"></svg>
+
+        <p>
+          With this low level access there is no audible sound we can't synthesize. However, while working at this low level allows for all sorts of algorithmic experimentation, if what we want to do is create a simple tone, a sound wave defined by predictable periodic vibrations, then it's much easier to use one of Tone.js's built in Oscillators than create it ourselves from scratch.
+        </p>
+      </div>
+    </section>
+
+    <div id="editor-0"></div>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <h3>shaping the start of the signal</h3>
+        <p>
+          In our introduction to "sound" we introduced the concept of <strong>timbre</strong>. Two instruments can be playing the same note and yet have a different timbre (think "texture"). Which is to say, they can have the same <strong>fundamental</strong> frequency, but that frequency might be accomponied by a series of other frequencies which are mathematically related, these are known as <strong>overtones</strong> or <strong>harmonics</strong>. These overtones are always some multiple of the fundamental frequency and are what make musical tones rich and varied, compared to the pure simplicity of a sine wave. The sine wave isn't the only wave with a name, there are a few other common types of waves with names, each with their own timbre,like square, triangle and sawtooth. These are all just names for a specific set of overtones demonstrated by the interactive diagram below.
+        </p>
+
+        <div id="timbre-ui" style="transform: translateY(3em); display: flex; align-items: center;"></div>
+        <svg id="timbre-wave"></svg>
+        <p class="small-note" style="margin-top: -4em; text-align: left;"><span style="font-weight:bold;">above</span>: waveform (shape of vibration) | <span style="font-weight:bold;">below</span>: spectrum analyzer (fundamental frequency and harmonics)</p>
+        <svg id="timbre-spec"></svg>
+        <br><br><br>
+
+        <p>
+          We can can specify one of these specific wave shapes by setting the Oscillator's <code>type</code> property to <code>'sine'</code>, <code>'square'</code>, <code>'triangle'</code> or <code>'sawtooth'</code>. Tone.js also gives us an API for creating our own wave shapes (with unique timbres) by setting an Oscillator's type to <code>'square'</code> and then setting the <code>partials</code> property, this is an array of amplitude levels for each multiple including the fundamental.
+        </p>
+    </section>
+
+    <div id="editor-1"></div>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <h3>signail chain</h3>
+
+        <p>
+          Up to this point, everything we’ve created in class has been a <strong>source node</strong>, something that generates sound. We’ve used an <code>BufferSource</code> to play raw audio data we've generated algorithmically, a <code>Player</code> to load audio from a file and now an <code>Oscillator</code> to synthesize periodic waves. Each of these nodes produces a signal which acts as a starting point in the Web Audio system. We've been connecting them directly to our "destination" (the end of that system), but we can add other nodes to our system, connecting them together into an <strong>audio graph</strong> or <strong>signal chain</strong>.
+        </p>
+
+        <p>
+          An audio graph is a network of interconnected nodes that describe the flow of sound through a system. Audio begins at source nodes, which generate signals, and travels through <strong>processing nodes</strong>, which modify those signals in various ways to shape their timbre, dynamics, or spatial qualities, before finally reaching the destination node, which represents your speakers or output device. In practice, this graph can be as simple or as complex as you like, some graphs route sound in a straight line from source to destination, while others branch, merge, or loop to create layered and evolving textures. One of the most common and useful processing nodes is the <code>Gain</code> node, which lets us control the amplitude (or volume) of a signal before it continues on to the rest of the graph.
+        </p>
+
+        <p>
+          Now that we can control both the frequency (of our Oscillator, the source node) and volume (the Gain, our processing node) we can essentially create a <a href="https://www.bbc.com/culture/article/20201111-the-theremin-the-strangest-instrument-ever-invented" target="_blank">theramin</a>.
+        </p>
+
+      </div>
+    </section>
+
+    <div id="editor-2"></div>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <p>
+          There are many other kinds of processing nodes, such as filters, delays, and reverbs, that can shape a sound in different ways by taking in an audio signal, transforming it, and passing it along. We’ll explore these more in depth later, but before we get to those, there’s a special kind of source node worth introducing. One that doesn’t produce audible sound at all: the <strong>LFO</strong> or Low Frequency Oscillator. An LFO generates a slow, repeating signal (usually below 20 Hz) that we use to modulate other parameters in our grap, like an oscillator’s frequency or a gain node’s amplitude. In other words, an LFO is a control source: it’s part of the graph, but instead of being heard, it animates other parts of the sound.
+        </p>
+
+      </div>
+    </section>
+
+    <div id="editor-3"></div>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <img id="lfo-svg" src="/images/LFO.svg" alt="LFO diagram">
+
+        <p>
+          The diagram above is a visualization of the audio graph for the third example, the tremolo patch, from the demo above. Despite being a fairly simple signal chain, adding even a small amount of modulation can completely change the character and movement of our sound. What’s exciting is that slightly more complex graphs can lead to even more interesting results. For instance, by connecting a couple of oscillators and gain nodes in just the right way, we can create an amplitude modulation oscillator (AM oscillator), a setup where one oscillator modulates the amplitude of another, producing a rich, pulsing tone.
+        </p>
+
+        <img id="amosc-svg" src="/images/AMOscillator.svg" alt="AMOscillator diagram">
+        <br><br><br>
+
+        <h3>more oscillators and effects</h3>
+
+        <p>
+          Tone.js makes it easy to work with these kinds of patterns because it already provides a wide selection of oscillators (see Class/Source in the <a href="https://tonejs.github.io/docs/15.1.22/classes/AMOscillator.html" target="_blank">Tone.js docs</a>) and effects (see Class/Effect in the <a href="https://tonejs.github.io/docs/15.1.22/classes/AutoFilter.html" target="_blank">Tone.js docs</a>), including ready-made versions of both the Tremolo and the AMOscillator. I've created a few demos in the editor for <a href="/editor/#Tone.js/Effects/Reverb" target="_blank">Tone.js / Effects</a> as well as for <a href="/editor/#Tone.js/Oscillators/Basic%20Oscillator" target="_blank">Tone.js > Oscillators</a>.
+        </p>
+
+        <p>
+          But it’s important to understand how these are built, because that knowledge opens the door to creating your own custom oscillators. These could be entirely different from anything Tone.js provides, or small variations on the built-ins. For example, the AM oscillator I created works similarly to Tone.AMOscillator—both let you control the harmonicity (the frequency relationship between the carrier and modulator), but my version also exposes an additional parameter for modulation depth, allowing finer control over how intense the effect feels. You can find that here: <a href="/editor/#Tone.js/Oscillators/AMOscillator (from scratch)" target="_blank">Tone.js > Oscillators > AMOscillator (from scratch)</a>
+        </p>
+
+
+      </div>
+    </section>
+
+    <section class="attribution">
+      <div class="content">
+        <p>
+          <span style="font-weight: bold;">Attribution</span>: Text and code written by <a href="https://nickbriz.com/" target="_blank">Nick Briz</a>. The code editor icons designed by <a href="https://thenounproject.com/creator/MekoDa/" target="_blank">Meko</a> and licensed under Creative Commons Attribution License (CC BY 3.0). All sounds generated using the Web Audio API and/or <a href="https://tonejs.github.io/" target="_blank">Tone.js</a> by Yotam Mann and <a href="https://github.com/Tonejs/Tone.js/graphs/contributors" target="_blank">other contributors</a>.
+        </p>
+        <br>
+        <br>
+        <br>
+
+        <br>
+        <br>
+        <br>
+      </div>
+    </section>
+
+
+
+    <script src="/js/libs/d3@7.js"></script>
+    <script src="/js/libs/Tone.js"></script>
+    <script src="/js/custom-elements/algo-music-ui.js"></script>
+    <script src="/js/SVGSineWave.js"></script>
+    <script src="/js/viz-helpers.js"></script>
+    <script src="/js/libs/netitor.min.js"></script>
+    <script src="/js/libs/nn.min.js"></script>
+    <script src="/js/custom-elements/main-menu.js"></script>
+    <script src="/js/tone-sounds.js"></script>
+    <script src="/js/code-templates.js"></script>
+    <script src="/js/utils.js"></script>
+    <script>
+      utils.init()
+      nn.getAll('h4, .formatted-text').forEach(e => utils.formatText(e))
+
+      // setup svg images
+      const currentTheme = window.localStorage.getItem('theme')
+      if (currentTheme === 'dark') {
+        nn.get('#lfo-svg').set('src', '/images/LFO-white.svg')
+        nn.get('#amosc-svg').set('src', '/images/AMOscillator-white.svg')
+      }
+
+      nn.get('main-menu').callback = (theme) => {
+        const s = theme === 'dark' ? '-white' : ''
+        nn.get('#lfo-svg').set('src', `/images/LFO${s}.svg`)
+        nn.get('#amosc-svg').set('src', `/images/AMOscillator${s}.svg`)
+      }
+
+      // setup editors
+      // ..............
+      const ttemps = ['body', 'nn', 'tone', 'viz']
+      utils.createCodeEditor({
+        ele: '#editor-0',
+        title: 'oscillators',
+        code: [
+          { file: 'signals/sig1.js', template: ttemps, info: true },
+          { file: 'signals/sig2.js', template: ttemps, info: true }
+        ]
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-1',
+        title: 'wave shapes',
+        code: [
+          { file: 'signals/sig3.js', template: ttemps },
+          { file: 'signals/sig4.js', template: ttemps }
+        ]
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-2',
+        title: 'trackpad theramin',
+        code: { file: 'signals/theramin.js', template: ttemps },
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-3',
+        title: 'modulation',
+        code: [
+          { file: 'signals/lfo-setup.js', template: ttemps, info: true },
+          { file: 'signals/lfo-vibrato.js', template: ttemps, info: true  },
+          { file: 'signals/lfo-tremolo.js', template: ttemps, info: true  }
+        ]
+      })
+
+
+      // intro sine wave diagram
+      // ------------------------
+
+      function createBuffArr () {
+        const buffArr = nn.get('#buffer-demo')
+        const cs = getComputedStyle(parent)
+        const padL = parseFloat(cs.paddingLeft) || 0
+        const padR = parseFloat(cs.paddingRight) || 0
+        const availableWidth = Math.max(0, parent.clientWidth - padL - padR)
+      }
+
+
+
+      const sineWave = new SVGSineWave({
+        svg: '#sineWave',
+        frequency: 6,
+        amplitude: 0.5,
+        colors: ['var(--text-color)', 'var(--accent-color1)'],
+        width: nn.get('.content').width
+      })
+
+      nn.on('resize', () => {
+        sineWave.update({ width: nn.get('.content').width })
+      })
+
+
+      // timbre diagram
+      // --------------------------------------------
+      const wave = viz.createWaveform({
+        ele: '#timbre-wave',
+        background: 'var(--background-color)',
+        color: 'var(--accent-color1)'
+      })
+
+      const spec = viz.createSpectrum({
+        ele: '#timbre-spec',
+        background: 'var(--background-color)',
+        color: 'var(--accent-color1)',
+        harmonics: true,
+        binSize: 1024 * 2,
+        range: [20, 7050]
+      })
+
+      const osc = new Tone.Oscillator(440, "sine").toDestination()
+      osc.connect(wave)
+      osc.connect(spec)
+
+      nn.create('button')
+        .addTo('#timbre-ui')
+        .content('start')
+        .on('click', () => {
+          osc.start()
+        })
+
+      nn.create('button')
+        .addTo('#timbre-ui')
+        .content('stop')
+        .on('click', () => {
+          osc.stop()
+        })
+
+      nn.create('select')
+        .set({ id: 'wave-types' })
+        .addTo('#timbre-ui')
+        .on('input', (e) => {
+          osc.type = e.target.value
+        })
+
+      const types = ['sine', 'square', 'triangle', 'sawtooth']
+      types.forEach(type => {
+        nn.create('option')
+        .content(type)
+        .set({ value: type })
+        .addTo('#wave-types')
+      })
+
+      nn.create('input')
+        .set({ type: 'number', value: 0, min: 0, step: 1 })
+        .css({ width: '6em' })
+        .addTo('#timbre-ui')
+        .on('input', (e) => {
+          const type = nn.get('#wave-types').value
+          const vals = e.target.value
+          const part = vals !== '' && vals > 0 ? type + vals : type
+          osc.type = part
+          console.log(osc.type);
+        })
+
+      nn.create('span')
+        .content('&nbsp;&nbsp;&nbsp;volume: ')
+        .addTo('#timbre-ui')
+
+      nn.create('am-range')
+        .set({ value: 0, min: -100, max: 0, step: 1 })
+        // .css({ width: '6em' })
+        .addTo('#timbre-ui')
+        .on('input', (e) => {
+          osc.volume.value = Number(e.target.value)
+        })
+
+
+    </script>
+  </body>
+</html>

@@ -98,7 +98,7 @@ window.viz.createWaveform = function (opts) {
 
   // styling
   svg.style.display = 'block'
-  svg.style.width = opts.width || '700px'
+  svg.style.width = opts.width || '100%'
   svg.style.height = opts.height || '200px'
   svg.style.background = opts.background || 'transparent'
 
@@ -217,7 +217,7 @@ window.viz.createSpectrum = function (opts) {
 
   // style
   svg.style.display = 'block'
-  svg.style.width = opts.width || '700px'
+  svg.style.width = opts.width || '100%'
   svg.style.height = opts.height || '200px'
   svg.style.background = opts.background || 'transparent'
 
@@ -232,7 +232,7 @@ window.viz.createSpectrum = function (opts) {
   const baseHz = 440 // for harmonic markers
 
   // margins + geometry
-  const margins = { top: 10, right: 10, bottom: 30, left: 20 }
+  const margins = { top: 10, right: 10, bottom: 30, left: 25 }
   const getSize = () => {
     const canvasWidth = svg.clientWidth || parseInt(svg.style.width, 10) || 700
     const canvasHeight = svg.clientHeight || parseInt(svg.style.height, 10) || 200

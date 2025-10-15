@@ -129,7 +129,7 @@ class MainMenu extends window.HTMLElement {
           <a href="/sampling">sampling</a>
         </span>
         <span>
-          <a class="inactive">signals</a>
+          <a href="/signals">signals</a>
         </span>
         <span>
           <a class="inactive">synths</a>
@@ -225,6 +225,7 @@ class MainMenu extends window.HTMLElement {
       root.style.setProperty('--text-color', 'black')
       root.style.setProperty('--accent-color', '#de09ab')
     }
+    if (this.callback) this.callback(theme)
   }
 }
 

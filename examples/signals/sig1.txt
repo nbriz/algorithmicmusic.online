@@ -1,0 +1,1 @@
+The most fundamental tone generating source in audio synthesis is the Oscillator, in Tone.js we can access it via the <a href="https://tonejs.github.io/docs/15.0.4/classes/Oscillator.html" target="_blank">Tone.Oscillator()</a> class.

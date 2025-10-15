@@ -199,6 +199,7 @@
         ne.code = code
         if (template) {
           ne.language = 'javascript'
+          if (!template.includes('body')) template.push('body')
           // ne.update(codeTemplates[codeTemplate])
           ne.update(createCodeTemplate(template))
         } else ne.langauge = 'html'
@@ -237,7 +238,7 @@
       }
 
       function updateCodeTemplates () {
-        const list = []
+        const list = ['body']
         nn.getAll('.lib-menu input').forEach(cb => {
           if (cb.checked) list.push(cb.getAttribute('name'))
         })

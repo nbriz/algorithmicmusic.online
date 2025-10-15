@@ -8,6 +8,7 @@ window.codeTemplate.tags = {
   // wave: '<script src="https://algorithmicmusic.online/js/create-waveform.js"></script>',
   // piano: '<script src="https://algorithmicmusic.online/js/create-piano.js"></script>',
   viz: '<script src="https://algorithmicmusic.online/js/viz-helpers.js"></script>',
+  // viz: '<script src="/js/viz-helpers.js"></script>',
   pose: `<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>`,

@@ -1,0 +1,1 @@
+Here we have the same graph from the previous example, except we've changed the interface, so instead of controlling changes to the pitch/volume with our trackpad (like a theramin), we've simply wired it up an on/off switch (which starts/stops our Oscillator) and a range-slider to control our volume.

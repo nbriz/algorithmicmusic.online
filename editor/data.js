@@ -4,27 +4,27 @@ window.data = {
       {
         title: 'Audio Context',
         path: 'web-audio/the-basics/wa0.js',
-        template: []
+        template: ['body']
       },
       {
         title: 'Audio Source Nodes',
         path: 'web-audio/the-basics/wa1.js',
-        template: []
+        template: ['body']
       },
       {
         title: 'Audio Processing Nodes',
         path: 'web-audio/the-basics/wa2.js',
-        template: []
+        template: ['body']
       },
       {
         title: 'Audio Analyser Node',
         path: 'web-audio/the-basics/wa3.js',
-        template: []
+        template: ['body']
       },
       {
         title: 'visualization: canvas',
         path: 'web-audio/the-basics/wa4.js',
-        template: []
+        template: ['body']
       },
       // {
       //   title: 'visualization: svg with d3',
@@ -226,7 +226,7 @@ window.data = {
       {
         title: 'player (basic)',
         path: 'tone/sampling/player1.js',
-        template: ['body', 'nn', 'tone', 'spec']
+        template: ['body', 'nn', 'tone', 'viz']
       },
       {
         title: 'player (timecodes)',

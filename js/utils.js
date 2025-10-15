@@ -264,6 +264,7 @@ window.utils.createCodeEditor = function (opts) {
   let index = 0
   const total = opts.code instanceof Array ? opts.code.length : 1
   const codeObj = opts.code instanceof Array ? opts.code[0] : opts.code
+  const hasInfo = opts.code instanceof Array ? opts.code[0].info : opts.code.info
 
   ele.innerHTML = `
   <div class="code-controls">
@@ -286,7 +287,7 @@ window.utils.createCodeEditor = function (opts) {
       <span class="code-title">${opts.title} ${index + 1} / ${total}</span> |
       <span class="link next">next ▶▶</span>
     </nav>
-    <p class="small-note">(click the "prev" and "next" links to cycle through code examples and their explinations below)</p>
+    <p class="small-note">(click the "prev" and "next" links to cycle through code examples ${ hasInfo ? 'and their explinations below' : '' })</p>
     <div class="content">
       <p></p>
     </div>
