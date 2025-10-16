@@ -37,32 +37,32 @@ window.effectPresets = {
       depth: 1
     }
   },
-  AutoWah: {
-    Talker: {
-      baseFrequency: 140,
-      octaves: 4,
-      sensitivity: 0,
-      Q: 7,
-      gain: 5,
-      rolloff: -48,
-      follower: {
-        attack: 0.5,
-        release: 0.1
-      }
-    },
-    Yes: {
-      baseFrequency: 250,
-      octaves: 3.1,
-      sensitivity: 0,
-      Q: 2,
-      gain: 5,
-      rolloff: -24,
-      follower: {
-        attack: 0.3,
-        release: 0.1
-      }
-    }
-  },
+  // AutoWah: {
+  //   Talker: {
+  //     baseFrequency: 140,
+  //     octaves: 4,
+  //     sensitivity: 0,
+  //     Q: 7,
+  //     gain: 5,
+  //     rolloff: -48,
+  //     follower: {
+  //       attack: 0.5,
+  //       release: 0.1
+  //     }
+  //   },
+  //   Yes: {
+  //     baseFrequency: 250,
+  //     octaves: 3.1,
+  //     sensitivity: 0,
+  //     Q: 2,
+  //     gain: 5,
+  //     rolloff: -24,
+  //     follower: {
+  //       attack: 0.3,
+  //       release: 0.1
+  //     }
+  //   }
+  // },
   BitCrusher: {
     '8bit': {
       bits: 8
@@ -262,6 +262,11 @@ window.effectPresets = {
     Singer: {
       frequency: 5,
       depth: 0.2,
+      type: 'sine'
+    },
+    Extreme: {
+      frequency: 10,
+      depth: 0.8,
       type: 'sine'
     }
   }

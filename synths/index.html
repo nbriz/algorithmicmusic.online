@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Algorithmic Music Online: Synths</title>
+    <meta name="author" content="Nick Briz">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <!-- TODO: social media stuff -->
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+
+
+      #adsr-diagram, .adsr-widget-row {
+        margin: 0 auto;
+        max-width: 1170px;
+      }
+
+      @media (max-width: 1170px) {
+        .adsr-widget-row {
+          max-width: 700px;
+          display: flex;
+          flex-direction: column
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <main-menu>
+      <div slot="menu-items">
+        <div class="color-mode-wrap">
+          <label class="color-mode-switch">
+            <input type="checkbox">
+            <span class="color-mode-slider"></span>
+          </label>
+          <span class="color-mode-label">light/dark mode</span>
+        </div>
+      </div>
+    </main-menu>
+
+    <div class="loader">
+      <svg id="loader-wave" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="" id="loader-wave-path"></path>
+      </svg>
+    </div>
+
+    <section>
+      <div class="content">
+        <h4 class="ch">chapter 4</h4>
+        <h2 class="formatted-text ch-title">synths</h2>
+
+        <p>
+          The signal chain's we've created so far have all started with some kind of <strong>source node</strong>. At first we explored the <code>BufferSource()</code> to create audio buffers entirely from scratch, which could be used to create periodic waves like a <a href="/editor/#Tone.js/Buffers/Sine%20Wave" target="_blank">sine wave</a> algorithmically or load that data <a href="/editor/#Tone.js/Buffers/Loaded from File" target="_blank">from a file</a>. Of course, the real benefit of working at that low level is that we can do less conventional things, like algorithmically generate less conventional buffers or create sound from other types of files that aren't audio (like an image). If what we need is a sine wave or audio sample then it's best to move up the latter of abstraction and use Tone.js classes like the <code>Player()</code> (for <a href="/editor/#Tone.js/Sampling/player%20(timecodes)" target="_blank">playing files</a>) or the  <code>Oscillator()</code> and other <a href="/editor/#Tone.js/Oscillators/Basic Oscillator" target="_blank">oscillator variants</a> for generating periodic waves.
+        </p>
+
+        <p>
+          In Tone.js, all these source nodes have <code>.start()</code> and <code>.stop()</code> methods for starting/stopping their playback immediately. In some instances that's exactly what we want, but other times it can feel a bit harsh and artificial. Physical instruments naturally produce dynamic sounds that change over time, they don't start/stop abruptly: a piano note has a sharp, immediate hit that fades, while a violin bow creates a smoother, sustained sound. These variations come from the way the instrument's sound develops when played. Synthesized sounds, on the other hand, start as simple, static tones without this natural expressiveness. To mimic these real-world behaviors, we use an <strong>ADSR envelope</strong>, which shapes how a sound behaves when a single note is played. It has four stages: <strong>Attack</strong> (how quickly the sound reaches its peak right after the note is hit), <strong>Decay</strong> (how quickly it drops to a steady level after the peak), <strong>Sustain</strong> (the steady level the sound holds while the note is held), and <strong>Release</strong> (how quickly it fades away after the note is released). This makes synthesized sounds feel more natural and dynamic. Use the Interactive diagram below to change the Synth's ADSR envelope settings.
+        </p>
+
+      </div>
+    </section>
+
+
+    <section>
+      <section id="adsr-diagram"></section>
+    </section>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <p>
+          Tone.js provides another layer of abstraction beyond the basic Oscillators and Players which it refers to as <a href="https://tonejs.github.io/docs/15.1.22/classes/Synth.html" target="_blank">instruments</a>. Inside a Tone.js "instrument" is an audio graph, some combination of the nodes we've discussed thus far, which always ends with an <a href="https://tonejs.github.io/docs/15.1.22/classes/AmplitudeEnvelope.html" target="_blank">amplitude envelope</a> which is how we create that ADSR effect in Tone.js. The simplest example of one of these instruments is the basic Tone.js Synth being used in the diagram above. Remember, like the AMOscillator discussed in the last lesson, everything we're going to cover from here on out are just higher level modules (mostly classes) made by combining other nodes in a particular way. In the case of the Tone.js <a href="https://tonejs.github.io/docs/15.0.4/classes/Synth.html" target="_blank">Synth</a>, it's essentially an <a href="https://tonejs.github.io/docs/15.0.4/classes/OmniOscillator.html" target="_blank">OmniOscillator</a> plugged into an <a href="https://tonejs.github.io/docs/15.0.4/classes/AmplitudeEnvelope.html" target="_blank">AmplitudeEnvelope</a>.
+        </p>
+
+        <p>
+          If you'd like to make any modifications to the ADSR code above or the code presets below, you can copy and paste any of them into a project your working on. You could also explore these (and other) examples in the editor page under: <a href="/editor/#Tone.js/Synths/Synth" target="_blank">Tone.js &gt; Synths</a>
+        </p>
+        <br><br>
+
+        <h3>other synths + settings </h3>
+
+        <p>
+          In addition to the basic <code>Synth</code> Tone.js has a few pre-made variations with more complex audio graphs underneath. All the Tone.js isntruments allow you to modify different properties of their underlying audio-graph through its settings, which can be set by passing in an object to it's contructor (as with the interactive diagram below) or passing it an object to it's <code>.set()</code> method at any point in your code.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <div class="content">
+
+        <div id="synth-presets">
+          <div style="display: flex; align-items: center;">
+            <div class="select"></div>
+            <button>press && hold</button>
+            <svg></svg>
+          </div>
+          <div class="editor"></div>
+        </div>
+
+        <br><br>
+
+        <p>
+          What you don't see in the code of the in the interactive demos above, are the methods being used to play back the sound. Unlike the basic source nodes which have <code>.start()</code> and <code>.stop()</code> methods, the Tone.js instruments have <code>.triggerAttack()</code>, <code>.triggerRelease()</code> and <code>.triggerAttackRelease()</code> methods.
+        </p>
+      </div>
+    </section>
+
+
+    <div id="editor-0"></div>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <h3>polyphony</h3>
+      </div>
+    </section>
+
+    <div id="editor-1"></div>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <p>
+          It's important to remember, that all of these Tone.js classes are codified versions of techniques developed by artists and engineers long before we could generate code with computers. The "Synth" is short for synthesizer, a concept speer headed by <a href="https://www.youtube.com/watch?v=eNQ86JED8AY" target="_blank">Robert Moog</a> and further developed by many others. In the field of sampling, long before hip hop DJs were flipping samples using turn tables, artists/engineers like <a href="https://en.wikipedia.org/wiki/Delia_Derbyshire" target="_blank">Delia Derbyshire</a> at the <a href="https://en.wikipedia.org/wiki/BBC_Radiophonic_Workshop" target="_blank">BBC's Radiophonic Workshop</a> were pairing analog oscillators with sounds recorded onto magnetic tape, looping them back at different speeds and creating entire musical compositions this way.
+        </p>
+        <br><br>
+
+        <div style="max-width: 80%; margin: 0 auto;">
+          <a href="https://www.youtube.com/watch?v=qsRuhCflRyg" target="_blank">
+            <img src="/images/delia-yt.jpg" alt="delia derbyshire" class="rwd">
+          </a>
+          <p class="small-note">
+            <a href="https://en.wikipedia.org/wiki/Delia_Derbyshire" target="_blank">Delia Derbyshire</a> early pioneer in sampling and electronic music. you can watch a longer <a href="https://www.youtube.com/watch?v=nXnmSgaeGAI" target="_blank">documentary about her and her work here</a>.
+          </p>
+        </div>
+        <br><br>
+
+        <p>
+          What Delia Derbyshire is doing is called "sampling", but this is a slightly different meaning than the onese we've already discussed, which comes from this world of sound synthesis, where a digital sampler is used to capture and manipulate sound waves, allowing them to be played back at different pitches and dynamics, similar to how an instrument is played. In the example below I'm using the <a href="https://tonejs.github.io/docs/15.0.4/classes/Sampler.html" target="_blank">Tone.Sampler</a>, like the Synth, the Sampler is a Tone.js "instrument" for creating and playing back sampled sounds. So rather than using the <code>start()</code> and <code>stop()</code> methods like the Player does, it has the <code>triggerAttack</code>, <code>triggerRelease</code> and <code>triggerAttackRelease</code> methods. The Sampler maps audio files to specific pitches, allowing you to create instruments where each key triggers a different sample or stretches a single sample across multiple keys.
+        </p>
+
+      </div>
+    </section>
+
+    <section>
+      <div class="content">
+
+      </div>
+    </section>
+
+    <div id="editor-2"></div>
+    <br><br>
+
+    <section class="attribution">
+      <div class="content">
+        <p>
+          <span style="font-weight: bold;">Attribution</span>: Text and code written by <a href="https://nickbriz.com/" target="_blank">Nick Briz</a>. The code editor icons designed by <a href="https://thenounproject.com/creator/MekoDa/" target="_blank">Meko</a> and licensed under Creative Commons Attribution License (CC BY 3.0). All sounds generated using the Web Audio API and/or <a href="https://tonejs.github.io/" target="_blank">Tone.js</a> by Yotam Mann and <a href="https://github.com/Tonejs/Tone.js/graphs/contributors" target="_blank">other contributors</a>.
+        </p>
+        <br>
+        <br>
+        <br>
+
+        <br>
+        <br>
+        <br>
+      </div>
+    </section>
+
+
+
+    <script src="/js/libs/d3@7.js"></script>
+    <script src="/js/libs/Tone.js"></script>
+    <!-- <script src="/js/custom-elements/algo-music-ui.js"></script> -->
+    <script src="/js/custom-elements/adsr-ui.js"></script>
+    <script src="/js/viz-helpers.js"></script>
+    <script src="/js/libs/netitor.min.js"></script>
+    <script src="/js/libs/nn.min.js"></script>
+    <script src="/js/custom-elements/main-menu.js"></script>
+    <script src="/js/create-waveform.js"></script>
+    <script src="/js/synth-presets.js"></script>
+    <script src="/js/code-templates.js"></script>
+    <script src="/js/utils.js"></script>
+    <script>
+      utils.init()
+      nn.getAll('h4, .formatted-text').forEach(e => utils.formatText(e))
+
+      // setup editors
+      // ..............
+      const ttemps = ['body', 'nn', 'tone', 'viz']
+      utils.createCodeEditor({
+        ele: '#editor-0',
+        title: 'synth',
+        code: [
+          { file: 'synths/synths-1.js', template: ttemps, info: true },
+          { file: 'synths/synths-2.js', template: ttemps, info: true }
+        ]
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-1',
+        title: 'poly synth',
+        code: [
+          { file: 'synths/synths-3.js', template: ttemps, info: true },
+          { file: 'synths/synths-4.js', template: ttemps, info: true },
+          { file: 'synths/synths-5.js', template: ttemps, info: true }
+        ]
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-2',
+        title: 'sampler',
+        code: [
+          { file: 'synths/sampler-1.js', template: ttemps, info: true  },
+          { file: 'synths/sampler-2.js', template: ttemps, info: true  },
+          { file: 'synths/sampler-3.js', template: ttemps, info: true  }
+        ]
+      })
+
+      window.utils.creaeteADSRWidget('#adsr-diagram')
+
+      // Synth Present Selector
+      // -----------------------
+
+      function createSynth (type) {
+        const synth = new Tone[type]().toDestination()
+        const attack = () => {
+          if (type === 'NoiseSynth') synth.triggerAttack()
+          else synth.triggerAttack(440)
+        }
+        const release = () => synth.triggerRelease()
+        const applyPreset = (val) => {
+          const reset = Tone[type].getDefaults()
+          synth.set(reset)
+          if (val) synth.set(val)
+        }
+        return { synth, attack, release, applyPreset }
+      }
+
+      function createSynthCode (s, settings) {
+        let json = ''
+        if (settings) {
+          json = JSON.stringify(settings, null, 2)
+          json = json.replace(/"([^"]+)":/g, '$1:').replace(/"([^"]*)"/g, "'$1'")
+        }
+        return `const synth = new Tone.${s}(${json})`
+      }
+
+      function createPresetSelector (sel, presets, createFunc) {
+        const ele = nn.get(sel)
+        const ne = new Netitor({
+          ele: ele.querySelector('.editor'),
+          autoUpdate: false,
+          background: false,
+          theme: 'moz-light',
+          language: 'javascript',
+          code: 'let synth',
+          readOnly: true,
+          wrap: true
+        })
+
+        const wave = createWaveform({
+          ele: `${sel} svg`,
+          width: 220
+        })
+
+        const cntrls = ele.querySelector('.select')
+
+        const node = nn.create('select')
+          .set('options', Object.keys(presets))
+          .addTo(cntrls)
+          .on('change', (e) => {
+            preList.innerHTML = ''
+            const o = e.target.value
+            let arr = Object.keys(presets[o])
+            arr.unshift('default')
+            preList.set('options', arr)
+            synth = createFunc(o)
+            synthSetup()
+            if (sel.includes('synth')) {
+              ne.code = createSynthCode(o, '')
+            }
+          })
+
+        nn.create('label').content('--').addTo(cntrls)
+
+        const first = Object.keys(presets)[0]
+
+        function synthSetup () {
+          synth.synth.connect(wave)
+          ele.querySelector('button').onmousedown = () => synth.attack()
+          ele.querySelector('button').onmouseup = () => synth.release()
+        }
+        let synth = createFunc(first)
+        synthSetup()
+
+        const opts = Object.keys(presets[first])
+        opts.unshift('default')
+        const preList = nn.create('select')
+          .set('options', opts)
+          .addTo(cntrls)
+          .on('change', (e) => {
+            let pick = e.target.value === 'default' ? null : e.target.value
+            let pre = presets[node.value][pick]
+            synth.applyPreset(pre)
+            if (sel.includes('synth')) {
+              const settings = pick === 'default' ? '' : pre
+              ne.code = createSynthCode(node.value, settings)
+            }
+          })
+
+          nn.create('label').content('>> ').addTo(cntrls)
+
+        const obj = { ne, ele }
+        if (!window.editors) window.editors = []
+        window.editors.push(obj)
+
+        const changeEvent = new Event('change')
+        node.dispatchEvent(changeEvent)
+
+        return obj
+      }
+
+      createPresetSelector('#synth-presets', window.synthPresets, createSynth)
+
+    </script>
+  </body>
+</html>

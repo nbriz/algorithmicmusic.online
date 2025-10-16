@@ -1,0 +1,1 @@
+The <code>Synth</code> is "mono-phonic", meaning it can only ever play one note at a time. That's why every time we pressed the button in the last example, if there was a note playing, it would stop before the next one started. If you want to be able to play multiple notes at the same time, you need to use the <code>PolySynth</code>, which is "poly-phonic."

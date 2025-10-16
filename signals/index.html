@@ -87,6 +87,7 @@
         <p>
           We can can specify one of these specific wave shapes by setting the Oscillator's <code>type</code> property to <code>'sine'</code>, <code>'square'</code>, <code>'triangle'</code> or <code>'sawtooth'</code>. Tone.js also gives us an API for creating our own wave shapes (with unique timbres) by setting an Oscillator's type to <code>'square'</code> and then setting the <code>partials</code> property, this is an array of amplitude levels for each multiple including the fundamental.
         </p>
+      </div>
     </section>
 
     <div id="editor-1"></div>
@@ -137,16 +138,40 @@
         <img id="amosc-svg" src="/images/AMOscillator.svg" alt="AMOscillator diagram">
         <br><br><br>
 
-        <h3>more oscillators and effects</h3>
+        <p>
+          Tone.js makes it easy to work with these kinds of patterns because it already provides a wide selection of oscillators (see Class/Source in the <a href="https://tonejs.github.io/docs/15.1.22/classes/AMOscillator.html" target="_blank">Tone.js docs</a>) and effects (see Class/Effect in the <a href="https://tonejs.github.io/docs/15.1.22/classes/Tremolo.html" target="_blank">Tone.js docs</a>), including ready-made versions of both the Tremolo and the AMOscillator. But it’s important to understand how these are built, because that knowledge opens the door to creating your own custom oscillators. These could be entirely different from anything Tone.js provides, or small variations on the built-ins. For example, the AM oscillator I created works similarly to Tone.AMOscillator—both let you control the harmonicity (the frequency relationship between the carrier and modulator), but my version also exposes an additional parameter for modulation depth, allowing finer control over how intense the effect feels. You can find that here: <a href="/editor/#Tone.js/Oscillators/AMOscillator (from scratch)" target="_blank">Tone.js &gt; Oscillators &gt; AMOscillator (from scratch)</a>
+        </p>
+        <br><br><br>
+
+        <h3>built-in effects</h3>
 
         <p>
-          Tone.js makes it easy to work with these kinds of patterns because it already provides a wide selection of oscillators (see Class/Source in the <a href="https://tonejs.github.io/docs/15.1.22/classes/AMOscillator.html" target="_blank">Tone.js docs</a>) and effects (see Class/Effect in the <a href="https://tonejs.github.io/docs/15.1.22/classes/Tremolo.html" target="_blank">Tone.js docs</a>), including ready-made versions of both the Tremolo and the AMOscillator. I've created a few demos in the editor for <a href="/editor/#Tone.js/Effects/Reverb" target="_blank">Tone.js / Effects</a> as well as for <a href="/editor/#Tone.js/Oscillators/Basic%20Oscillator" target="_blank">Tone.js > Oscillators</a>.
+          Below is an interactive menu for testing different Tone.js effects with different settings to preview how they sound. Change the source node between Oscillator and Player to compare how different sources sound through the effect. Switch the default settings on each effect to better understand how they can each be shaped.
         </p>
+      </div>
+    </section>
+
+    <section style="display:flex; justify-content: center; ">
+      <div id="effect-presets">
+        <div style="display: flex; align-items: center;">
+          <div class="select"></div>
+          <button>press + hold</button>
+          <svg></svg>
+        </div>
+        <div class="content">
+          <div class="fx-editor"></div>
+        </div>
+      </div>
+    </section>
+
+    <br><br><br>
+
+    <section>
+      <div class="content">
 
         <p>
-          But it’s important to understand how these are built, because that knowledge opens the door to creating your own custom oscillators. These could be entirely different from anything Tone.js provides, or small variations on the built-ins. For example, the AM oscillator I created works similarly to Tone.AMOscillator—both let you control the harmonicity (the frequency relationship between the carrier and modulator), but my version also exposes an additional parameter for modulation depth, allowing finer control over how intense the effect feels. You can find that here: <a href="/editor/#Tone.js/Oscillators/AMOscillator (from scratch)" target="_blank">Tone.js > Oscillators > AMOscillator (from scratch)</a>
+          I've created a few demos in the editor for <a href="/editor/#Tone.js/Effects/Reverb" target="_blank">Tone.js / Effects</a> as well as for <a href="/editor/#Tone.js/Oscillators/Basic%20Oscillator" target="_blank">Tone.js > Oscillators</a>. Keep in mind that not every Effect is represented here, you should explore the Tone.js documentation to see all the <a href="https://tonejs.github.io/docs/15.1.22/classes/Vibrato.html" target="_blank">Effects</a> as well as all the other <a href="https://tonejs.github.io/docs/15.1.22/classes/AMOscillator.html" target="_blank">source nodes</a> Tone.js has to offer.
         </p>
-
 
       </div>
     </section>
@@ -176,6 +201,8 @@
     <script src="/js/libs/netitor.min.js"></script>
     <script src="/js/libs/nn.min.js"></script>
     <script src="/js/custom-elements/main-menu.js"></script>
+    <script src="/js/create-waveform.js"></script>
+    <script src="/js/effect-presets.js"></script>
     <script src="/js/tone-sounds.js"></script>
     <script src="/js/code-templates.js"></script>
     <script src="/js/utils.js"></script>
@@ -188,12 +215,14 @@
       if (currentTheme === 'dark') {
         nn.get('#lfo-svg').set('src', '/images/LFO-white.svg')
         nn.get('#amosc-svg').set('src', '/images/AMOscillator-white.svg')
+        nn.get('#speaker-svg').set('src', '/images/speaker-white.svg')
       }
 
       nn.get('main-menu').callback = (theme) => {
         const s = theme === 'dark' ? '-white' : ''
         nn.get('#lfo-svg').set('src', `/images/LFO${s}.svg`)
         nn.get('#amosc-svg').set('src', `/images/AMOscillator${s}.svg`)
+        nn.get('#speaker-svg').set('src', `/images/speaker${s}.svg`)
       }
 
       // setup editors
@@ -333,6 +362,242 @@
         .on('input', (e) => {
           osc.volume.value = Number(e.target.value)
         })
+
+        // Effect Preset Selector
+        // ---------------------------------------
+
+        const fxAssetPool = new Tone.Players({
+          katy: '/audios/katy.mp3'
+        })
+
+        function createEffect (type) {
+
+          let gval = 0.8
+          if (document.querySelector('#fx-gain')) {
+            gval = Number(nn.get('#fx-gain').value)
+          }
+
+          const gain = new Tone.Gain(gval).toDestination()
+
+          const effect = new Tone[type]().connect(gain)
+          if (typeof effect.start === 'function') effect.start()
+
+          let src
+          const s = nn.get('#fx-src').value
+          if (s === 'Oscillator') {
+            src = new Tone.Oscillator(440).connect(effect)
+          } else { // Player
+            const buf = fxAssetPool.player('katy').buffer
+            src = new Tone.Player(buf).connect(effect)
+          }
+
+          let playing = false
+
+          const attack = async () => {
+            // resume the audio context on first user gesture (some browsers require this)
+            await Tone.start()
+            if (!playing) {
+              src.start()
+              playing = true
+            }
+          }
+
+          const release = () => {
+            if (playing) {
+              src.stop()
+              playing = false
+            }
+          }
+
+          const applyPreset = (val) => {
+            const reset = sanitizeToneOpts(Tone[type].getDefaults())
+            if (reset) effect.set(reset)
+            const safe = sanitizeToneOpts(val)
+            if (safe) effect.set(safe)
+          }
+
+
+          return { effect, src, attack, release, applyPreset }
+        }
+
+        function sanitizeToneOpts (obj) {
+          if (!obj) return obj
+          const unsafe = new Set([
+            'channelCount',
+            'channelCountMode',
+            'channelInterpretation',
+            'context',
+            'input',
+            'output',
+            'numberOfInputs',
+            'numberOfOutputs',
+            'name' // sometimes present in defaults
+          ])
+          const out = {}
+          for (const [k, v] of Object.entries(obj)) {
+            if (unsafe.has(k)) continue
+            // shallow copy is enough for Tone option objects
+            out[k] = v
+          }
+          return out
+        }
+
+
+        function createEffectCode (t, settings) {
+          let json = ''
+          if (settings) {
+            json = JSON.stringify(settings, null, 2)
+            json = json.replace(/"([^"]+)":/g, '$1:').replace(/"([^"]*)"/g, "'$1'")
+          }
+
+          const s = nn.get('#fx-src').value
+          const needsStart = ['AutoFilter', 'AutoPanner', 'Tremolo'].includes(t)
+
+          const src = s === 'Oscillator' ?
+            'const source = new Tone.Oscillator(440)'
+            : 'const source = new Tone.Player(\'katy.mp3\')'
+
+          let gval = 0.8
+          if (document.querySelector('#fx-gain')) {
+            gval = Number(nn.get('#fx-gain').value)
+          }
+          const makeGain = `\nconst volume = new Tone.Gain(${gval})`
+
+          const make = `\nconst effect = new Tone.${t}(${json})`
+          const maybeStart = needsStart ? '\n\neffect.start() // needs to be started to work' : ''
+
+          const connectHint = '\n\nsource.connect(effect)\neffect.connect(volume)\nvolume.toDestination()'
+
+          return `${src}${makeGain}${make}${maybeStart}${connectHint}`
+        }
+
+        function createEffectSelector (sel, presets, createFunc) {
+          const ele = nn.get(sel)
+          const ne = new Netitor({
+            ele: nn.get('.fx-editor'),
+            autoUpdate: false,
+            background: false,
+            theme: 'moz-light',
+            language: 'javascript',
+            code: '// pick an effect + preset',
+            readOnly: true,
+            wrap: true
+          })
+
+          const wave = createWaveform({
+            ele: `${sel} svg`,
+            width: 220
+          })
+
+          const cntrls = nn.get('.select').css({
+            display: 'flex',
+            alignItems: 'center'
+          })
+          const fxList = Object.keys(presets).reverse()
+
+          const src = nn.create('select')
+            .set('id', 'fx-src')
+            .set('options', ['Oscillator', 'Player'])
+            .addTo(cntrls)
+            .on('change', (e) => {
+              const pre = preList.value
+              node.dispatchEvent(new Event('change', { bubbles: true }))
+              preList.value = pre
+              preList.dispatchEvent(new Event('change', { bubbles: true }))
+            })
+
+          nn.create('label').content('---').addTo(cntrls)
+
+          const node = nn.create('select')
+            .set('options', fxList)
+            .addTo(cntrls)
+            .on('change', (e) => {
+              preList.innerHTML = ''
+              const o = e.target.value
+              let arr = Object.keys(presets[o])
+              arr.unshift('default')
+              preList.set('options', arr)
+              eff = createFunc(o)
+              effectSetup()
+              if (sel.includes('effect')) {
+                ne.code = createEffectCode(o, '')
+              }
+            })
+
+          const first = fxList[0]
+
+          function effectSetup () {
+            // tap the effected signal to the waveform
+            eff.effect.connect(wave)
+            const btn = ele.querySelector('button')
+            btn.onmousedown = () => eff.attack()
+            btn.onmouseup = () => eff.release()
+            btn.onmouseleave = () => eff.release()
+          }
+
+          let eff = createFunc(first)
+          effectSetup()
+
+          const opts = Object.keys(presets[first])
+          opts.unshift('default')
+
+          const preList = nn.create('select')
+            .set('options', opts)
+            .addTo(cntrls)
+            .on('change', (e) => {
+              const pick = e.target.value === 'default' ? null : e.target.value
+              const pre = presets[node.value][pick]
+              eff.applyPreset(pre)
+              if (sel.includes('effect')) {
+                const settings = pick === 'default' ? '' : pre
+                ne.code = createEffectCode(node.value, settings)
+              }
+            })
+
+          const gain = nn.create('p').content('--- gain ').css({
+            display: 'inline',
+            fontFamily: "'Major Mono Display', monospace",
+            fontWeight: 100,
+            fontSize: '1em'
+          }).addTo(cntrls)
+
+          nn.create('input').set({
+            id: 'fx-gain', type: 'number', min: 0.01, max: 1, step: 0.1, value: 0.8
+          }).addTo(gain).on('input', (e) => {
+            if (e.target.validity && e.target.validity.badInput) return
+            const n = Number(e.target.value)
+            if (n < 0.01) e.target.value = 0.01
+            else if (n > 1) e.target.value = 1
+            const pre = preList.value
+            node.dispatchEvent(new Event('change', { bubbles: true }))
+            preList.value = pre
+            preList.dispatchEvent(new Event('change', { bubbles: true }))
+          })
+
+          nn.create('label').content('---').addTo(cntrls)
+
+          const t = window.localStorage.getItem('theme')
+          const img = '/images/speaker'
+          nn.create('img').css({
+            marginRight: 20,
+            width: 50
+          }).set({
+            id: 'speaker-svg',
+            src: t === 'dark' ? `${img}-white.svg` : `${img}.svg`
+          }).addTo(cntrls)
+
+          const obj = { ne, ele }
+          if (!window.editors) window.editors = []
+          window.editors.push(obj)
+
+          const changeEvent = new Event('change')
+          node.dispatchEvent(changeEvent)
+
+          return obj
+        }
+
+        // init for effects
+        createEffectSelector('#effect-presets', window.effectPresets, createEffect)
 
 
     </script>
