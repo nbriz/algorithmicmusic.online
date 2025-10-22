@@ -210,21 +210,6 @@
       utils.init()
       nn.getAll('h4, .formatted-text').forEach(e => utils.formatText(e))
 
-      // setup svg images
-      const currentTheme = window.localStorage.getItem('theme')
-      if (currentTheme === 'dark') {
-        nn.get('#lfo-svg').set('src', '/images/LFO-white.svg')
-        nn.get('#amosc-svg').set('src', '/images/AMOscillator-white.svg')
-        nn.get('#speaker-svg').set('src', '/images/speaker-white.svg')
-      }
-
-      nn.get('main-menu').callback = (theme) => {
-        const s = theme === 'dark' ? '-white' : ''
-        nn.get('#lfo-svg').set('src', `/images/LFO${s}.svg`)
-        nn.get('#amosc-svg').set('src', `/images/AMOscillator${s}.svg`)
-        nn.get('#speaker-svg').set('src', `/images/speaker${s}.svg`)
-      }
-
       // setup editors
       // ..............
       const ttemps = ['body', 'nn', 'tone', 'viz']
@@ -622,7 +607,20 @@
         }
 
 
+        // setup svg images
+        const currentTheme = window.localStorage.getItem('theme')
+        if (currentTheme === 'dark') {
+          nn.get('#lfo-svg').set('src', '/images/LFO-white.svg')
+          nn.get('#amosc-svg').set('src', '/images/AMOscillator-white.svg')
+          nn.get('#speaker-svg').set('src', '/images/speaker-white.svg')
+        }
 
+        nn.get('main-menu').callback = (theme) => {
+          const s = theme === 'dark' ? '-white' : ''
+          nn.get('#lfo-svg').set('src', `/images/LFO${s}.svg`)
+          nn.get('#amosc-svg').set('src', `/images/AMOscillator${s}.svg`)
+          nn.get('#speaker-svg').set('src', `/images/speaker${s}.svg`)
+        }
 
     </script>
   </body>
