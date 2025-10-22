@@ -74,6 +74,28 @@ window.utils.init = function () {
     colorMode.querySelector('input').checked = true
     goDark()
   } else goLight()
+
+  // SAFARI WALL
+  if (nn.browserInfo().name === 'Safari') {
+    const m = 'You\'re usig Safari, which might be a problem. This site explores some unconventional and experimental methods for producing sound, which doesn\'t always work well in Safari. I\'d recommend downloading a more modern browser like <a href="https://www.firefox.com/">Firefox</a> or <a href="https://www.google.com/chrome/">Chrome</a>.'
+    const wall = nn.create('div').css({
+      position: 'fixed',
+      inset: 0,
+      zIndex: 99,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
+      background: 'white'
+    }).addTo('body')
+
+    nn.create('p').addTo(wall).content(m).css({
+      margin: '10px auto'
+    })
+    nn.create('button').content('I understand').on('click', () => {
+      wall.remove()
+    }).addTo(wall)
+  }
 }
 
 window.utils.loadEditorFromHash = () => {
