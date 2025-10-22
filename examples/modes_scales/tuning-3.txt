@@ -1,0 +1,1 @@
+Just Intonation builds its notes from simple whole-number ratios, creating perfectly consonant chords, but making it harder to switch keys without some notes sounding off.

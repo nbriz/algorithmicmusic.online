@@ -599,6 +599,30 @@
         // init for effects
         createEffectSelector('#effect-presets', window.effectPresets, createEffect)
 
+        // create connection editors....
+        //..............................
+
+        function connectionEditors () {
+          const ne = new Netitor({
+            ele: nn.get('.fx-editor'),
+            autoUpdate: false,
+            background: false,
+            theme: 'moz-light',
+            language: 'javascript',
+            code: '// pick an effect + preset',
+            readOnly: true,
+            wrap: true
+          })
+
+
+
+          const obj = { ne, ele }
+          if (!window.editors) window.editors = []
+          window.editors.push(obj)
+        }
+
+
+
 
     </script>
   </body>

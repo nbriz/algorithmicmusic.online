@@ -1,0 +1,1 @@
+Meantone Temperament adjusts the tuning to favor pure major thirds, making chords sound sweeter, though at the cost of making distant keys sound less in tune.

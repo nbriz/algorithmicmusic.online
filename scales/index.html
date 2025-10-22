@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Algorithmic Music Online: Scales</title>
+    <meta name="author" content="Nick Briz">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <!-- TODO: social media stuff -->
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+
+    am-range, am-button {
+      display: block;
+      width: 50%;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .tt-row video {
+      max-width: 30%;
+    }
+
+    </style>
+  </head>
+  <body>
+
+    <main-menu>
+      <div slot="menu-items">
+        <div class="color-mode-wrap">
+          <label class="color-mode-switch">
+            <input type="checkbox">
+            <span class="color-mode-slider"></span>
+          </label>
+          <span class="color-mode-label">light/dark mode</span>
+        </div>
+      </div>
+    </main-menu>
+
+    <div class="loader">
+      <svg id="loader-wave" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="" id="loader-wave-path"></path>
+      </svg>
+    </div>
+
+    <section>
+      <div class="content">
+        <h4 class="ch">chapter 4</h4>
+        <h2 class="formatted-text ch-title">modes + scales</h2>
+
+        <p>
+          When particles in the air vibrate and those vibrations reach our ears, our ear drums vibrate in tandem sending electrical signals to our brain which we hallucinate as "sound". Our brain only registers vibrations between 20 Hz to 20,000 Hz, the audible human range, in the example below I've limited that range from 220 Hz 1760 by default. This imposed limitation is our first step from "sound" to "music." We've discussed sound at great length, but we've yet to really talk about music. Simply put, music is created by limiting the sounds we hear to a finite list of mathematically related frequencies and then playing those frequencies at mathematically related points in time. The latter we'll discuss in the next section. In this section we'll talk about how we algorithmically generate a set of "musical" frequencies. In the interactive example below there are a number of drop-down lists you can adjust, each will limit the playable frequencies to a smaller set of possible values. Below that, I'll explain each of these, as well as the theory and algorithms behind them.
+        </p>
+
+        <svg id="music-theramin-spec"></svg>
+        <div id="music-theramin-specs"></div>
+        <div id="music-theramin-ui"></div>
+        <svg id="music-theramin-wave"></svg>
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <h4>tuning systems</h4>
+
+        <p>
+          The first of the drop-down lists above let you limit the frequencies to a set number of octaves (either 3, 2 or 1), for context a piano usually contains ~7 octaves. In music an <strong>octave</strong> is what we call a 2:1 or <code>2/1</code> relationship between frequencies, for example 440 Hz and 880 Hz. The first step on our journey to creating a set of frequencies for our musical palette is deciding on a <strong>tuning system</strong>, an algorithm we'll use to divide up the potentially infinite number of frequencies in an octave. In the vast majority of popular music the tuning system used is called "12 tone equal temperament", as the name implies, the formula for this one is to divide the octave in to 12 equally spaced parts. Despite it's ubiquity today, it's not the only tuning system out there, nor was it the first.
+        </p>
+
+        <a href="https://www.youtube.com/watch?v=EdYzqLgMmgk" target="_blank">
+          <img src="/images/pythagoras.jpg" alt="How Pythagoras broke music" class="rwd">
+        </a>
+
+        <p>
+          Tone.js has 12 tone equal temperament built into it. If that's the tuning system we want to use then we don't ever need to write our own algorithms, instead we can simply specify the note we want as a string <code>synth.triggerAttack('A4')</code> is no different from <code>synth.triggerAttack(440)</code>. That said, if we want to use an alternative sytem, or even create our own, then we'll need to roll out our own algorithms like the examples below.
+        </p>
+
+      </div>
+    </section>
+
+    <div id="editor-0"></div>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <h4>modes and scales</h4>
+        <p>
+          Once we've established our tuning system, we now have a complete set of frequencies within an octave to play with. However, having a large collection of notes doesn't automatically create musical structure. Some tuning systems, like Just Intonation, naturally produce a major scale (Ionian mode) as their default set of notes. But when using tuning systems that divide the octave into more than 7 or 8 steps—such as 12-tone equal temperament (default in Tone.js and most Western music), <a href="https://en.wikipedia.org/wiki/19_equal_temperament" target="_blank">9-TET</a>, or <a href="https://en.wikipedia.org/wiki/Microtonality" target="_blank">microtonal systems</a>—we need to further filter this set to create something musically cohesive.
+        </p>
+
+        <div style="max-width: 80%; margin: 60px auto;">
+          <div class="tt-row">
+            <video src="/videos/maddie1.mp4" controls></video>
+            <video src="/videos/maddie2.mp4" controls></video>
+            <video src="/videos/maddie3.mp4" controls></video>
+          </div>
+          <p class="small-note">
+            a few examples of microtonal music by <a href="https://maddieashman.bandcamp.com/" target="_blank">Maddie Ashman</a> from her <a href="https://www.tiktok.com/@maddieashmanmusic" target="_blank">TikTok</a>
+          </p>
+        </div>
+
+        <p>
+          One of the oldest ways to organize musical notes is through modes. A <strong>mode</strong> is a pattern of intervals that defines how notes relate to each other within a tuning system. An <strong>interval</strong> is the number of steps between two notes, where a <strong>step</strong> is the distance from one note to the next in a given tuning system. The 7 <a href="https://en.wikipedia.org/wiki/Mode_(music)" target="_blank">Greek modes</a> (Ionian, Dorian, Phrygian, Lydian, Mixolydian, Aeolian and Locrian) provided the foundation for much of Western music, and they continue to shape melody and harmony today. Modes establish a tonal center and influence the character of a piece—whether it feels bright and happy (Ionian), somber and melancholic (Aeolian), dark and mysterious (Locrian), etc.
+        </p>
+
+        <p>
+          From these modes, we derive <strong>scales</strong>, which are specific selections of notes within a mode. The major scale is just one example, built from the Ionian mode, while the minor scale comes from the Aeolian mode. Other cultures and traditions use unique scale systems, such as pentatonic scales, maqam scales (Middle East and North Africa), and raga structures (Indian).
+        </p>
+
+        <p>
+          Ultimately, modes help shape the scales we use, and scales help us structure our melodies and harmonies. Without this reduction, music can easily sound "out of tune" or incoherent, especially in tuning systems with many possible key choices.
+        </p>
+      </div>
+    </section>
+
+    <div id="editor-1"></div>
+    <br><br>
+    <br>
+    <br>
+    <br>
+
+
+    <section class="attribution">
+      <div class="content">
+        <p>
+          <span style="font-weight: bold;">Attribution</span>: Text and code written by <a href="https://nickbriz.com/" target="_blank">Nick Briz</a>. The code editor icons designed by <a href="https://thenounproject.com/creator/MekoDa/" target="_blank">Meko</a> and licensed under Creative Commons Attribution License (CC BY 3.0). All sounds generated using the Web Audio API and/or <a href="https://tonejs.github.io/" target="_blank">Tone.js</a> by Yotam Mann and <a href="https://github.com/Tonejs/Tone.js/graphs/contributors" target="_blank">other contributors</a>.
+        </p>
+        <br>
+        <br>
+        <br>
+
+        <br>
+        <br>
+        <br>
+      </div>
+    </section>
+
+
+
+    <script src="/js/libs/d3@7.js"></script>
+    <script src="/js/libs/Tone.js"></script>
+    <script src="/js/custom-elements/algo-music-ui.js"></script>
+    <script src="/js/SVGSineWave.js"></script>
+    <script src="/js/viz-helpers.js"></script>
+    <script src="/js/libs/netitor.min.js"></script>
+    <script src="/js/libs/nn.min.js"></script>
+    <script src="/js/custom-elements/main-menu.js"></script>
+    <script src="/js/create-waveform.js"></script>
+    <script src="/js/effect-presets.js"></script>
+    <script src="/js/tone-sounds.js"></script>
+    <script src="/js/code-templates.js"></script>
+    <script src="/js/utils.js"></script>
+    <script>
+      utils.init()
+      nn.getAll('h4, .formatted-text').forEach(e => utils.formatText(e))
+
+      // setup editors
+      // ..............
+      const ttemps = ['body', 'nn', 'tone', 'viz']
+      utils.createCodeEditor({
+        ele: '#editor-0',
+        title: 'tuning systmes',
+        code: [
+          { file: 'modes_scales/tuning-1.js', template: ttemps, info: true },
+          { file: 'modes_scales/tuning-2.js', template: ttemps, info: true },
+          { file: 'modes_scales/tuning-3.js', template: ttemps, info: true }
+        ]
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-1',
+        title: 'modes + scales',
+        code: [
+          { file: 'modes_scales/modes-1.js', template: ttemps, info: true },
+          { file: 'modes_scales/modes-2.js', template: ttemps, info: true },
+          { file: 'modes_scales/modes-3.js', template: ttemps, info: true }
+        ]
+      })
+
+      // --------------
+      // musical theramin
+      // --------------------------------------------
+      const TS = {
+        min: 220,
+        max: 1760,
+        octaves: 3,
+        tones: 0,
+        scale: [],
+        chord: []
+      }
+
+      const modes = {
+          'no mode': [],
+          'ionian':     [2,2, 1 ,2,2,2, 1 ],// major
+          'dorian':     [2, 1 ,2,2,2, 1 ,2],
+          'phrygian':   [ 1 ,2,2,2, 1 ,2,2],
+          'lydian':     [2,2,2, 1 ,2,2, 1 ],
+          'mixolydian': [2,2, 1 ,2,2, 1 ,2],
+          'aeolian':    [2, 1 ,2,2, 1 ,2,2],// minor
+          'locrian':    [ 1 ,2,2, 1 ,2,2,2]
+      }
+
+      // const patterns = {
+      //   'none': [],
+      //   'II-V-I': [1, 4, 0], // Super common jazz progression
+      //   'I-IV-V': [0, 3, 4], // Classic rock and blues
+      //   'I-V-vi-IV': [0, 4, 5, 3], // Pop progression
+      //   'iii-vi-ii-V': [2, 5, 1, 4] // Jazz turnaround
+      // }
+
+      const chords = {
+        'no chord': [],
+        'major': [0, 2, 4], // Root, major third, perfect fifth
+        'minor': [0, 2, 3], // Root, minor third, perfect fifth
+        'diminished': [0, 2, 3], // Root, minor third, diminished fifth
+        'augmented': [0, 2, 4], // Root, major third, augmented fifth
+        'major 7': [0, 2, 4, 6], // Root, major third, perfect fifth, major seventh
+        'minor 7': [0, 2, 3, 5], // Root, minor third, perfect fifth, minor seventh
+        'dominant 7': [0, 2, 4, 5] // Root, major third, perfect fifth, minor seventh
+      }
+
+
+      function updateSpecs() {
+        // Update min/max based on octaves
+        if (TS.octaves === 3) {
+          TS.min = 220;
+          TS.max = 1760;
+        } else if (TS.octaves === 2) {
+          TS.min = 440;
+          TS.max = 1760;
+        } else if (TS.octaves === 1) {
+          TS.min = 440;
+          TS.max = 880;
+        }
+
+        // Determine the number of available steps
+        let numSteps;
+
+        if (TS.tones === 0) {
+          // Continuous tuning mode
+          numSteps = 1000; // Allow fine-grained control
+        } else if (TS.chord.length > 0) {
+          // Steps based on the number of notes in the selected chord
+          numSteps = TS.chord.length * TS.octaves;
+        } else if (TS.scale.length > 0) {
+          // Steps based on the selected mode
+          numSteps = TS.scale.length * TS.octaves;
+        } else {
+          // Default to equal temperament (12-TET)
+          numSteps = 12 * TS.octaves;
+        }
+
+        // Calculate step size so that the slider only lands on valid positions
+        const step = 1 / numSteps;
+        fslider.set({ step });
+
+        console.log(`Updated slider steps: ${step} (${numSteps} total steps)`);
+      }
+
+
+
+      const wave = viz.createWaveform({
+        ele: '#music-theramin-wave',
+        background: 'var(--background-color)',
+        color: 'var(--accent-color1)'
+      })
+
+      const spec = viz.createSpectrum({
+        ele: '#music-theramin-spec',
+        background: 'var(--background-color)',
+        color: 'var(--accent-color1)',
+        harmonics: false,
+        range: [220, 1760]
+      })
+
+      const osc = new Tone.Oscillator(440, "sine").toDestination()
+      osc.volume.value = -15
+      osc.connect(wave)
+      osc.connect(spec)
+
+      const freq = nn.create('div')
+        .css({ marginTop: '20px' })
+        .content('frequency: ')
+        .addTo('#music-theramin-ui')
+
+      const fslider = nn.create('am-range')
+        .set({ value: 0, min: 0, max: 1, step: 0.001 })
+        .css({ width: '100%' })
+        .addTo('#music-theramin-ui')
+        .on('mousedown', () => osc.start())
+        .on('mouseup', () => osc.stop())
+        .on('input', (e) => {
+          const v = Number(e.target.value);
+          let frequency;
+
+          if (TS.tones !== 0) {
+            // Get number of valid steps
+            const numValidSteps = TS.chord.length > 0 ? TS.chord.length : TS.scale.length || TS.tones;
+            const numSteps = Math.round(nn.map(v, 0, 1, 0, TS.octaves * numValidSteps));
+
+            if (TS.scale.length > 0) {
+              // Mode-based frequency calculation
+              const modeSteps = TS.scale;
+              const stepsInOctave = modeSteps.length;
+
+              let index, octave;
+
+              if (TS.chord.length > 0) {
+                // Snap to chord tones within the mode
+                const chordIndex = numSteps % TS.chord.length;
+                index = TS.chord[chordIndex]; // Get degree from chord structure
+                octave = Math.floor(numSteps / TS.chord.length);
+              } else {
+                // Default mode-based scale movement
+                index = numSteps % stepsInOctave;
+                octave = Math.floor(numSteps / stepsInOctave);
+              }
+
+              // Convert steps to semitone distance
+              let stepSum = modeSteps.slice(0, index).reduce((acc, step) => acc + step, 0) || 0;
+
+              // Base frequency is TS.min, apply semitone formula
+              frequency = TS.min * Math.pow(2, (stepSum + (12 * octave)) / 12);
+            } else {
+              // Default 12-tone equal temperament tuning (if no mode is selected)
+              frequency = TS.min * Math.pow(2, numSteps / 12);
+
+              // Ensure the last step lands exactly on the octave boundary
+              if (numSteps === TS.octaves * 12) {
+                frequency = TS.max;
+              }
+            }
+          } else {
+            // Continuous frequency mapping
+            frequency = nn.map(v, 0, 1, TS.min, TS.max);
+          }
+
+          // Ensure frequency is valid
+          if (!isNaN(frequency)) {
+            osc.frequency.value = frequency;
+          }
+
+          if (TS.tones === 12) {
+            const f = Tone.Frequency(osc.frequency.value);
+            freq.content(`frequency: ${osc.frequency.value} -- ${f.toNote().toLowerCase()}`);
+          } else {
+            freq.content(`frequency: ${osc.frequency.value}`);
+          }
+        });
+
+
+      nn.create('div')
+        .content('volume: ')
+        .addTo('#music-theramin-ui')
+
+      nn.create('am-range')
+        .set({ value: -15, min: -100, max: 0, step: 1 })
+        .css({ width: '100%' })
+        .addTo('#music-theramin-ui')
+        .on('input', (e) => {
+          osc.volume.value = Number(e.target.value)
+        })
+
+      nn.create('select')
+        .set({ options: ['3 octaves', '2 octaves', '1 octave'] })
+        .addTo('#music-theramin-specs')
+        .on('input', (e) => {
+          TS.octaves = Number(e.target.value.split(' ')[0])
+          updateSpecs()
+        })
+
+      nn.create('select')
+        .set({ options: ['no tuning', '72 tone', '53 tone', '24 tone', '19 tone', '12 tone'] })
+        .addTo('#music-theramin-specs')
+        .on('input', (e) => {
+          const v = e.target.value.split(' ')[0]
+          TS.tones =  v === 'no' ? 0 : Number(v)
+          updateSpecs()
+        })
+
+      nn.create('select')
+        .set({ options: [...Object.keys(modes)] })
+        .addTo('#music-theramin-specs')
+        .on('input', (e) => {
+          TS.scale = modes[e.target.value]
+          updateSpecs()
+        })
+
+      // nn.create('select')
+      //   .set({ options: [...Object.keys(chords)] })
+      //   .addTo('#music-theramin-specs')
+      //   .on('input', (e) => {
+      //     TS.chord = chords[e.target.value]
+      //     updateSpecs()
+      //   })
+
+    </script>
+  </body>
+</html>

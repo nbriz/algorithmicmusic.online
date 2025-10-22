@@ -132,10 +132,10 @@ class MainMenu extends window.HTMLElement {
           <a href="/signals">signals</a>
         </span>
         <span>
-          <a class="inactive">synths</a>
+          <a href="/synths">synths</a>
         </span>
         <span>
-          <a class="inactive">modes + scales</a>
+          <a href="/scales">modes + scales</a>
         </span>
         <span>
           <a class="inactive">rhythm + melody&nbsp;</a>
