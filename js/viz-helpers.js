@@ -1324,6 +1324,7 @@ window.viz.createStepSequencer = function (opts = {}) {
   return {
     el: wrap,
     pattern: cfg.pattern, // the same reference you passed; mutated live
+    remove: () => wrap.remove(),
     attachTransport (t) { cfg.transport = t },
     update () {
       const bpb = getBeatsPerBar()
