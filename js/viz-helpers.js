@@ -693,71 +693,92 @@ window.viz.createPianoUI = function (options = {}) {
 Piano Roll — quick start & API
 ==============================
 
-Set it up like this
--------------------
-
-const pr = viz.createPianoRoll()
-
-// or with options
-const pr = viz.createPianoRoll({
-  notes: ['C4', 'C5'],        // pitch rows (inclusive range) → C5 included
-  measures: 4,                // number of measures (columns = measures * beats)
-  beats: 4,                   // beats per measure
-  parent: '#roll',           // element or selector to append into (default: document.body)
+Create a roll
+-------------
+const roll = viz.createPianoRoll({
+  notes: ['C4', 'C5'],       // pitch range (inclusive)
+  measures: 4,               // number of measures (columns = measures * beats)
+  beats: 4,                  // beats per measure
+  parent: '#pianoRoll',      // element or selector to render into
+  transport: Tone.Transport, // optional Tone.Transport reference
+  editable: false,           // if false (default), user cannot click or draw notes
   style: {
-    measureA: '#ffffff',      // background for even-numbered measures (0-based)
-    measureB: '#f6f6f6',      // background for odd-numbered measures
-    accent: '#4a90e2',        // note block color (stroke + fill)
-    border: '#e0e0e0',        // grid line color
-    cellWidth: 28,            // width of one beat cell (px)
-    cellHeight: 22,           // height of one pitch row (px)
-    gutterWidth: 64,          // left label column width (px)
+    measureA: '#ffffff',     // even measure background
+    measureB: '#f6f6f6',     // odd measure background
+    accent: '#4a90e2',       // note block color
+    border: '#e0e0e0',       // grid line color
+    cellWidth: 28,           // width of each beat cell (px)
+    cellHeight: 22,          // height of each pitch row (px)
+    gutterWidth: 64,         // left label column width (px)
     font: '12px system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
   }
 })
 
-Interaction model
+Behavior overview
 -----------------
-• Click on a cell → adds a 1-beat note at that pitch/start.
-• Click + drag within a row → adds ONE note whose duration spans the drag.
-• Click on any cell covered by an existing note (start/middle/end) → removes that entire note.
+• Displays a grid of measures × beats × pitches.
+• Shows a moving playhead if `showPlayhead(true)` is called.
+• If `transport` is provided, you can call `roll.updatePlayhead()` each tick to sync the playhead.
+• If `editable: false`, all click/drag interactions are disabled (purely visual).
 
-Reading & mutating state
-------------------------
-pr.state
-  // Array of notes currently placed:
-  // [{ id, pitch: 'C4', start: <col>, duration: <beats> }, ...]
+Interacting with it
+-------------------
+roll.showPlayhead(true)
+  // enables the vertical playhead line
 
-pr.clear()
-  // Removes all notes (state + visuals)
+roll.updatePlayhead()
+  // reads cfg.transport.position and moves playhead accordingly
 
-Notes about layout & visuals
-----------------------------
-• The component renders into a Shadow DOM and injects its own styles; it won’t leak CSS.
-• Measure backgrounds alternate via measure index; customize with style.measureA/measureB.
-• The pitch range is INCLUSIVE when you pass two notes, e.g. ['C4','C5'] → rows C5..C4 (top→bottom).
+roll.add('C4', 0, 2)
+  // adds a note starting at beat 0 lasting 2 beats
 
-Minimal example
+roll.clear()
+  // removes all notes
+
+roll.toToneEvents()
+  // returns an array of { time, pitch, dur } objects suitable for Tone.Part
+
+roll.on('change', fn)
+  // subscribes to note edits (if editable)
+  // emits { type: 'add' | 'remove' | 'clear', ... }
+
+State structure
 ---------------
-const pr = viz.createPianoRoll({
+roll.state
+  // array of placed notes:
+  // [
+  //   { id, pitch: 'C4', start: 0, duration: 1 },
+  //   { id, pitch: 'E4', start: 2, duration: 2 }
+  // ]
+
+roll.config
+  // holds setup info (measures, beats, style, transport, etc.)
+
+Minimal usage example
+---------------------
+const roll = viz.createPianoRoll({
+  parent: '#roll',
   notes: ['C3', 'C5'],
   measures: 8,
   beats: 4,
-  parent: '#roll'
-  style: { accent: '#7c4dff' }
+  transport: Tone.Transport,
+  editable: true
 })
 
-// later…
-console.log(pr.state) // inspect placed notes
-pr.clear()                    // wipe the roll
-*/
+roll.showPlayhead(true)
 
+// update playhead each 16th
+Tone.Transport.scheduleRepeat(() => roll.updatePlayhead(), '16n')
+Tone.Transport.start()
+*/
 window.viz.createPianoRoll = function (opts = {}) {
   const defaults = {
     notes: ['C4', 'C5'],
     measures: 4,
     beats: 4,
+    transport: null,
     parent: document.body,
+    editable: false,
     style: {
       measureA: '#ffffff',
       measureB: '#f6f6f6',
@@ -771,6 +792,8 @@ window.viz.createPianoRoll = function (opts = {}) {
   }
 
   const cfg = merge(defaults, opts)
+  cfg.editable = !!cfg.editable
+  cfg.transport = cfg.transport || null
   if (typeof cfg.parent === 'string') {
     const el = document.querySelector(cfg.parent)
     if (el) cfg.parent = el
@@ -790,6 +813,8 @@ window.viz.createPianoRoll = function (opts = {}) {
   let suppressNextPointerUp = false// event system
 
   const host = document.createElement('div')
+  host.style.display = 'block'
+  host.style.overflow = 'hidden'
   const shadow = host.attachShadow({ mode: 'open' })
   cfg.parent.appendChild(host)
 
@@ -804,10 +829,11 @@ window.viz.createPianoRoll = function (opts = {}) {
       height: var(--pr-cell-h); display: flex; align-items: center; justify-content: flex-end;
       padding: 0 8px; color: #444; border-bottom: 1px solid var(--pr-border); box-sizing: border-box;
     }
-    .pr-canvas { position: absolute; left: var(--pr-gutter-w); right: 0; top: 0; bottom: 0; overflow: scroll }
+    .pr-canvas { position: absolute; left: var(--pr-gutter-w); right: 0; top: 0; bottom: 0; overflow-x: scroll; overflow-y: hidden }
     .pr-cells { position: absolute; inset: 0; display: grid; z-index: 1; }
     .pr-notes { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
     .pr-cell {
+      box-sizing: border-box;
       pointer-events: auto; border-right: 1px solid var(--pr-border); border-bottom: 1px solid var(--pr-border)
     }
     .pr-cell.measureA { background: var(--pr-measure-a) }
@@ -828,10 +854,12 @@ window.viz.createPianoRoll = function (opts = {}) {
       opacity: .85; transform: translateX(0);
       pointer-events: none; z-index: 4; display: none;
     }
+    .pr-readonly .pr-cell { pointer-events: none; cursor: default; }
   `
   shadow.appendChild(styleTag)
 
   const wrap = el('div', 'pr-wrap')
+  if (!cfg.editable) wrap.classList.add('pr-readonly')
   wrap.style.setProperty('--pr-measure-a', cfg.style.measureA)
   wrap.style.setProperty('--pr-measure-b', cfg.style.measureB)
   wrap.style.setProperty('--pr-accent', cfg.style.accent)
@@ -868,32 +896,30 @@ window.viz.createPianoRoll = function (opts = {}) {
       cell.dataset.col = String(c)
       cell.setAttribute('draggable', 'false')
 
-      cell.addEventListener('pointerdown', e => {
-        e.preventDefault()
+      if (cfg.editable) {
+        cell.addEventListener('pointerdown', e => {
+          e.preventDefault()
+          // if clicking on an existing note (anywhere it spans), remove it
+          const existing = findNoteAt(r, c)
+          if (existing) {
+            removeNoteById(existing.id)
+            suppressNextPointerUp = true
+            return // don't start a drag when we just deleted
+          }
+          cell.setPointerCapture?.(e.pointerId)
+          startDrag(r, c)
+        })
 
-        // if clicking on an existing note (anywhere it spans), remove it
-        const existing = findNoteAt(r, c)
-        if (existing) {
-          removeNoteById(existing.id)
-          suppressNextPointerUp = true
-          return // don't start a drag when we just deleted
-        }
-
-        cell.setPointerCapture?.(e.pointerId)
-        startDrag(r, c)
-      })
-
-      cell.addEventListener('pointerup', e => {
-        e.preventDefault()
-
-        if (suppressNextPointerUp) {
-          suppressNextPointerUp = false
-          return
-        }
-
-        if (dragging) finishDrag()
-        else addOneBeat(r, c)
-      })
+        cell.addEventListener('pointerup', e => {
+          e.preventDefault()
+          if (suppressNextPointerUp) {
+            suppressNextPointerUp = false
+            return
+          }
+          if (dragging) finishDrag()
+          else addOneBeat(r, c)
+        })
+      }
 
       cells.appendChild(cell)
     }
@@ -903,11 +929,14 @@ window.viz.createPianoRoll = function (opts = {}) {
     if (dragging) finishDrag()
     suppressNextPointerUp = false
   }
-  shadow.addEventListener('pointerup', end)
-  window.addEventListener('pointerup', end)
-  window.addEventListener('pointercancel', end)
-  window.addEventListener('blur', end)
-  shadow.addEventListener('pointermove', pointerMove)
+
+  if (cfg.editable) {
+    shadow.addEventListener('pointerup', end)
+    window.addEventListener('pointerup', end)
+    window.addEventListener('pointercancel', end)
+    window.addEventListener('blur', end)
+    shadow.addEventListener('pointermove', pointerMove)
+  }
 
   function findNoteAt (row, col) {
     const pitch = pitches[row]
@@ -1114,6 +1143,11 @@ window.viz.createPianoRoll = function (opts = {}) {
     playhead.style.display = show ? 'block' : 'none'
   }
 
+  function updatePlayheadFromTransport () {
+    if (!cfg.transport || typeof cfg.transport.position !== 'string') return
+    setPlayheadFromPosition(cfg.transport.position, { beatsPerMeasure: cfg.beats })
+  }
+
   // convert current grid state → Tone.js event objects
   function toToneEvents (opts = {}) {
     const beatsPerMeasure = opts.beatsPerMeasure || cfg.beats || 4
@@ -1139,6 +1173,9 @@ window.viz.createPianoRoll = function (opts = {}) {
     showPlayhead,
     setPlayheadByCol,
     setPlayheadFromPosition,
+    attachTransport (t) { cfg.transport = t || null },
+    updatePlayhead: updatePlayheadFromTransport,
+    update: updatePlayheadFromTransport,
     toToneEvents,
     on,
     off,
@@ -1155,8 +1192,84 @@ window.viz.createPianoRoll = function (opts = {}) {
   }
 }
 
-// -----------------------------
-// -----------------------------
+/*
+Step Sequencer — quick start & API
+==================================
+
+Set it up like this
+-------------------
+const seq = viz.createStepSequencer({
+  sequence: [1, 0, 1, 0],       // array OR { name: array, ... } for multi-row
+  parent: '#panel',             // element or selector (default: document.body)
+  transport: Tone.Transport,    // optional; if provided, update() reads .position
+  color: '#6c8cff',             // highlight color for current step
+  dividerColor: '#d0d3e2',      // measure divider color
+  dividerWidth: 2,              // measure divider width (px)
+  labelWidth: 72,               // left label column width (px)
+  gap: 6,                       // gap between cells (px)
+  beatsPerBar: 4                // fallback if no transport.timeSignature is set
+})
+
+What gets rendered
+------------------
+• If you pass a single ARRAY → one row.
+• If you pass an OBJECT → one row per key, with the key shown as the row label.
+• Input type is decided **per row**:
+  - If ALL values are strictly binary (0/1/true/false/null) → row renders as CHECKBOXES.
+  - If ANY value is a float (e.g. 0.3) → row renders as NUMBER INPUTS (0..1, step 0.01).
+• Vertical measure dividers are drawn using Transport timeSignature (or beatsPerBar fallback).
+
+Live editing
+------------
+• User interaction mutates the original `sequence` IN PLACE.
+  - Checkbox rows write 0/1.
+  - Number rows write clamped floats in [0, 1].
+• You can read the latest values from `seq.pattern` (same reference you passed in).
+
+Playback highlighting
+---------------------
+• Call `seq.update()` on a clock (e.g., `scheduleRepeat`) to highlight the current step.
+• When a Transport is attached, `update()` derives the absolute step from
+  `bars:beats:sixteenths` and:
+  - Wraps at the **next whole-measure boundary** (ceil(length / beatsPerBar) * beatsPerBar).
+  - Only highlights when the wrapped index exists in the pattern; otherwise clears highlight.
+• If the Transport’s `timeSignature` changes, `update()` automatically refreshes dividers.
+
+Public API
+----------
+seq.el
+  // Root element you can move/remove in your DOM.
+
+seq.pattern
+  // The same array/object you provided; it is mutated by UI edits.
+
+seq.update()
+  // Reads cfg.transport.position (if provided) and updates the current-step highlight.
+  // If no transport is attached, it clears highlight.
+
+seq.attachTransport(transport)
+  // Attach (or reattach) a Tone.Transport for update() to read from.
+
+seq.remove()
+  // Removes the UI from the DOM (no other side effects).
+
+Examples
+--------
+Single row (checkboxes):
+const pattern = [1, 0, 1, 0]
+const seq = viz.createStepSequencer({ sequence: pattern, parent: '#ui', transport: Tone.Transport })
+Tone.Transport.scheduleRepeat(() => seq.update(), '16n')
+
+Multiple rows (mixed types):
+const drums = { kick: [1,0,1,0], snare: [0,1,0,1], hat: [0.25, 0.75, 0.5, 0.1] }
+const dseq = viz.createStepSequencer({ sequence: drums, parent: '#ui', transport: Tone.Transport })
+
+Notes
+-----
+• If your row length (in beats) isn’t a multiple of the time signature’s numerator,
+  highlight wraps at the next *full* bar and remains off for padded beats.
+• If you do not pass a Transport, set the `beatsPerBar` option so dividers align as expected.
+*/
 
 window.viz.createStepSequencer = function (opts = {}) {
   const cfg = {
@@ -1194,12 +1307,20 @@ window.viz.createStepSequencer = function (opts = {}) {
     document.head.appendChild(s)
   }
 
-  // normalize to { label -> array }
-  const isArray = Array.isArray(cfg.pattern)
-  const rows = isArray ? { '': cfg.pattern } : cfg.pattern
-
-  // compute length (assume consistent; otherwise use max)
-  const len = Object.values(rows).reduce((m, arr) => Math.max(m, arr.length), 0)
+  // normalize to {label -> rowMeta}, where rowMeta has { flat, write }
+  let rowMeta = {}
+  if (Array.isArray(cfg.pattern)) {
+    const { flat, write } = flattenWithWriters(cfg.pattern)
+    rowMeta[''] = { flat, write }
+  } else {
+    rowMeta = {}
+    for (const [label, arr] of Object.entries(cfg.pattern)) {
+      const { flat, write } = flattenWithWriters(arr)
+      rowMeta[label] = { flat, write }
+    }
+  }
+  // compute length from flattened rows (max)
+  const len = Object.values(rowMeta).reduce((m, meta) => Math.max(m, meta.flat.length), 0)
 
   // build DOM
   const wrap = document.createElement('div')
@@ -1217,14 +1338,17 @@ window.viz.createStepSequencer = function (opts = {}) {
   const colCells = Array.from({ length: len }, () => new Set())
   let lastBeatsPerBar = null
 
-  Object.entries(rows).forEach(([label, arr]) => {
+  Object.entries(rowMeta).forEach(([label, meta]) => {
+    const arr = meta.flat
+    const write = meta.write
+
     const row = document.createElement('div')
     row.className = 'ss-row'
     row.style.gridTemplateColumns = `${cfg.labelWidth}px 1fr`
 
     const lab = document.createElement('div')
     lab.className = 'ss-label'
-    lab.textContent = isArray ? '' : label
+    lab.textContent = (Object.keys(rowMeta).length === 1) ? '' : label
     row.appendChild(lab)
 
     const cells = document.createElement('div')
@@ -1232,8 +1356,10 @@ window.viz.createStepSequencer = function (opts = {}) {
     cells.style.gridTemplateColumns = `repeat(${len}, max-content)`
     row.appendChild(cells)
 
-    // decide once per row: checkboxes only if ALL values are strictly binary (0/1/true/false or empty)
-    const allBinary = (arr || []).every(v => v === 0 || v === 1 || v === true || v === false || v == null)
+    // decide once per row: checkboxes only if ALL values are strictly binary
+    const allBinary = (arr || []).every(v =>
+      v === 0 || v === 1 || v === true || v === false || v == null
+    )
     const useNumberInputs = !allBinary
 
     for (let i = 0; i < len; i++) {
@@ -1258,7 +1384,7 @@ window.viz.createStepSequencer = function (opts = {}) {
         input.addEventListener('input', () => {
           const v = Math.max(0, Math.min(1, parseFloat(input.value)))
           input.value = String(Number.isFinite(v) ? v : 0)
-          arr[i] = Number.isFinite(v) ? v : 0 // mutate original pattern with a float
+          write(i, Number.isFinite(v) ? v : 0) // ⬅️ write back into original (1-D or 2-D)
         })
         cell.appendChild(input)
       } else {
@@ -1266,7 +1392,7 @@ window.viz.createStepSequencer = function (opts = {}) {
         input.type = 'checkbox'
         input.checked = !!Math.round(Number(val) || 0)
         input.addEventListener('change', () => {
-          arr[i] = input.checked ? 1 : 0 // mutate original pattern as 0/1
+          write(i, input.checked ? 1 : 0) // ⬅️ write back into original (1-D or 2-D)
         })
         cell.appendChild(input)
       }
@@ -1319,6 +1445,42 @@ window.viz.createStepSequencer = function (opts = {}) {
     const bpb = getBeatsPerBar()
     return Math.ceil(len / bpb) * bpb // round pattern length up to full bars
   }
+
+  // is a row like [[...],[...]] ?
+  function is2DArray (arr) {
+    return Array.isArray(arr) && arr.some(v => Array.isArray(v))
+  }
+
+  // flattens a possibly 2-D row AND returns writers to mutate the original
+  function flattenWithWriters (row) {
+    if (!is2DArray(row)) {
+      // 1-D row: writer just assigns into the same array
+      return {
+        flat: row, // same reference
+        write: (i, v) => { row[i] = v }
+      }
+    }
+    // 2-D: build an index → [outerIdx, innerIdx] map
+    const flat = []
+    const map = []
+    for (let m = 0; m < row.length; m++) {
+      const measure = row[m] || []
+      for (let i = 0; i < measure.length; i++) {
+        flat.push(measure[i])
+        map.push([m, i])
+      }
+    }
+    return {
+      flat,
+      write: (i, v) => {
+        const ref = map[i]
+        if (!ref) return
+        const [m, j] = ref
+        row[m][j] = v
+      }
+    }
+  }
+
 
   // public API
   return {
