@@ -338,6 +338,11 @@ window.data = {
         template: ['body', 'nn', 'tone']
       },
       {
+        title: 'Loop (settings)',
+        path: 'tone/transport/loop-settings.js',
+        template: ['body', 'nn', 'tone', 'viz']
+      },
+      {
         title: 'Loop (phasing)',
         path: 'tone/transport/loop-phasing.js',
         template: ['body', 'nn', 'tone']
@@ -345,7 +350,7 @@ window.data = {
       {
         title: 'Loop (kick drum)',
         path: 'tone/transport/loop-kick.js',
-        template: ['body', 'nn', 'tone']
+        template: ['body', 'nn', 'tone', 'viz']
       },
       {
         title: 'Loop (drum beat)',

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Algorithmic Music Online: Rhythm</title>
+    <meta name="author" content="Nick Briz">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <!-- TODO: social media stuff -->
+    <link rel="stylesheet" href="/css/main.css">
+    <style media="screen">
+      .cntrl, .steps {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .cntrl > * {
+        margin: 10px 10px;
+      }
+
+      .tt-row video {
+        max-width: 48%;
+      }
+    </style>
+  </head>
+  <body>
+
+    <main-menu>
+      <div slot="menu-items">
+        <div class="color-mode-wrap">
+          <label class="color-mode-switch">
+            <input type="checkbox">
+            <span class="color-mode-slider"></span>
+          </label>
+          <span class="color-mode-label">light/dark mode</span>
+        </div>
+      </div>
+    </main-menu>
+
+    <div class="loader">
+      <svg id="loader-wave" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="" id="loader-wave-path"></path>
+      </svg>
+    </div>
+
+    <section>
+      <div class="content">
+        <h4 class="ch">chapter 5</h4>
+        <h2 class="formatted-text ch-title">rhythm + melody</h2>
+
+        <p>
+          Up to this point, we've been writing code to generate and play sounds when we choose to trigger them using custom interfaces we've created. In a sense, we've been building instruments. But to use these instruments to make <strong>music</strong>, we need to organize them in a very particular way. Music is essentially mathematically organized sound. It begins with deciding which frequencies to play and which to leave out, the tuning systems and scales we discussed in the last lesson. Once we've chosen <i>which</i> <strong>notes</strong> (the approved list of frequencies) we can play, we need to decide <i>when</i> to play them.
+        </p>
+
+        <p>
+          Musical timing can be understood as a series of <strong>beats</strong>. In a band, it's often the drummer's job to keep time, but musicians also use tools like a <strong>metronome</strong>, a kind of musical clock that ticks at a steady, adjustable pace. The speed of those beats is called the <strong>tempo</strong>, usually measured in beats per minute, or <strong>BPM</strong>. In digital music systems, we need a way to simulate this steady timing so we can schedule sounds to play at the right moments and form rhythms. Tone.js provides this through its built-in metronome-like system called <code>Tone.Transport</code>. You can <code>.start()</code>, <code>.pause()</code>, or <code>.stop()</code> (reset) the Transport, and also change its tempo. By default, Tone sets the tempo to 120 BPM.
+        </p>
+
+        <p>
+          You can also use the Transport to build loops, play sequences, or trigger sounds in perfect sync with one another. One of the tools Tone.js provides for this is <code>Tone.Loop()</code>, which lets you schedule a repeating function that runs in time with the Transport's tempo. The example below shows how to combine these tools to create a simple beat loop that plays a clap sound on each beat, all controlled by the Transport.
+        </p>
+
+      </div>
+    </section>
+
+    <div id="editor-0"></div>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <p>
+          We typically group beats into sets known as <strong>bars</strong> or <strong>measures</strong>. The number of beats in a bar is called its <strong>time signature</strong>. The most common time signature is 4 beats per measure, but this is something we can adjust in Tone.js by setting the Transport’s <code>.timeSignature</code> property to any subdivision we want. In this context, beats are often referred to as <strong>quarter notes</strong>, because one quarter note represents one fourth of a measure in common time.
+        </p>
+      </div>
+    </section>
+    <br>
+
+    <section id="sequencer">
+      <div class="cntrl"></div>
+      <div class="steps"></div>
+    </section>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <p>
+          The interface above is called a <strong>step sequencer</strong>, a common tool used to program patterns of notes or sounds by dividing time into equal steps along a musical grid. Each step in the sequencer represents a beat, and you can choose whether or not something should play at that point in time. By turning steps on or off in a repeating loop, you can easily build rhythms, melodies, or entire patterns without needing to perform them live. Step sequencers are widely used in electronic and computer-based music because they make it simple to experiment with timing and structure in a visual and intuitive way. That’s why I’ve included a <code>.createStepSequencer()</code> function in the <code>viz</code> library, but it’s important to remember what we've discussed about how interfaces can shape the way we think. While the step sequencer is a great learning tool, we’ll eventually want to move beyond this graphical metaphor if we hope to develop more novel and innovative approaches to algorithmic composition.
+        </p>
+      </div>
+    </section>
+
+    <div id="editor-1"></div>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <h3>
+          randomness
+        </h3>
+        <p>
+          Both of the previous examples essentially recreate a conventional <strong>step sequencer</strong> interface, just like the kind you'd find in a typical drum machine or DAW. Each step is either on or off, and the sequence plays back in a fixed, repeating pattern. While this is great for learning the basics of timing and rhythm, it's also quite rigid. But, as we've discusssed, one of the most exciting things about writing music in code is that we’re not limited to traditional interfaces and their embedded logic, we can start to explore other generative and algorithmic approaches. A simple but powerful first step in that direction is introducing <strong>chance</strong> and <strong>probability</strong> into our sequences.
+        </p>
+      </div>
+    </section>
+
+    <div id="editor-2"></div>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <p>
+          While the examples above focus on randomizing percussive patterns, using probability to decide whether or not a sample should play, we can apply the same idea to melody by randomizing the selection of notes themselves. Instead of picking from a fixed rhythm grid, we can write code that chooses pitches based on weighted probabilities, scales, or entirely random processes. This approach has deep roots in experimental music: composers like <a href="https://en.wikipedia.org/wiki/John_Cage" target="_blank">John Cage</a> famously used chance operations (such as coin flips or the I Ching) to determine which notes to play, removing personal bias and introducing unpredictability. Others, like <a href="https://en.wikipedia.org/wiki/Brian_Eno" target="_blank">Brian Eno</a>, embraced randomness and algorithmic systems as creative tools for generating music that evolves outside of traditional structures.
+        </p>
+
+        <br>
+
+        <a href="https://www.youtube.com/watch?v=R89DFlUqaTI" target="_blank">
+          <img src="/images/eno.jpg" alt="Eno - a generative documentary about Brian Eno" class="rwd">
+        </a>
+        <p class="small-note">
+          The link above is to a trailer for a "generative" documentary on the artist
+          <a href="https://en.wikipedia.org/wiki/Brian_Eno" target="_blank">Brian Eno</a>, like his own generative musical compositions, the documentary is never the same twice.
+        </p>
+      </div>
+    </section>
+
+    <div id="editor-3"></div>
+    <br><br>
+    <br><br><br>
+
+    <section>
+      <div class="content">
+        <h3>
+          melodies
+        </h3>
+        <p>
+          A <strong>melody</strong> is a sequence of musical notes arranged in time to form a recognizable musical phrase, it’s often the part you hum or sing along to. Unlike rhythms or drum patterns, melodies involve both <strong>pitch</strong> (which notes are played) and <strong>timing</strong> (when and for how long they're played). One common way to visualize and edit melodies in digital music is with a <strong>piano roll</strong>, a grid-like interface where time runs left to right and pitch runs bottom to top. Each row corresponds to a musical note, and placing a block on the grid indicates that note should play at that time. While traditional piano rolls are used to manually compose music, we’ll be using one here to explore how code can generate algorithmic melodies, patterns of notes that are created through chance operations.
+        </p>
+      </div>
+    </section>
+    <br><br><br>
+
+    <section id="piano-roll">
+      <div class="cntrl">
+        <label>transport</label>
+        <button id="piano-toggle" style="width: 72px;">start</button>
+        <button id="piano-reset">stop</button>
+        <label>bpm</label>
+        <input id="bpm" type="number" value="240" style="width: 100px;">
+        <label>bars</label>
+        <input id="bars" type="number" value="4" style="width: 100px;">
+        <label>beats</label>
+        <input id="beats" type="number" value="4" style="width: 100px;">
+      </div>
+      <div class='cntrl'>
+        <!-- <select id="notes"></select> -->
+        <!-- <select id="modes"></select> -->
+        <label>melody</label>
+        <button id="clear">clear</button>
+        <button id="randomize">randomize</button>
+        <label>current note:</label>
+        <code id="cur-note" style="color: var(--accent-color3); width:373px;">
+          { pitch, dur, time }
+        </code>
+      </div>
+    </section>
+    <br><br>
+    <br><br>
+
+
+
+    <section>
+      <div class="content">
+        <p>
+          In the examples below, we return to a familiar step sequencer logic, but instead of triggering a sample (like a clap or drum), we’re using a synth to play pitched musical notes from a <code>melody</code> array. The structure of the melody mirrors our earlier sequencer examples: it's a two-dimensional array, where each sub-array represents a <strong>measure</strong> and each object inside defines a <strong>note</strong> with a <code>pitch</code> and <code>dur</code> (duration). In the <code>play()</code> function, we use <code>Tone.Transport.position</code> to determine the current bar and beat, then use those values to select and trigger the correct note at the correct time using <code>synth.triggerAttackRelease()</code>.
+        </p>
+      </div>
+    </section>
+
+    <div id="editor-4"></div>
+    <br><br>
+
+    <h3>breaking with convention</h3>
+
+    <section>
+      <div class="content">
+        <a href="https://www.youtube.com/watch?v=KvEJFjDykuE" target="_blank">
+          <img src="/images/fugue.jpg" alt=" FUGUE MACHINE | Multi-Playhead Sequencer app for iOS | Bach Melody | iPhone, iPad, MIDI, AUv3 MIDI " class="rwd">
+        </a>
+        <p class="small-note">
+           documentation of the Fugue Machine app, a Multi-Playhead Sequencer by <a href="https://www.youtube.com/@alexandernaut" target="_blank">alexandernaut</a>
+        </p>
+        <br><br>
+        <p>
+          Don't forget what we've discussed about how our instruments and interfaces influence (and sometimes limit) our creative ideas. As we continue adding more musical structure, like fixed timing, scales, and harmony, our music naturally starts to sound more familiar and conventional. That can be great for clarity and coherence, but it’s also important to question and challenge some of these conventions if we hope to create novel musical pieces that leverage the possabilities of programmed logic. Locking playback to the Transport helps keep our timing tight and quantized, but remember how like J Dilla famously broke away from that, disabling quantization on his MPC to create a more human, off-grid feel. Likewise, you don’t have to stick to the <code>nn.modes</code> presets, you can define your own mode patterns to explore new tonalities. And while using note strings like <code>"C4"</code> is convenient, it also ties us to the 12-tone equal temperament system; if you want to create microtonal music like Maddie Ashman or non-Western music, you’ll need to think beyond standard note names and build your own tuning systems.
+        </p>
+        <br><br>
+        <div class="tt-row">
+          <!-- <video src="/videos/matt1.mp4" controls=""></video> -->
+          <video src="/videos/matt2.mp4" controls=""></video>
+          <video src="/videos/matt3.mp4" controls=""></video>
+        </div>
+        <p class="small-note">
+          videos from artist/composer <a href="https://www.tiktok.com/@matthewwilcockofficial" target="_blank">Matthew Wilcock</a> Cycles | Playhead series, where he finds patterns in nature then to trigger musical sequances.
+        </p>
+      </div>
+    </section>
+
+
+    <br>
+    <br>
+    <br>
+
+
+    <section class="attribution">
+      <div class="content">
+        <p>
+          <span style="font-weight: bold;">Attribution</span>: Text and code written by <a href="https://nickbriz.com/" target="_blank">Nick Briz</a>. The code editor icons designed by <a href="https://thenounproject.com/creator/MekoDa/" target="_blank">Meko</a> and licensed under Creative Commons Attribution License (CC BY 3.0). All sounds generated using the Web Audio API and/or <a href="https://tonejs.github.io/" target="_blank">Tone.js</a> by Yotam Mann and <a href="https://github.com/Tonejs/Tone.js/graphs/contributors" target="_blank">other contributors</a>.
+        </p>
+        <br>
+        <br>
+        <br>
+
+        <br>
+        <br>
+        <br>
+      </div>
+    </section>
+
+
+
+    <script src="/js/libs/d3@7.js"></script>
+    <script src="/js/libs/Tone.js"></script>
+    <script src="/js/custom-elements/algo-music-ui.js"></script>
+    <script src="/js/SVGSineWave.js"></script>
+    <script src="/js/viz-helpers.js"></script>
+    <script src="/js/libs/netitor.min.js"></script>
+    <script src="/js/libs/nn.min.js"></script>
+    <script src="/js/custom-elements/main-menu.js"></script>
+    <script src="/js/create-waveform.js"></script>
+    <script src="/js/effect-presets.js"></script>
+    <script src="/js/tone-sounds.js"></script>
+    <script src="/js/code-templates.js"></script>
+    <script src="/js/utils.js"></script>
+    <script>
+      utils.init()
+      nn.getAll('h4, .formatted-text').forEach(e => utils.formatText(e))
+
+      // setup editors
+      // ..............
+      const ttemps = ['body', 'nn', 'tone', 'viz']
+      utils.createCodeEditor({
+        ele: '#editor-0',
+        code: { file: 'rhythm/beat1.js', template: ttemps },
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-1',
+        title: 'basic step sequencers',
+        code: [
+          { file: 'rhythm/beat2.js',  template: ttemps, info: true },
+          { file: 'rhythm/beat2b.js',  template: ttemps, info: true },
+          { file: 'rhythm/beat3.js',  template: ttemps, info: true },
+        ]
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-2',
+        title: 'algorithmic sequencers',
+        code: [
+          { file: 'rhythm/beat4.js',  template: ttemps, info: true },
+          { file: 'rhythm/beat5.js',  template: ttemps, info: true },
+          { file: 'rhythm/beat6.js',  template: ttemps, info: true },
+        ]
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-3',
+        title: 'random soloist',
+        code: [
+          { file: 'rhythm/melody1.js',  template: ttemps, info: true },
+          { file: 'rhythm/melody2.js',  template: ttemps, info: true },
+          { file: 'rhythm/melody3.js',  template: ttemps, info: true },
+        ]
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-4',
+        title: 'random soloist',
+        code: [
+          { file: 'rhythm/melody4.js',  template: ttemps, info: true },
+          { file: 'rhythm/melody5.js',  template: ttemps, info: true },
+          { file: 'rhythm/melody6.js',  template: ttemps, info: true },
+        ]
+      })
+
+      // sequencer
+      // ..............
+
+      function createSequencer () {
+        const algo = {
+          beat: 0,
+          pattern: {
+            kick: [
+              // bar 1 (steps 0–15)
+              1, 1, 0, 0, 0, 0, 1, 0,
+              1, 0, 1, 0, 0, 0, 1, 0,
+              // bar 2 (steps 16–31)
+              1, 0, 0, 1, 0, 0, 1, 0,
+              1, 0, 0, 0, 0, 0, 0, 0
+            ],
+            snare: [
+              // bar 1
+              0, 0, 0, 0, 1, 0, 0, 0,
+              0, 0, 0, 0, 1, 0, 0, 0,
+              // bar 2
+              0, 0, 0, 0, 1, 0, 0, 0,
+              0, 0, 1, 0, 0, 0, 0, 0
+            ],
+            hihat: [
+              // bar 1
+              1, 1, 1, 1, 1, 1, 1, 1,
+              1, 1, 1, 1, 1, 1, 1, 1,
+              // bar 2
+              1, 1, 1, 1, 1, 1, 1, 1,
+              1, 1, 1, 1, 1, 1, 1, 1
+            ]
+          }
+        }
+
+        const drumset = new Tone.Players({
+          kick: 'https://tonejs.github.io/audio/drum-samples/CR78/kick.mp3',
+          snare: 'https://tonejs.github.io/audio/drum-samples/CR78/snare.mp3',
+          hihat: 'https://tonejs.github.io/audio/drum-samples/CR78/hihat.mp3'
+        }).toDestination()
+
+        const toggle = nn.create('button')
+          .content('start')
+          .addTo('#sequencer .cntrl')
+          .on('click', function () {
+            tctx = 'drums'
+            if (Tone.Transport.state === 'stopped') {
+              Tone.Transport.bpm.value = bpm.value
+              Tone.Transport.loop = false
+              Tone.Transport.start()
+              this.content('stop')
+            } else {
+              Tone.Transport.stop()
+              this.content('start')
+            }
+            seq.update()
+          })
+
+        const bpm = nn.create('input')
+          .set('type', 'number')
+          .set('value', 600)
+          .addTo('#sequencer .cntrl')
+          .on('change', function () {
+            Tone.Transport.bpm.value = this.value
+          })
+
+        new Tone.Loop(function (time) {
+          if (tctx !== 'drums') return
+          for (const drum in algo.pattern) {
+            const idx = algo.beat % algo.pattern[drum].length
+            const val = algo.pattern[drum][idx]
+            if (val) drumset.player(drum).start(time)
+          }
+          seq.update()
+          algo.beat++
+        }).start()
+
+        const seq = viz.createStepSequencer({
+          parent: '#sequencer .steps',
+          sequence: algo.pattern,
+          transport: Tone.Transport
+        })
+        return seq
+      }
+
+      // .....................................
+
+      function createPianoRoll () {
+        let unroll = null
+        let roll = viz.createPianoRoll({
+          notes: ['A3', 'A5'],
+          parent: nn.get('#piano-roll'),
+          style: { accent: 'var(--accent-color1)' }
+        })
+        roll.showPlayhead(true)
+
+        const piano = new Tone.Sampler({
+            baseUrl: "https://tonejs.github.io/audio/salamander/",
+            urls: {
+              'A0': 'A0.mp3',
+              'C1': 'C1.mp3',
+              'D#1': 'Ds1.mp3',
+              'F#1': 'Fs1.mp3',
+              'A1': 'A1.mp3',
+              'C2': 'C2.mp3',
+              'D#2': 'Ds2.mp3',
+              'F#2': 'Fs2.mp3',
+              'A2': 'A2.mp3',
+              'C3': 'C3.mp3',
+              'D#3': 'Ds3.mp3',
+              'F#3': 'Fs3.mp3',
+              'A3': 'A3.mp3',
+              'C4': 'C4.mp3',
+              'D#4': 'Ds4.mp3',
+              'F#4': 'Fs4.mp3',
+              'A4': 'A4.mp3',
+              'C5': 'C5.mp3',
+              'D#5': 'Ds5.mp3',
+              'F#5': 'Fs5.mp3',
+              'A5': 'A5.mp3',
+              'C6': 'C6.mp3',
+              'D#6': 'Ds6.mp3',
+              'F#6': 'Fs6.mp3',
+              'A6': 'A6.mp3',
+              'C7': 'C7.mp3',
+              'D#7': 'Ds7.mp3',
+              'F#7': 'Fs7.mp3',
+              'A7': 'A7.mp3',
+              'C8': 'C8.mp3'
+            },
+            release: 1
+        })
+
+        const effect = new Tone.Reverb({ wet: 0.5 })
+        effect.toDestination()
+        piano.connect(effect)
+
+        function toggle () {
+          if (Tone.Transport.state !== 'started') {
+            tctx = 'piano'
+            Tone.Transport.bpm.value = nn.get('#bpm').value
+            if (!Tone.Transport.loop) {
+              Tone.Transport.loop = true
+              Tone.Transport.loopStart = '0:0:0'
+              Tone.Transport.loopEnd = `${roll.config.measures}:0:0`
+            }
+            Tone.Transport.start()
+            this.content('pause')
+          } else {
+            Tone.Transport.pause()
+            this.content('start')
+          }
+        }
+
+        function reset () {
+          Tone.Transport.stop()
+          nn.get('#piano-toggle').content('start')
+          roll.setPlayheadFromPosition(Tone.Transport.position)
+        }
+
+        function updateBPM () {
+          Tone.Transport.bpm.value = this.value
+        }
+
+        function rebuildPartFromEvents (events, beatsPerMeasure) {
+          if (window.prPart) { window.prPart.dispose(); window.prPart = null }
+            window.prPart = new Tone.Part((time, ev) => {
+              if (tctx !== 'piano') return
+              if (!ev.pitch) return
+              nn.get('#cur-note').content(`{ pitch: ${ev.pitch}, dur: ${ev.dur}, time: ${ev.time} }`)
+              if(!ev.pitch) Tone.Transport.pause()
+              piano.triggerAttackRelease(ev.pitch, ev.dur, time)
+            }, events).start(0)
+
+            Tone.Transport.loop = true
+            Tone.Transport.loopStart = '0:0:0'
+            Tone.Transport.loopEnd = `${roll.config.measures}:0:0`
+        }
+
+        function wireRollListener () {
+          if (unroll) unroll() // detach from previous roll if any
+          unroll = roll.on('change', () => {
+            const events = roll.toToneEvents({ beatsPerMeasure: roll.config.beats })
+            rebuildPartFromEvents(events, roll.config.beats)
+          })
+        }
+
+        function clear () {
+          roll.clear()
+          Tone.Transport.stop()
+          nn.get('#piano-toggle').content('start')
+          nn.get('#cur-note').content('{ pitch, dur, time }')
+        }
+
+        function randomize () {
+          clear()
+          const key = nn.random(nn.notes)
+          const mode = nn.random(Object.keys(nn.modes))
+          const scale = nn.createScale(key+4, mode)
+          const total = roll.config.measures * roll.config.beats
+          // const total = 8
+          nn.times(total, (i) => {
+            const noteChance = 0.5
+            if (nn.random() < noteChance) {
+              const dur = nn.randomInt(1,4)
+              const note = nn.random(scale)
+              // const beat = nn.randomInt(roll.config.measures * roll.config.beats)
+              const beat = i
+              roll.add(note, beat, dur)
+            }
+          })
+        }
+
+        function updatePianoRoll (eve, generate) {
+          roll.host.remove()
+          roll = viz.createPianoRoll({
+            notes: ['A3', 'A5'],
+            editable: true,
+            measures: Number(nn.get('#bars').value),
+            beats: Number(nn.get('#beats').value),
+            parent: nn.get('#piano-roll'),
+            style: { accent: 'var(--accent-color1)' }
+          })
+          roll.showPlayhead(true)
+
+          if (generate) randomize()
+          else clear()
+
+          wireRollListener()
+
+          Tone.Transport.timeSignature = [roll.config.beats, 4]
+
+          const events = roll.toToneEvents()
+          // console.log(events);
+          rebuildPartFromEvents(events, roll.config.beats)
+        }
+
+        Tone.Transport.scheduleRepeat(() => {
+          if (tctx !== 'piano') return
+          roll.setPlayheadFromPosition(Tone.Transport.position)
+        }, '16n') // TODO: maybe this needs to change in re:to bars/beats
+
+        nn.get('#piano-toggle').on('click', toggle)
+        nn.get('#piano-reset').on('click', reset)
+        nn.get('#bpm').on('change', updateBPM)
+        nn.get('#bpm').value = 240
+        nn.get('#bars').on('change', updatePianoRoll)
+        nn.get('#bars').value = 12
+        nn.get('#beats').on('change', updatePianoRoll)
+        nn.get('#beats').value = 4
+
+        updatePianoRoll(null, true)
+
+        nn.get('#randomize').on('click', randomize)
+        nn.get('#clear').on('click', clear)
+
+        // nn.get('#notes').set('options', nn.notes)
+        // nn.get('#modes').set('options', Object.keys(nn.modes))
+      }
+
+      // ..........
+
+      let tctx = null
+      let sequencer, pianoroll
+      nn.on('load', () => {
+        sequencer = createSequencer()
+        pianoroll = createPianoRoll()
+      })
+
+      // ---------------------
+      // dark mode stuff
+      // const currentTheme = window.localStorage.getItem('theme')
+      // nn.get('main-menu').callback = (theme) => {
+      //   sequencer
+      // }
+
+    </script>
+  </body>
+</html>

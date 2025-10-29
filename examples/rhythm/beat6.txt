@@ -1,0 +1,1 @@
+There are so many other directions we can take this, consider the cutup approach from the <strong>sampling</strong> lesson where we manually cutup a sample of music to create an MPC-like instrument. We can adapt some of that code to create algorithmic sequencer based on randomly cutup clips.

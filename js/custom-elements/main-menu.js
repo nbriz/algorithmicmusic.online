@@ -138,7 +138,7 @@ class MainMenu extends window.HTMLElement {
           <a href="/scales">modes + scales</a>
         </span>
         <span>
-          <a class="inactive">rhythm + melody&nbsp;</a>
+          <a href="/rhthm">rhythm + melody&nbsp;</a>
         </span>
         <span>
           <a class="inactive">&nbsp;&nbsp;chords + arpeggios</a>
