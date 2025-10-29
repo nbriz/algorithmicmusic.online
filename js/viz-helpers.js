@@ -696,8 +696,8 @@ Piano Roll — quick start & API
 Create a roll
 -------------
 const roll = viz.createPianoRoll({
-  notes: ['C4', 'C5'],       // pitch range (inclusive)
-  measures: 4,               // number of measures (columns = measures * beats)
+  notes: ['C4', 'C5'],       // or "octaves" -- pitch range (inclusive)
+  measures: 4,               // number of measures (columns = measures * beats) or '4m'/'4:0:0'
   beats: 4,                  // beats per measure
   parent: '#pianoRoll',      // element or selector to render into
   transport: Tone.Transport, // optional Tone.Transport reference
@@ -794,12 +794,28 @@ window.viz.createPianoRoll = function (opts = {}) {
   const cfg = merge(defaults, opts)
   cfg.editable = !!cfg.editable
   cfg.transport = cfg.transport || null
+  if (cfg.octaves) { cfg.notes = cfg.octaves }
+  if (typeof cfg.notes[0] === 'number') {
+    cfg.notes[0] = 'C' + cfg.notes[0]
+    cfg.notes[1] = 'C' + cfg.notes[1]
+  }
   if (typeof cfg.parent === 'string') {
     const el = document.querySelector(cfg.parent)
     if (el) cfg.parent = el
   }
 
-  const cols = cfg.measures * cfg.beats
+  // allow measures: number | '4m' | '4:0:0'
+  let cols
+  const beatsFromLen = parseLengthToBeats(cfg.measures, cfg.beats)
+  if (beatsFromLen != null) {
+    // grid uses full columns; round up fractional beats (e.g., ':2' or ':2:2')
+    cols = Math.ceil(beatsFromLen)
+    // keep cfg.measures as whole bars for the rest of the code (loop calc, etc.)
+    cfg.measures = Math.max(1, Math.ceil(cols / cfg.beats))
+  } else {
+    cols = (parseFloat(cfg.measures) || 1) * cfg.beats
+  }
+
   const pitches = buildPitchRows(cfg.notes)
 
   const state = []
@@ -852,7 +868,7 @@ window.viz.createPianoRoll = function (opts = {}) {
       position: absolute; inset: 0 auto 0 0;
       width: 2px; background: var(--pr-accent);
       opacity: .85; transform: translateX(0);
-      pointer-events: none; z-index: 4; display: none;
+      pointer-events: none; z-index: 4; display: block;
     }
     .pr-readonly .pr-cell { pointer-events: none; cursor: default; }
   `
@@ -1103,6 +1119,84 @@ window.viz.createPianoRoll = function (opts = {}) {
     return names[pc] + octave
   }
 
+  // convert current grid state → Tone.js event objects
+  function toToneEvents (opts = {}) {
+    const beatsPerMeasure = opts.beatsPerMeasure || cfg.beats || 4
+
+    return state.map(n => {
+      const bar = Math.floor(n.start / beatsPerMeasure)
+      const beat = n.start % beatsPerMeasure
+      // time is bars:beats:sixteenths (we align to the beat, so sixteenths = 0)
+      const time = `${bar}:${beat}:0`
+      // duration as a TransportTime string equal to <n.duration> beats
+      // (e.g., 1 beat → '0:1:0', 3 beats → '0:3:0')
+      const dur = `0:${n.duration}:0`
+      return { time, pitch: n.pitch, dur }
+    })
+  }
+
+  function durationToBeats (dur) {
+    if (typeof dur === 'number' && Number.isFinite(dur)) return dur
+    if (typeof dur !== 'string') return 1
+
+    const s = dur.trim().toLowerCase()
+
+    // 'Xm' → X measures
+    if (/^\d+(\.\d+)?m$/.test(s)) {
+      const bars = parseFloat(s.replace('m', ''))
+      return bars * (cfg.beats || 4)
+    }
+
+    // 'bars:beats[:sixteenths]'
+    if (/^\d+:\d+(?::\d+)?$/.test(s)) {
+      const [barStr, beatStr, sixStr = '0'] = s.split(':')
+      const bars = parseInt(barStr, 10) || 0
+      const beats = parseInt(beatStr, 10) || 0
+      const six = parseInt(sixStr, 10) || 0
+      return (bars * (cfg.beats || 4)) + beats + (six / 4)
+    }
+
+    // notation like '4n', '8t', '4n.'
+    if (typeof Tone !== 'undefined' && Tone?.Ticks) {
+      const ppq = Tone.Transport?.PPQ || 192
+      const ticks = Tone.Ticks(s).toTicks()
+      return ticks / ppq
+    }
+
+    // fallback
+    const n = parseFloat(s)
+    return Number.isFinite(n) ? n : 1
+  }
+
+  // parse '4m' or 'bars:beats:sixteenths' → total beats (float)
+  function parseLengthToBeats (val, beatsPerMeasure) {
+    if (typeof val !== 'string') return null
+    const s = val.trim().toLowerCase()
+
+    // 'Xm' → X measures
+    if (/^\d+(\.\d+)?m$/.test(s)) {
+      const bars = parseFloat(s.replace('m', ''))
+      return bars * beatsPerMeasure
+    }
+
+    // 'bars:beats:sixteenths' (sixteenths optional)
+    if (/^\d+:\d+(?::\d+)?$/.test(s)) {
+      const [barStr, beatStr, sixStr = '0'] = s.split(':')
+      const bars = parseInt(barStr, 10) || 0
+      const beats = parseInt(beatStr, 10) || 0
+      const six = parseInt(sixStr, 10) || 0
+      return (bars * beatsPerMeasure) + beats + (six / 4)
+    }
+
+    // plain number string? treat like bars
+    if (/^\d+(\.\d+)?$/.test(s)) {
+      const bars = parseFloat(s)
+      return bars * beatsPerMeasure
+    }
+
+    return null
+  }
+
   // event utils .....
 
   function emit (type, payload) {
@@ -1148,22 +1242,6 @@ window.viz.createPianoRoll = function (opts = {}) {
     setPlayheadFromPosition(cfg.transport.position, { beatsPerMeasure: cfg.beats })
   }
 
-  // convert current grid state → Tone.js event objects
-  function toToneEvents (opts = {}) {
-    const beatsPerMeasure = opts.beatsPerMeasure || cfg.beats || 4
-
-    return state.map(n => {
-      const bar = Math.floor(n.start / beatsPerMeasure)
-      const beat = n.start % beatsPerMeasure
-      // time is bars:beats:sixteenths (we align to the beat, so sixteenths = 0)
-      const time = `${bar}:${beat}:0`
-      // duration as a TransportTime string equal to <n.duration> beats
-      // (e.g., 1 beat → '0:1:0', 3 beats → '0:3:0')
-      const dur = `0:${n.duration}:0`
-      return { time, pitch: n.pitch, dur }
-    })
-  }
-
   return {
     host,
     shadow,
@@ -1181,7 +1259,8 @@ window.viz.createPianoRoll = function (opts = {}) {
     off,
     add: (note, beat, dur = 1) => {
       const row = pitches.indexOf(note)
-      addNote(row, beat, dur)
+      const dBeats = durationToBeats(dur)
+      addNote(row, beat, dBeats)
     },
     clear: () => {
       state.length = 0
