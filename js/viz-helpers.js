@@ -658,9 +658,9 @@ window.viz.createPianoUI = function (options = {}) {
     })
   }
 
-  function highlightKey (keyLabel) {
+  function highlightKey (keyLabel, color) {
     if (keys[keyLabel]) {
-      keys[keyLabel].setAttribute('fill', settings.accentColor)
+      keys[keyLabel].setAttribute('fill', color || settings.accentColor)
     }
   }
 
@@ -682,7 +682,11 @@ window.viz.createPianoUI = function (options = {}) {
 
   return {
     notes: notes,
-    attack: highlightKey,
+    attack: (key, color) => {
+      if (key instanceof Array) {
+        key.forEach(k => highlightKey(k, color))
+      } else highlightKey(key, color)
+    },
     release: resetKey,
     attackRelease: attackRelease,
     reset: resetAll
