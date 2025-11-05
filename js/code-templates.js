@@ -2,7 +2,8 @@ window.codeTemplate = {}
 
 window.codeTemplate.tags = {
   tone: '<script src="https://unpkg.com/tone"></script>',
-  nn: '<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>',
+  // nn: '<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>',
+  nn: '<script src="https://algorithmicmusic.online/js/libs/nn.min.js"></script>',
   // d3: '<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>',
   // spec: '<script src="https://algorithmicmusic.online/js/create-spectrum.js"></script>',
   // wave: '<script src="https://algorithmicmusic.online/js/create-waveform.js"></script>',

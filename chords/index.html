@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Algorithmic Music Online: Chords</title>
+    <meta name="author" content="Nick Briz">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <!-- TODO: social media stuff -->
+    <link rel="stylesheet" href="/css/main.css">
+    <style media="screen">
+      /* uses only your provided variables */
+      .scale-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 0; /* simple table look */
+        background: var(--background-color);
+        color: var(--text-color);
+        border: 1px solid var(--accent-color6);
+        border-radius: 6px;
+        overflow: hidden;
+        font: 14px system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      }
+
+      .scale-header,
+      .scale-cell {
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--accent-color6);
+        border-right: 1px solid var(--accent-color6);
+      }
+
+      .scale-header:nth-child(-n + 4) { /* first row */
+        background: var(--accent-color2);
+        color: var(--background-color);
+        font-weight: 600;
+      }
+
+      .scale-cell:nth-child(4n),
+      .scale-header:nth-child(4n) {
+        border-right: 0; /* last column */
+      }
+
+      /* remove bottom border on last row cells */
+      .scale-grid > :nth-last-child(-n + 4) {
+        border-bottom: 0;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <main-menu>
+      <div slot="menu-items">
+        <div class="color-mode-wrap">
+          <label class="color-mode-switch">
+            <input type="checkbox">
+            <span class="color-mode-slider"></span>
+          </label>
+          <span class="color-mode-label">light/dark mode</span>
+        </div>
+      </div>
+    </main-menu>
+
+    <div class="loader">
+      <svg id="loader-wave" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="" id="loader-wave-path"></path>
+      </svg>
+    </div>
+
+    <section>
+      <div class="content">
+        <h4 class="ch">chapter 6</h4>
+        <h2 class="formatted-text ch-title">chords + arpeggios</h2>
+
+        <img src="/images/coltrane-circle.jpg" alt="John Coltrane's sketches of the circle of fifths" style="max-width: 400px;margin: 0 auto;display: block;">
+        <p class="small-note">
+          Sketches from John Coltrane's study of the <a href="https://en.wikipedia.org/wiki/Circle_of_fifths" target="_blank">Circle of Fifths</a> when working on an algorithmic approach to construting chord progressions which came to be known as the "Coltrane Changes"
+        </p>
+        <br>
+        
+        <p>
+          In this lesson we're going to add another layer on top of the musical concepts we covered in the last lesson. Just like the <code>Tone.js</code> classes we’ve used, each building on simpler components in a "ladder of abstraction", musical concepts also stack on top of foundational ideas. Working at the higher levels, with musical concepts like scales or programming classes like <code>Tone.Synth()</code>, is often easier to grasp and quicker to use. But when we explore the lower levels, we gain more creative control and can start to question or reinvent the assumptions that shape conventional music, like the tuning systems themselves.
+        </p>
+
+        <p>
+          Let's begin by reviewing some of the core musical ideas we've covered so far. At its most fundamental level, <strong>music</strong> is mathematically organized sound. That means we use math to decide <i>which</i> frequencies to play, and <i>when</i> to play them. The <i>when</i> is what we call <strong>rhythm</strong>: in music, we divide time into regular pulses called <strong>beats</strong>, and control the speed of those beats using a <strong>tempo</strong>, measured in <strong>BPM</strong> (beats per minute). We often group those beats into repeating sections called <strong>measures</strong> or <strong>bars</strong>. The number of beats in each bar is determined by the <strong>time signature</strong>, which is often set to 4, but we can change it however we like.
+        </p>
+
+        <p>
+          Just as we control when to play a sound, we also need to decide <i>what</i> frequencies to play. If we take any frequency and double it, we get a new pitch an <strong>octave</strong> above the original. Before we can choose notes, though, we need to define a set of playable frequencies by subdividing the octave using a <strong>tuning system</strong>. The most common one divides the octave into 12 equal parts, called <strong>12-tone equal temperament</strong>, but we've also explored alternatives like Pythagorean tuning or microtonal divisions with more or fewer steps. Within a tuning system, we create a <strong>scale</strong> by choosing a starting note (the <strong>key</strong>) and applying a <strong>mode</strong>, a pattern of steps (starting from that key) that determines which other notes are included. As long as we write melodies using only the notes from that scale, the result tends to sound cohesive and musical. In this lesson, we'll explore how to mathematically determine which combinations of notes from a scale should be played together, introducing the concept of harmony and laying the groundwork for chords, arpeggios and other progressions.
+        </p>
+
+        <p>
+          Just as a scale is a subset of notes chosen from our tuning system, a <strong>chord</strong> is a subset of notes selected from a scale. A chord is a set of notes played together, creating harmony. If these same notes are played one at a time instead of simultaneously, it’s called an <strong>arpeggio</strong>.
+        </p>
+        <br>
+
+        <h3>creating chords</h3>
+
+        <p>
+          Before we can create a <i>chord</i> we need to choose a <i>scale</i>. In a <strong>scale</strong>, each note has a position known as its <strong>degree</strong>, counted from the starting note, or <strong>tonic</strong>. Take the C major scale for example (see chart below), C is the 1st degree (tonic), D is the 2nd, E is the 3rd, and so on. These degrees aren’t just positions, they each play different <strong>tonal roles</strong> that give music its sense of direction and emotional weight. The <strong>tonic</strong> feels like "home," the <strong>dominant</strong> (5th degree) creates tension that wants to resolve back to the tonic, and the <strong>subdominant</strong> (4th degree) often prepares for that resolution. These roles form the basis of <strong>harmony</strong>. When we combine multiple degrees and play them together, we form <strong>chords</strong>, and how we choose and connect those chords determines the harmonic structure of a piece.
+        </p>
+
+
+
+        <div class="scale-grid">
+          <div class="scale-header">Note</div>
+          <div class="scale-header">Array Index</div>
+          <div class="scale-header">Degree</div>
+          <div class="scale-header">Tonal Role</div>
+
+          <div class="scale-cell">C4</div>
+          <div class="scale-cell">0</div>
+          <div class="scale-cell">1 (I)</div>
+          <div class="scale-cell">Tonic ("root" or "home")</div>
+
+          <div class="scale-cell">D4</div>
+          <div class="scale-cell">1</div>
+          <div class="scale-cell">2 (II)</div>
+          <div class="scale-cell">Supertonic</div>
+
+          <div class="scale-cell">E4</div>
+          <div class="scale-cell">2</div>
+          <div class="scale-cell">3 (III)</div>
+          <div class="scale-cell">Mediant</div>
+
+          <div class="scale-cell">F4</div>
+          <div class="scale-cell">3</div>
+          <div class="scale-cell">4 (IV)</div>
+          <div class="scale-cell">Subdominant</div>
+
+          <div class="scale-cell">G4</div>
+          <div class="scale-cell">4</div>
+          <div class="scale-cell">5 (V)</div>
+          <div class="scale-cell">Dominant</div>
+
+          <div class="scale-cell">A4</div>
+          <div class="scale-cell">5</div>
+          <div class="scale-cell">6 (VI)</div>
+          <div class="scale-cell">Submediant</div>
+
+          <div class="scale-cell">B4</div>
+          <div class="scale-cell">6</div>
+          <div class="scale-cell">7 (VII)</div>
+          <div class="scale-cell">Leading tone</div>
+        </div>
+
+        <p>
+          Just as scales are built from a tonic/root note, chords are built around a tonal center as well, which we call the <strong>root</strong> of the chord. However, while modes/scales are defined by a pattern of intervals (steps from the root/tonic note), chords are defined by degrees (see chart above), specific note positions within the scale. This means that the shape of a chord is determined relative to the scale it’s derived from, making it adaptable to different keys, modes, and tuning systems. For example, a <code>"triad"</code> uses the 1st, 3rd, and 5th degrees of the scale, while a <code>"seventh"</code> chord adds the 7th degree on top. By referencing these definitions, we can programmatically construct chords of any type from any key or mode.
+        </p>
+
+      </div>
+    </section>
+
+    <div id="editor-0"></div>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <h3>arpeggiating chords</h3>
+        <p>
+          Another way to create harmony is to use the same degrees of a scale that define a <strong>chord</strong> shape, but rather than playing them at the same time, we play them one at a time, this is called an <strong>arpeggio</strong>. You can think of an arpeggio as a "broken chord" that spreads its notes out over time instead of stacking them vertically. For example, triad arpeggio consists of the same notes as a triad chord the <strong>I->III->V</strong> degree from the scale, the difference is just that we play the notes in sequence, rather than simultaneously. While chords provide harmonic support and a sense of fullness, arpeggios can add motion, texture, and clarity, especially in melodies or accompaniment.
+        </p>
+      </div>
+    </section>
+    <br>
+
+    <div id="editor-1"></div>
+    <br><br>
+
+
+    <section>
+      <div class="content">
+        <h3>chord voicing</h3>
+        <p>
+          <strong>Chord voicing</strong> refers to the specific way the notes of a chord are arranged or spaced, essentially, which octave numbers we add to each note of a chord. Even though two voicings may use the same chord tones (like the root, third, and fifth), they can sound very different depending on how those notes are ordered, spread out, or doubled. A basic voicing might stack the notes closely in a single octave, while a more complex voicing might spread them across multiple octaves, omit certain tones, or add extensions like sevenths or ninths. In jazz and contemporary music, voicing is a key part of personal style, players often rearrange or reinterpret chords to add color, tension, or movement. Cosider the difference in the way the chords below sound when the "remix voicing" checkbox is turned on.
+        </p>
+      </div>
+    </section>
+    <br>
+
+    <div id="editor-2"></div>
+    <br><br>
+
+    <section>
+      <div class="content">
+        <h3>chord progressions</h3>
+        <p>
+          Just like we use <strong>degrees</strong> to build chords from a scale, we can also use degrees to decide which chords to play over time, this is called a <strong>chord progression</strong>. A chord progression is simply a sequence of chords (or arpeggios), often one per <strong>measure</strong>, that outlines the harmonic structure of a piece. Instead of thinking in terms of specific notes, we think in terms of chord functions, where teh degrees <strong>I</strong>, <strong>IV</strong>, <strong>V</strong> would each represent a chord built from a different scale degree. These progressions give music a sense of movement and emotional contour, especially when certain degrees (like the <strong>V</strong>, or dominant) resolve back to the <strong>I</strong> (tonic). By combining different chord types and varying their order across measures, we can create harmonic narratives and evoke specific feelings.
+        </p>
+      </div>
+    </section>
+    <br>
+
+    <div id="editor-3"></div>
+    <br><br>
+    <br>
+    <br>
+
+
+    <section>
+      <div class="content">
+        <h3>modulation</h3>
+        <p>
+          One of the most iconic examples of advanced harmony in jazz is <a href="https://en.wikipedia.org/wiki/John_Coltrane" target="_blank">John Coltrane’s</a> <em>Giant Steps</em>, a piece that pushes all of these concepts we've covered, <strong>chords</strong>, <strong>arpeggios</strong>, and <strong>progressions</strong>, to their limits. Rather than sticking to a single key or a predictable chord progression, Coltrane structured the piece around rapid shifts between key centers using a symmetrical pattern of major thirds, now known as the <a href="https://en.wikipedia.org/wiki/Brian_" target="_blank">Coltrane Changes</a>. The result is a progression that cycles through chords at an unusually fast rate, demanding that improvisers outline complex <strong>arpeggios</strong> and navigate frequent <strong>modulations</strong> (a change from one key to another) with precision. <em>Giant Steps</em> is a perfect example of how deeply mathematical structures can be used to create something musically palatable yet unique.
+        </p>
+        <br><br>
+        <a href="https://www.youtube.com/watch?v=62tIvfP9A2w" target="_blank">
+          <img src="/images/coltrane.jpg" alt="a video about John Coltrane's Giant Steps" class="rwd">
+        </a>
+        <p class="small-note">
+          Above is a short video about the musical algorithm behind John Coltrane's classic piece Giant Steps, it explains the <a href="https://en.wikipedia.org/wiki/Brian_" target="_blank">Coltrane Changes</a> the song's classic progression which repeats a classic II->V->I pattern while switching the songs key, jumping across the <a href="https://en.wikipedia.org/wiki/Circle_of_fifths" target="_blank">the Circle of Fifths</a> multiple times mid progression.
+        </p>
+      </div>
+    </section>
+    <br>
+
+
+
+
+
+    <br>
+    <br>
+    <br>
+
+
+    <section class="attribution">
+      <div class="content">
+        <p>
+          <span style="font-weight: bold;">Attribution</span>: Text and code written by <a href="https://nickbriz.com/" target="_blank">Nick Briz</a>. The code editor icons designed by <a href="https://thunproject.com/creator/MekoDa/" target="_blank">Meko</a> and licensed under Creative Commons Attribution License (CC BY 3.0). All sounds generated using the Web Audio API and/or <a href="https://tonejs.github.io/" target="_blank">Tone.js</a> by Yotam Mann and <a href="https://github.com/Tonejs/Tone.js/graphs/contributors" target="_blank">other contributors</a>.
+        </p>
+        <br>
+        <br>
+        <br>
+
+        <br>
+        <br>
+        <br>
+      </div>
+    </section>
+
+
+
+    <script src="/js/libs/d3@7.js"></script>
+    <script src="/js/libs/Tone.js"></script>
+    <script src="/js/custom-elements/algo-music-ui.js"></script>
+    <script src="/js/SVGSineWave.js"></script>
+    <script src="/js/viz-helpers.js"></script>
+    <script src="/js/libs/netitor.min.js"></script>
+    <script src="/js/libs/nn.min.js"></script>
+    <script src="/js/custom-elements/main-menu.js"></script>
+    <script src="/js/create-waveform.js"></script>
+    <script src="/js/effect-presets.js"></script>
+    <script src="/js/tone-sounds.js"></script>
+    <script src="/js/code-templates.js"></script>
+    <script src="/js/utils.js"></script>
+    <script>
+      utils.init()
+      nn.getAll('h4, .formatted-text').forEach(e => utils.formatText(e))
+
+      // setup editors
+      // ..............
+      const ttemps = ['body', 'nn', 'tone', 'viz']
+      utils.createCodeEditor({
+        ele: '#editor-0',
+        title: 'chords',
+        code: [
+          { file: 'chords/chord1.js',  template: ttemps, info: true },
+          { file: 'chords/chord2.js',  template: ttemps, info: true }
+        ]
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-1',
+        title: 'arpeggios',
+        code: [
+          { file: 'chords/arp1.js',  template: ttemps, info: true },
+          { file: 'chords/arp2.js',  template: ttemps, info: true }
+        ]
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-2',
+        code: { file: 'chords/voice.js',  template: ttemps },
+      })
+
+      utils.createCodeEditor({
+        ele: '#editor-3',
+        code: { file: 'chords/prog.js',  template: ttemps },
+      })
+
+      // utils.createCodeEditor({
+      //   ele: '#editor-1',
+      //   title: 'basic step sequencers',
+      //   code: [
+      //     { file: 'rhythm/beat2.js',  template: ttemps, info: true },
+      //     { file: 'rhythm/beat2b.js',  template: ttemps, info: true },
+      //     { file: 'rhythm/beat3.js',  template: ttemps, info: true },
+      //   ]
+      // })
+
+
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1 @@
+In this example we create a major scale (aka ionian) and highlight the keys in the scale in pink. Pressing the button plays a <strong>triad</strong> chord, which has the shape <strong>I->III->V</strong>, meaning it consists of the first (0 index), third (2 index) and fifth (4 index) notes from the current scale.

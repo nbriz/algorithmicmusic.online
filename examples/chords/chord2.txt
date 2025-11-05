@@ -1,0 +1,1 @@
+This example is similar to the last one except we can not only choose the root note of the scale we want, we can also select the type of scale we want. When we press the <i>play</i> button a chord is played based on the shape selected in the second drop down list. Next to it you'll see the degrees of which define the selected shape.

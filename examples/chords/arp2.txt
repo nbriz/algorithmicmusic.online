@@ -1,0 +1,1 @@
+This is similar to previous example, except that rather than clicking through each step manually, we're now using a Transport so that we can use the current <i>beat</i> to select the next step in our arpeggio.

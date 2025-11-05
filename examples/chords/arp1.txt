@@ -1,0 +1,1 @@
+This example is similar to the second chord example in the previous set, except that rather than playing all the notes in the chord at the same time, we "arpeggiate" through them by create a <code>step</code> variable which keeps track of the next index in the chord we want to play. Everytime we push the button we play the next note and increment the step.
