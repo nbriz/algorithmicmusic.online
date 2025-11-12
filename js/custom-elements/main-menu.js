@@ -144,7 +144,7 @@ class MainMenu extends window.HTMLElement {
           <a href="/chords">&nbsp;&nbsp;chords + arpeggios</a>
         </span>
         <span>
-          <a class="inactive">algorithmic composition</a>
+          <a href="/assignments/final">final project</a>
         </span>
 
 
